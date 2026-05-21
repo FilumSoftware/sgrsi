@@ -46,6 +46,11 @@ body {
   margin-bottom: 6px;
 }
 
+.logo {
+  width: 140px;
+  margin-bottom: 20px;
+  mix-blend-mode: multiply;
+}
 .subtitulo {
   font-size: 13px;
   color: var(--color-secundario);
