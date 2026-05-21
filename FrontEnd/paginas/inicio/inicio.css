@@ -1,0 +1,30 @@
+
+
+/* Variables de color */
+:root {
+  --color-primario: #2b2b2b;
+  --color-secundario: #4a4a4a;
+  --color-acento: #e8735a;
+  --color-rosa: #f5f0e8;
+  --color-celeste: #8a8a8a;
+  --color-texto: #2b2b2b;
+  --color-texto-suave: #6a6a6a;
+  --color-fondo: #f5f0e8;
+  --radio-borde: 8px;
+  --sombra: 0 8px 24px rgba(43, 43, 43, 0.3);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Raleway', sans-serif;
+}
+
+body {
+  background-color: #451952;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
