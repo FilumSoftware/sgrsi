@@ -83,3 +83,50 @@ body {
   background-color: var(--color-acento);
   color: #ffffff;
 }
+
+/* Etiquetas */
+
+label {
+  display: block;
+  text-align: left;
+  font-size: 13px;
+  color: var(--color-texto);
+  margin-bottom: 6px;
+}
+
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid var(--color-celeste);
+  border-radius: var(--radio-borde);
+  font-size: 14px;
+  color: var(--color-texto);
+  background-color: #ffffff;
+}
+
+
+input:focus {
+  outline: none;
+  border-color: var(--color-acento);
+  box-shadow: 0 0 0 3px rgba(232, 115, 90, 0.25);
+}
+
+
+.btn-ingresar {
+  width: 100%;
+  padding: 13px;
+  background-color: var(--color-secundario);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radio-borde);
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-ingresar:hover {
+  background-color: var(--color-primario);
+}
