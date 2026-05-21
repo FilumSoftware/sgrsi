@@ -9,20 +9,20 @@
     <link rel="stylesheet" href="dashboard.css">
   </head>
   <body>
-<header class="topbar">
-  <div class="topbar-izquierda">
-    <span class="topbar-titulo">SGRSI</span>
-  </div>
-  <div class="topbar-derecha">
-    <span class="topbar-usuario">Administrador</span>
-    <a href="../inicio/inicio.html" class="btn-salir">Cerrar sesión</a>
-  </div>
-</header>
 
-<div class="dashboard-contenedor">
+    <header class="topbar">
+      <div class="topbar-izquierda">
+        <span class="topbar-titulo">SGRSI</span>
+      </div>
+      <div class="topbar-derecha">
+        <span class="topbar-usuario">Administrador</span>
+        <a href="../inicio/inicio.html" class="btn-salir">Cerrar sesión</a>
+      </div>
+    </header>
 
-  
-  <nav class="sidebar">
+    <div class="dashboard-contenedor">
+
+      <nav class="sidebar">
         <ul>
           <li class="sidebar-item activo">Dashboard</li>
           <li class="sidebar-item"><a href="../inventario/inventario.html">Inventario</a></li>
@@ -32,12 +32,10 @@
         </ul>
       </nav>
 
-
       <main class="dashboard-main">
         <h1 class="saludo">Bienvenido, Administrador</h1>
         <p class="saludo-sub">Resumen del sistema</p>
 
-      
         <div class="tarjetas">
           <div class="tarjeta tarjeta-azul">
             <p class="tarjeta-numero">12</p>
@@ -57,53 +55,53 @@
           </div>
         </div>
 
-        <!-- Tabla de tickets -->
-<div class="tabla-contenedor">
-  <h2 class="tabla-titulo">Últimos tickets registrados</h2>
-  <table class="tabla">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Solicitante</th>
-        <th>Descripción</th>
-        <th>Estado</th>
-        <th>Fecha</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>001</td>
-        <td>Ratón Pérez</td>
-        <td>Computadora no enciende</td>
-        <td><span class="estado pendiente">Pendiente</span></td>
-        <td>17/05/2026</td>
-      </tr>
-      <tr>
-        <td>002</td>
-        <td>Darío Buffa</td>
-        <td>Instalación de software</td>
-        <td><span class="estado proceso">En proceso</span></td>
-        <td>16/05/2026</td>
-      </tr>
-      <tr>
-        <td>003</td>
-        <td>Massimiliano Pereira</td>
-        <td>Problema con la red</td>
-        <td><span class="estado resuelto">Resuelto</span></td>
-        <td>15/05/2026</td>
-      </tr>
-      <tr>
-        <td>004</td>
-        <td>Bárbara Silva</td>
-        <td>Reparar el aire acondicionado lab 3</td>
-        <td><span class="estado pendiente">Pendiente</span></td>
-        <td>15/05/2026</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+        
+        <div class="tabla-contenedor">
+          <h2 class="tabla-titulo">Últimos tickets registrados</h2>
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Solicitante</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tr>
+              <td>001</td>
+              <td>Ratón Pérez</td>
+              <td>Computadora no enciende</td>
+              <td><span class="estado pendiente">Pendiente</span></td>
+              <td>17/05/2026</td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td>Darío Buffa</td>
+              <td>Instalación de software</td>
+              <td><span class="estado proceso">En proceso</span></td>
+              <td>16/05/2026</td>
+            </tr>
+            <tr>
+              <td>003</td>
+              <td>Massimiliano Pereira</td>
+              <td>Problema con la red</td>
+              <td><span class="estado resuelto">Resuelto</span></td>
+              <td>15/05/2026</td>
+            </tr>
+            <tr>
+              <td>004</td>
+              <td>Bárbara Silva</td>
+              <td>Reparar el aire acondicionado lab 3</td>
+              <td><span class="estado pendiente">Pendiente</span></td>
+              <td>15/05/2026</td>
+            </tr>
+          </table>
+        </div>
+
       </main>
     </div>
 
   </body>
 </html>
+
