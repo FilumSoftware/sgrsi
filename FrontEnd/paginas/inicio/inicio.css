@@ -28,3 +28,25 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+/* Formulario */
+.login-box {
+  background-color: var(--color-rosa);
+  padding: 40px;
+  border-radius: 16px;
+  width: 420px;
+  box-shadow: var(--sombra);
+  text-align: center;
+}
+
+.login-box h2 {
+  font-size: 24px;
+  color: var(--color-texto);
+  margin-bottom: 6px;
+}
+
+.subtitulo {
+  font-size: 13px;
+  color: var(--color-secundario);
+  margin-bottom: 24px;
+}
