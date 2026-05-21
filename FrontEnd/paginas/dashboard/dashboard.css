@@ -25,7 +25,7 @@
   display: block;
 }
 
-/* Barra superior */
+
 .topbar {
   background-color: var(--color-primario);
   padding: 12px 24px;
@@ -74,4 +74,55 @@
 
 .btn-salir:hover {
   background-color: var(--color-secundario);
+}
+
+
+.dashboard-contenedor {
+  display: flex;
+  margin-top: 64px;
+}
+
+
+.sidebar {
+  width: 220px;
+  background-color: var(--color-secundario);
+  min-height: calc(100vh - 64px);
+  padding: 20px 0;
+  position: fixed;
+  top: 64px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-item {
+  padding: 14px 24px;
+  color: var(--color-rosa);
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sidebar-item a {
+  color: var(--color-rosa);
+  text-decoration: none;
+}
+
+.sidebar-item:hover {
+  background-color: var(--color-primario);
+  color: var(--color-acento);
+}
+
+.sidebar-item:hover a {
+  color: var(--color-acento);
+}
+
+
+.sidebar-item.activo {
+  background-color: var(--color-primario);
+  color: var(--color-acento);
+  font-weight: bold;
+  border-left: 4px solid var(--color-acento);
 }
