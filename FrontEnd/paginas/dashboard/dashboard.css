@@ -24,3 +24,54 @@
   min-height: 100vh;
   display: block;
 }
+
+/* Barra superior */
+.topbar {
+  background-color: var(--color-primario);
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.topbar-izquierda {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar-titulo {
+  color: var(--color-rosa);
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.topbar-derecha {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar-usuario {
+  color: var(--color-celeste);
+  font-size: 14px;
+}
+
+.btn-salir {
+  background-color: var(--color-acento);
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: var(--radio-borde);
+  text-decoration: none;
+  font-size: 13px;
+  transition: 0.3s;
+}
+
+.btn-salir:hover {
+  background-color: var(--color-secundario);
+}
