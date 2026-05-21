@@ -185,3 +185,68 @@
 
 .tarjeta-rosa { border-top-color: var(--color-rosa); }
 .tarjeta-rosa .tarjeta-numero { color: var(--color-acento); }
+
+
+.tabla-contenedor {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(43, 43, 43, 0.1);
+}
+
+.tabla-titulo {
+  font-size: 16px;
+  color: var(--color-primario);
+  margin-bottom: 16px;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla th {
+  background-color: var(--color-primario);
+  color: var(--color-rosa);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 13px;
+}
+
+.tabla td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--color-texto);
+  border-bottom: 1px solid var(--color-fondo);
+}
+
+.tabla tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.tabla tbody tr:hover {
+  background-color: var(--color-rosa);
+}
+
+
+.estado {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.estado.pendiente {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.estado.proceso {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.estado.resuelto {
+  background-color: #d1fae5;
+  color: #065f46;
+}
