@@ -130,3 +130,27 @@ input:focus {
 .btn-ingresar:hover {
   background-color: var(--color-primario);
 }
+
+/* Link paracrear una cuenta */
+.crear-cuenta {
+  font-size: 13px;
+  color: var(--color-secundario);
+  margin-top: 20px;
+}
+
+.crear-cuenta a {
+  color: var(--color-acento);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.crear-cuenta a:hover {
+  text-decoration: underline;
+}
+
+/* Pie de página */
+.pie {
+  font-size: 11px;
+  color: var(--color-rosa);
+  margin-top: 20px;
+}
