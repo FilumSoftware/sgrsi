@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGRSI - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../main.css">
+    <link rel="stylesheet" href="dashboard.css">
+  </head>
+  <body>
+
+    <header class="topbar">
+      <div class="topbar-izquierda">
+        <span class="topbar-titulo">SGRSI</span>
+      </div>
+      <div class="topbar-derecha">
+        <a href="../../index.html" class="btn-salir">Cerrar sesión</a>
+      </div>
+    </header>
+
+    <div class="dashboard-contenedor">
+
+      <nav class="sidebar">
+        <ul>
+          <li class="sidebar-item activo">Dashboard</li>
+          <li class="sidebar-item"><a href="../inventario/inventario.html">Inventario</a></li>
+          <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
+          <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
+          <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+        </ul>
+      </nav>
+
+      <main class="dashboard-main">
+        <h1 class="saludo">Bienvenido</h1>
+        <p class="saludo-sub">Resumen del sistema</p>
+
+        <div class="tarjetas">
+          <div class="tarjeta tarjeta-azul">
+            <p class="tarjeta-numero">12</p>
+            <p class="tarjeta-label">Tickets abiertos</p>
+          </div>
+          <div class="tarjeta tarjeta-lila">
+            <p class="tarjeta-numero">34</p>
+            <p class="tarjeta-label">Equipos disponibles</p>
+          </div>
+          <div class="tarjeta tarjeta-celeste">
+            <p class="tarjeta-numero">8</p>
+            <p class="tarjeta-label">Solicitudes pendientes</p>
+          </div>
+          <div class="tarjeta tarjeta-rosa">
+            <p class="tarjeta-numero">5</p>
+            <p class="tarjeta-label">Registros de laboratorio</p>
+          </div>
+        </div>
+
+        
+        <div class="tabla-contenedor">
+          <h2 class="tabla-titulo">Últimos tickets registrados</h2>
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Solicitante</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tr>
+              <td>001</td>
+              <td>Ratón Pérez</td>
+              <td>Computadora no enciende</td>
+              <td><span class="estado pendiente">Pendiente</span></td>
+              <td>17/05/2026</td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td>Darío Buffa</td>
+              <td>Instalación de software</td>
+              <td><span class="estado proceso">En proceso</span></td>
+              <td>16/05/2026</td>
+            </tr>
+            <tr>
+              <td>003</td>
+              <td>Massimiliano Pereira</td>
+              <td>Problema con la red</td>
+              <td><span class="estado resuelto">Resuelto</span></td>
+              <td>15/05/2026</td>
+            </tr>
+            <tr>
+              <td>004</td>
+              <td>Bárbara Silva</td>
+              <td>Reparar el aire acondicionado lab 3</td>
+              <td><span class="estado pendiente">Pendiente</span></td>
+              <td>15/05/2026</td>
+            </tr>
+          </table>
+        </div>
+
+      </main>
+    </div>
+
+  </body>
+</html>
+

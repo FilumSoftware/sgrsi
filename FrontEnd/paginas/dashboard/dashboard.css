@@ -1,0 +1,252 @@
+/* Variables de color heredadas */
+:root {
+  --color-primario: #2b2b2b;
+  --color-secundario: #4a4a4a;
+  --color-acento: #e8735a;
+  --color-rosa: #f5f0e8;
+  --color-celeste: #8a8a8a;
+  --color-texto: #2b2b2b;
+  --color-texto-suave: #6a6a6a;
+  --color-fondo: #f5f0e8;
+  --radio-borde: 8px;
+  --sombra: 0 8px 24px rgba(43, 43, 43, 0.3);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Raleway', sans-serif;
+}
+
+.dashboard-body {
+  background-color: var(--color-fondo);
+  min-height: 100vh;
+  display: block;
+}
+
+
+.topbar {
+  background-color: var(--color-primario);
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.topbar-izquierda {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar-titulo {
+  color: var(--color-rosa);
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.topbar-derecha {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar-usuario {
+  color: var(--color-celeste);
+  font-size: 14px;
+}
+
+.btn-salir {
+  background-color: var(--color-acento);
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: var(--radio-borde);
+  text-decoration: none;
+  font-size: 13px;
+  transition: 0.3s;
+}
+
+.btn-salir:hover {
+  background-color: var(--color-secundario);
+}
+
+
+.dashboard-contenedor {
+  display: flex;
+  margin-top: 64px;
+}
+
+
+.sidebar {
+  width: 220px;
+  background-color: var(--color-secundario);
+  min-height: calc(100vh - 64px);
+  padding: 20px 0;
+  position: fixed;
+  top: 64px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-item {
+  padding: 14px 24px;
+  color: var(--color-rosa);
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sidebar-item a {
+  color: var(--color-rosa);
+  text-decoration: none;
+}
+
+.sidebar-item:hover {
+  background-color: var(--color-primario);
+  color: var(--color-acento);
+}
+
+.sidebar-item:hover a {
+  color: var(--color-acento);
+}
+
+
+.sidebar-item.activo {
+  background-color: var(--color-primario);
+  color: var(--color-acento);
+  font-weight: bold;
+  border-left: 4px solid var(--color-acento);
+}
+
+
+.dashboard-main {
+  margin-left: 220px;
+  padding: 30px;
+  flex: 1;
+}
+
+.saludo {
+  font-size: 22px;
+  color: var(--color-primario);
+  margin-bottom: 4px;
+}
+
+.saludo-sub {
+  font-size: 13px;
+  color: var(--color-texto-suave);
+  margin-bottom: 24px;
+}
+
+
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.tarjeta {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(43, 43, 43, 0.1);
+  border-top: 4px solid;
+  text-align: center;
+}
+
+.tarjeta-numero {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.tarjeta-label {
+  font-size: 13px;
+  color: var(--color-texto-suave);
+}
+
+.tarjeta-azul { border-top-color: var(--color-secundario); }
+.tarjeta-azul .tarjeta-numero { color: var(--color-secundario); }
+
+.tarjeta-lila { border-top-color: var(--color-acento); }
+.tarjeta-lila .tarjeta-numero { color: var(--color-acento); }
+
+.tarjeta-celeste { border-top-color: var(--color-celeste); }
+.tarjeta-celeste .tarjeta-numero { color: var(--color-celeste); }
+
+.tarjeta-rosa { border-top-color: var(--color-rosa); }
+.tarjeta-rosa .tarjeta-numero { color: var(--color-acento); }
+
+
+.tabla-contenedor {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(43, 43, 43, 0.1);
+}
+
+.tabla-titulo {
+  font-size: 16px;
+  color: var(--color-primario);
+  margin-bottom: 16px;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla th {
+  background-color: var(--color-primario);
+  color: var(--color-rosa);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 13px;
+}
+
+.tabla td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--color-texto);
+  border-bottom: 1px solid var(--color-fondo);
+}
+
+.tabla tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.tabla tbody tr:hover {
+  background-color: var(--color-rosa);
+}
+
+
+.estado {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.estado.pendiente {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.estado.proceso {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.estado.resuelto {
+  background-color: #d1fae5;
+  color: #065f46;
+}
