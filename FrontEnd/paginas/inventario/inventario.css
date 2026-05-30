@@ -5,6 +5,10 @@ a {
   color: inherit;
 }
 
+h1, h2 {
+    color: var(--color-texto);
+}
+
 .topbar{
     display: flex;
     background-color: var(--color-primario);
