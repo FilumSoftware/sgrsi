@@ -9,36 +9,56 @@
     <title>Inventario</title>
 </head>
 <body>
-    <header class="topbar">
+    <div class="container">
+    
         <nav class="sidebar">
-        <ul>
-          <li class="sidebar-item"><a href="inventario.html">Inventario</a></li>
-          <li class="sidebar-item"><a href="historial-uso-sala.html">Historial de uso de sala</a></li>
-          <li class="sidebar-item activo">Registro de equipos</li>
-          
-        </ul>
-      </nav>
-    </header>
-    <form>
-  <fieldset>
-    <legend>Registro de nuevo equipo</legend>
-    <label for="nombre">Nombre del equipo:</label><br>
-    <input type="text" id="nombre" name="nombre"><br><br>
+            <ul>
+                <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
+                <li class="sidebar-item activo">Inventario</li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+            </ul>
+        </nav>
     
-    <label for="categoria">Categoría:</label><br>
-    <select id="categoria" name="categoria">
-      <option value="pc-escritorio">PC escritorio</option>
-      <option value="laptop">Laptop</option>
-      <option value="proyector">Proyector</option>
-      <option value="impresora">Impresora</option>
-      <option value="otro">Otro</option>
-    </select><br><br>
+        <div class="main">
     
-    <label for="extras">Extras (opcional):</label><br>
-    <input type="text" id="extras" name="extras"><br><br>
-    
-    <input type="submit" value="Registrar equipo">
-</fieldset>
-</form>
+            <nav class="topbar-nav">
+                <ul>
+                    <li class="topbar-item"><a href="inventario.html">Inventario</a></li>
+                    <li class="topbar-item"><a href="historial-uso-sala.html">Historial de uso de sala</a></li>
+                    <li class="topbar-item activo">Registro de equipos</li>
+                </ul>
+            </nav>
+            <div class="form-container">
+            <form>
+              <fieldset>
+                <legend>Registro de nuevo equipo</legend>
+                  <div class="form-group">
+                    <label for="nombre">Nombre del equipo:</label>
+                    <input type="text" id="nombre" name="nombre">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="categoria">Categoría:</label>
+                    <select id="categoria" name="categoria">
+                      <option value="pc-escritorio">PC escritorio</option>
+                      <option value="laptop">Laptop</option>
+                      <option value="proyector">Proyector</option>
+                      <option value="impresora">Impresora</option>
+                      <option value="otro">Otro</option>
+                    </select>
+                  </div>
+                
+                  <div class="form-group">
+                    <label for="extras">Extras (opcional):</label><br>
+                    <input type="text" id="extras" name="extras"><br><br>
+                  </div>
+
+                  <input type="submit" value="Registrar equipo">
+              </fieldset>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
