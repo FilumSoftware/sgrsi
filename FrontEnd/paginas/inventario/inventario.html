@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="inventario.css">
+    <title>Inventario</title>
+</head>
+<body>
+    <header class="topbar">
+        <nav class="sidebar">
+        <ul>
+          <li class="sidebar-item activo">Inventario</li>
+          <li class="sidebar-item"><a href="historial-uso-sala.html">Historial de uso de sala</a></li>
+          <li class="sidebar-item"><a href="nuevo-equipo.html">Registro de equipos</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="modulo">
+            <h1>Inventario</h1>
+        
+            <table id="tablaEquipos">
+                <h2>Equipos</h2>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Extras</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>PC 1</td>
+                        <td>PC escritorio</td>
+                        <td>Monitor, teclado, mouse</td>
+                        <td>Funcionando</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>PC 2</td>
+                        <td>PC escritorio</td>
+                        <td>Monitor, teclado, mouse</td>
+                        <td>En reparación</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>PC 3</td>
+                        <td>Laptop</td>
+                        <td>Cargador</td>
+                        <td>Funcionando</td>
+                    </tr>
+                </tbody>
+            </table>
+        
+   </div>
+
+    <script src="../../js/inventario.js"></script>
+</body>
+</html>

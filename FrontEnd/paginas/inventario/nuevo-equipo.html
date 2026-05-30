@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="inventario.css">
+    <title>Inventario</title>
+</head>
+<body>
+    <header class="topbar">
+        <nav class="sidebar">
+        <ul>
+          <li class="sidebar-item"><a href="inventario.html">Inventario</a></li>
+          <li class="sidebar-item"><a href="historial-uso-sala.html">Historial de uso de sala</a></li>
+          <li class="sidebar-item activo">Registro de equipos</li>
+          
+        </ul>
+      </nav>
+    </header>
+    <form>
+  <fieldset>
+    <legend>Registro de nuevo equipo</legend>
+    <label for="nombre">Nombre del equipo:</label><br>
+    <input type="text" id="nombre" name="nombre"><br><br>
+    
+    <label for="categoria">Categoría:</label><br>
+    <select id="categoria" name="categoria">
+      <option value="pc-escritorio">PC escritorio</option>
+      <option value="laptop">Laptop</option>
+      <option value="proyector">Proyector</option>
+      <option value="impresora">Impresora</option>
+      <option value="otro">Otro</option>
+    </select><br><br>
+    
+    <label for="extras">Extras (opcional):</label><br>
+    <input type="text" id="extras" name="extras"><br><br>
+    
+    <input type="submit" value="Registrar equipo">
+</fieldset>
+</form>
+</body>
+</html>
