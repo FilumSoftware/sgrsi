@@ -9,66 +9,68 @@
     <title>Inventario</title>
 </head>
 <body>
-    <header class="topbar">
-        <nav class="topbar-nav">
-        <ul>
-          <li class="topbar-item activo">Inventario</li>
-          <li class="topbar-item"><a href="historial-uso-sala.html">Historial de uso de sala</a></li>
-          <li class="topbar-item"><a href="nuevo-equipo.html">Registro de equipos</a></li>
-        </ul>
-      </nav>
-    </header>
     <div class="container">
-    <nav class="sidebar">
-        <ul>
-          <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
-          <li class="sidebar-item activo">Inventario</a></li>
-          <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
-          <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
-          <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
-        </ul>
-      </nav>
-    <div class="content">
-            <h1>Inventario</h1>
-             <h2>Equipos</h2>
-            <table id="tablaEquipos">
-                
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Categoría</th>
-                        <th>Extras</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>PC 1</td>
-                        <td>PC escritorio</td>
-                        <td>Monitor, teclado, mouse</td>
-                        <td>Funcionando</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>PC 2</td>
-                        <td>PC escritorio</td>
-                        <td>Monitor, teclado, mouse</td>
-                        <td>En reparación</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>PC 3</td>
-                        <td>Laptop</td>
-                        <td>Cargador</td>
-                        <td>Funcionando</td>
-                    </tr>
-                </tbody>
-            </table>
+    
+        <nav class="sidebar">
+            <ul>
+                <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
+                <li class="sidebar-item activo">Inventario</li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+            </ul>
+        </nav>
+    
+        <div class="main">
+    
+            <nav class="topbar-nav">
+                <ul>
+                    <li class="topbar-item activo">Inventario</li>
+                    <li class="topbar-item"><a href="historial-uso-sala.html">Historial de uso de sala</a></li>
+                    <li class="topbar-item"><a href="nuevo-equipo.html">Registro de equipos</a></li>
+                </ul>
+            </nav>
+   
+            <div class="content">
+                <h1>Inventario</h1>
+                <h2>Equipos</h2>
+                <table id="tablaEquipos">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Extras</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>PC 1</td>
+                            <td>PC escritorio</td>
+                            <td>Monitor, teclado, mouse</td>
+                            <td>Funcionando</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>PC 2</td>
+                            <td>PC escritorio</td>
+                            <td>Monitor, teclado, mouse</td>
+                            <td>En reparación</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>PC 3</td>
+                            <td>Laptop</td>
+                            <td>Cargador</td>
+                            <td>Funcionando</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-   </div>
-
     <script src="../../js/inventario.js"></script>
 </body>
 </html>
