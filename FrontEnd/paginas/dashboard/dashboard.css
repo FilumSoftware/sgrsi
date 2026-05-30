@@ -1,17 +1,3 @@
-/* Variables de color heredadas */
-:root {
-  --color-primario: #2b2b2b;
-  --color-secundario: #4a4a4a;
-  --color-acento: #e8735a;
-  --color-rosa: #f5f0e8;
-  --color-celeste: #8a8a8a;
-  --color-texto: #2b2b2b;
-  --color-texto-suave: #6a6a6a;
-  --color-fondo: #f5f0e8;
-  --radio-borde: 8px;
-  --sombra: 0 8px 24px rgba(43, 43, 43, 0.3);
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -24,7 +10,6 @@
   min-height: 100vh;
   display: block;
 }
-
 
 .topbar {
   background-color: var(--color-primario);
@@ -46,7 +31,7 @@
 }
 
 .topbar-titulo {
-  color: var(--color-rosa);
+  color: var(--color-secundario);
   font-size: 15px;
   font-weight: bold;
 }
@@ -58,13 +43,13 @@
 }
 
 .topbar-usuario {
-  color: var(--color-celeste);
+  color: var(--color-primario);
   font-size: 14px;
 }
 
 .btn-salir {
   background-color: var(--color-acento);
-  color: #ffffff;
+  color: var(--color-secundario);
   padding: 6px 14px;
   border-radius: var(--radio-borde);
   text-decoration: none;
@@ -76,12 +61,10 @@
   background-color: var(--color-secundario);
 }
 
-
 .dashboard-contenedor {
   display: flex;
   margin-top: 64px;
 }
-
 
 .sidebar {
   width: 220px;
@@ -99,30 +82,29 @@
 
 .sidebar-item {
   padding: 14px 24px;
-  color: var(--color-rosa);
+  color: var(--color-texto);
   font-size: 14px;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .sidebar-item a {
-  color: var(--color-rosa);
+  color: var(--color-texto);
   text-decoration: none;
 }
 
 .sidebar-item:hover {
   background-color: var(--color-primario);
-  color: var(--color-acento);
+  color: var(--color-texto-suave);
 }
 
 .sidebar-item:hover a {
-  color: var(--color-acento);
+  color: var(--color-texto-suave);
 }
-
 
 .sidebar-item.activo {
   background-color: var(--color-primario);
-  color: var(--color-acento);
+  color: var(--color-texto-suave);
   font-weight: bold;
   border-left: 4px solid var(--color-acento);
 }
@@ -155,10 +137,10 @@
 }
 
 .tarjeta {
-  background-color: #ffffff;
+  background-color: var(--color-superficie);
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 2px 12px rgba(43, 43, 43, 0.1);
+  box-shadow: 0 2px 12px var(--color-fondo);
   border-top: 4px solid;
   text-align: center;
 }
@@ -174,24 +156,24 @@
   color: var(--color-texto-suave);
 }
 
-.tarjeta-azul { border-top-color: var(--color-secundario); }
-.tarjeta-azul .tarjeta-numero { color: var(--color-secundario); }
+.tarjeta-violeta { border-top-color: var(--color-primario); }
+.tarjeta-violeta .tarjeta-numero { color: var(--color-primario); }
 
-.tarjeta-lila { border-top-color: var(--color-acento); }
-.tarjeta-lila .tarjeta-numero { color: var(--color-acento); }
+.tarjeta-lila { border-top-color: var(--color-secundario); }
+.tarjeta-lila .tarjeta-numero { color: var(--color-secundario); }
 
-.tarjeta-celeste { border-top-color: var(--color-celeste); }
-.tarjeta-celeste .tarjeta-numero { color: var(--color-celeste); }
+.tarjeta-naranja { border-top-color: var(--color-acento); }
+.tarjeta-naranja .tarjeta-numero { color: var(--color-acento); }
 
-.tarjeta-rosa { border-top-color: var(--color-rosa); }
-.tarjeta-rosa .tarjeta-numero { color: var(--color-acento); }
+.tarjeta-bordo { border-top-color: var(--color-texto-suave); }
+.tarjeta-bordo .tarjeta-numero { color: var(--color-texto-suave); }
 
 
 .tabla-contenedor {
-  background-color: #ffffff;
+  background-color: var(--color-superficie);
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 2px 12px rgba(43, 43, 43, 0.1);
+  box-shadow: 0 2px 12px var(--color-fondo);
 }
 
 .tabla-titulo {
@@ -207,7 +189,7 @@
 
 .tabla th {
   background-color: var(--color-primario);
-  color: var(--color-rosa);
+  color: var(--color-texto);
   padding: 12px 16px;
   text-align: left;
   font-size: 13px;
@@ -221,13 +203,12 @@
 }
 
 .tabla tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: var(--color-fondo);
 }
 
 .tabla tbody tr:hover {
-  background-color: var(--color-rosa);
+  background-color: var(--color-primario);
 }
-
 
 .estado {
   padding: 4px 10px;
@@ -237,16 +218,16 @@
 }
 
 .estado.pendiente {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: var(--color-acento-2);
+  color: var(--color-texto-suave);
 }
 
 .estado.proceso {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: var(--color-acento);
+  color: var(--color-texto-suave);
 }
 
 .estado.resuelto {
-  background-color: #d1fae5;
-  color: #065f46;
+  background-color: var(--color-primario);
+  color: var(--color-texto-suave);
 }
