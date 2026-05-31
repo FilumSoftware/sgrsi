@@ -2,21 +2,11 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <link rel="stylesheet" href="../../main.css">
+        <link rel="stylesheet" href="../../css/main.css">
         <link rel="stylesheet" href="nuevo-ticket.css">
 
     </head>
     <body>
-        <header>
-            <div class="topbar-izquierda">
-        <h2 class="topbar-titulo">SGRSI</h2>
-      </div>
-      <div class="topbar-derecha">
-        <a href="../../index.html" class="btn-salir">Cerrar sesión</a>
-      </div>
-
-
-        </header>
 
          <nav class="sidebar">
             <ul>
@@ -28,7 +18,7 @@
             </ul>
         </nav>
 
-        
+        <main>
          <nav class="topbar-nav">
                 <ul>
                     <li class="topbar-item activo">Inventario</li>
@@ -36,7 +26,7 @@
                     <li class="topbar-item"><a href="nuevo-equipo.html">Registro de equipos</a></li>
                 </ul>
                 <div class="topbar-logo">
-                    <img src="../../img/logo.png" alt="Logo SGRSI">
+                    <img src="../../img/logoFilumsinfondo.png" alt="Logo SGRSI">
                     <span>SGRSI</span>
                 </div>
             </nav>
@@ -92,10 +82,12 @@
             <label for="num-equipo1">1</label>
             <input type="text" name="nombre-apellido-alumno" id="nom-ape" value="nombre y apellido">
             <input type="text" name="estado-equipo" id="est-equipo" value="estado del equipo">
-            <label for="num-equipo1">1</label>
+            <br>
+            <label for="num-equipo1">2</label>
             <input type="text" name="nombre-apellido-alumno" id="nom-ape" value="nombre y apellido">
             <input type="text" name="estado-equipo" id="est-equipo" value="estado del equipo">
-            <label for="num-equipo1">1</label>
+            <br>
+            <label for="num-equipo1">3</label>
             <input type="text" name="nombre-apellido-alumno" id="nom-ape" value="nombre y apellido">
             <input type="text" name="estado-equipo" id="est-equipo" value="estado del equipo">
             <br>
@@ -103,9 +95,9 @@
             <label for="notas">Notas</label>
             <input type="text" name="notas" id="notas" value="notas">
             <br>
-            <button type="submit">Enviar</button>
+            <button type="submit" id="btn-enviar">Enviar</button>
 
         </form>
-
+</main>
     </body>
 </html>
