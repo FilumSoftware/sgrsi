@@ -2,6 +2,9 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <link rel="stylesheet" href="../../main.css">
+        <link rel="stylesheet" href="nuevo-ticket.css">
+
     </head>
     <body>
         <header>
@@ -11,7 +14,32 @@
       <div class="topbar-derecha">
         <a href="../../index.html" class="btn-salir">Cerrar sesión</a>
       </div>
+
+
         </header>
+
+         <nav class="sidebar">
+            <ul>
+                <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
+                <li class="sidebar-item activo">Inventario</li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+            </ul>
+        </nav>
+
+        
+         <nav class="topbar-nav">
+                <ul>
+                    <li class="topbar-item activo">Inventario</li>
+                    <li class="topbar-item"><a href="historial-uso-sala.html">Historial de uso de sala</a></li>
+                    <li class="topbar-item"><a href="nuevo-equipo.html">Registro de equipos</a></li>
+                </ul>
+                <div class="topbar-logo">
+                    <img src="../../img/logo.png" alt="Logo SGRSI">
+                    <span>SGRSI</span>
+                </div>
+            </nav>
         <h1>PLANILLA DE REGISTRO DE USO DE LA SALA DE INFORMÁTICA</h1>
         <form action="" method="post">
             <label for="fecha">Fecha</label>
@@ -61,6 +89,12 @@
             <label for="dato-alumno">Nombre y apellido</label>
             <label for="estado">Estado del equipo</label>
             <br>
+            <label for="num-equipo1">1</label>
+            <input type="text" name="nombre-apellido-alumno" id="nom-ape" value="nombre y apellido">
+            <input type="text" name="estado-equipo" id="est-equipo" value="estado del equipo">
+            <label for="num-equipo1">1</label>
+            <input type="text" name="nombre-apellido-alumno" id="nom-ape" value="nombre y apellido">
+            <input type="text" name="estado-equipo" id="est-equipo" value="estado del equipo">
             <label for="num-equipo1">1</label>
             <input type="text" name="nombre-apellido-alumno" id="nom-ape" value="nombre y apellido">
             <input type="text" name="estado-equipo" id="est-equipo" value="estado del equipo">
