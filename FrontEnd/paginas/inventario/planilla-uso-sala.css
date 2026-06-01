@@ -10,7 +10,7 @@ h1, h2 {
 }
 
 /* Layout principal */
-.container {
+body {
     display: flex;
     min-height: 100vh;
 }
@@ -160,7 +160,7 @@ input[type="submit"]:hover {
     background-color: var(--color-acento);
 }
 
-.acciones {
+.btn-enviar {
     display: flex;
     gap: 8px;
 }
@@ -174,12 +174,12 @@ input[type="submit"]:hover {
     transition: background-color 0.3s;
 }
 
-.btn-envair {
+.btn-enviar {
     background-color: var(--color-primario);
     color: var(--color-secundario);
 }
 
-.btn-enviar:hover {
+.btn-enviar {
     background-color: var(--color-secundario);
     color: var(--color-fondo);
 }

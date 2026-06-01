@@ -7,7 +7,28 @@
             <link rel="stylesheet" href="planilla-uso-sala.css">
     </head>
     <body>
-       
+        <nav class="sidebar">
+            <ul>
+                <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
+                <li class="sidebar-item activo">Inventario</li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+            </ul>
+        </nav>
+
+        <main>
+        <nav class="topbar-nav">
+                <ul>
+                    <li class="topbar-item activo">Inventario</li>
+                    <li class="topbar-item"><a href="historial-uso-sala.html">Historial de uso de sala</a></li>
+                    <li class="topbar-item"><a href="nuevo-equipo.html">Registro de equipos</a></li>
+                </ul>
+                <div class="topbar-logo">
+                    <img src="../../img/logoFilumsinfondo.png" alt="Logo SGRSI">
+                    <span>SGRSI</span>
+                </div>
+            </nav>
         <h1>PLANILLA DE REGISTRO DE USO DE LA SALA DE INFORMÁTICA</h1>
         <form action="" method="post">
             <div class="campo">
@@ -74,6 +95,6 @@
             <button type="submit" id="btn-enviar">Enviar</button>
 
         </form>
-
+        </main>
     </body>
 </html>
