@@ -15,60 +15,6 @@ h1, h2 {
     min-height: 100vh;
 }
 
-
-/* Topbar */
-.topbar-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: var(--color-primario);
-    padding: 10px;
-    width: 100%;
-}
-
-.topbar-logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.topbar-logo img {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
-}
-
-.topbar-logo span {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--color-secundario);
-}
-
-.topbar-nav ul {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    list-style: none;
-}
-
-.topbar-item {
-    cursor: pointer;
-    padding: 8px 14px;
-    border-radius: 5px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.topbar-item.activo {
-    background-color: var(--color-secundario);
-    color: var(--color-fondo);
-}
-
-.topbar-item:hover {
-    background-color: var(--color-secundario);
-    color: var(--color-fondo);
-}
-
-/* Contenido */
 .content {
     padding: 20px;
 }
