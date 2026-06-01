@@ -73,25 +73,7 @@ form {
     padding: 20px;
 }
 
-/* Tabla */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 12px;
-}
-
-th, td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid var(--color-secundario);
-}
-
-th {
-    background-color: var(--color-primario);
-    color: var(--color-texto);
-}
-
-.form-container {
+  form {
     max-width: 480px;
     margin: 32px auto;
     background-color: #fff;
@@ -100,87 +82,115 @@ th {
     padding: 32px;
 }
 
-fieldset {
-    border: none;
-    padding: 0;
+      /* Grupo de campo: label + input juntos */
+      .campo {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 6px;
+      }
+
+      /* Todos los campos de texto */
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      input[type="number"],
+      input[type="date"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #CCCCCC;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 15px;
+        background-color: #FAFAFA;
+        box-sizing: border-box;
+      }
+
+      /* Campo activo */
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #1A1A2E;
+        background-color: #FFFFFF;
+      }
+
+      /* Fieldset para radio y checkbox */
+      fieldset {
+        border: 1px solid #CCCCCC;
+        border-radius: 4px;
+        padding: 14px 16px;
+        margin-bottom: 20px;
+      }
+
+      legend {
+        font-size: 14px;
+        font-weight: bold;
+        padding: 0 6px;
+      }
+
+      .opcion {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+        font-size: 15px;
+      }
+
+      /* Checkbox suelto */
+      .checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 24px;
+        font-size: 14px;
+      }
+
+      /* Botón */
+      button[type="submit"] {
+        width: 100%;
+        padding: 14px;
+        background-color: #1A1A2E;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #2E3A5C;
+      }
+
+      #campo-unido {
+    display: grid;
+    grid-template-columns: 60px 1fr 1fr;
+    gap: 0 12px;
+    margin-bottom: 6px;
 }
 
-legend {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--color-secundario);
-    margin-bottom: 24px;
-}
-
-.form-grupo {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 20px;
-}
-
-label {
+#campo-unido label {
     font-size: 14px;
-    font-weight: 500;
-    color: var(--color-texto);
+    font-weight: bold;
 }
 
-input[type="text"],
-select {
-    padding: 10px 12px;
-    border: 1px solid var(--color-primario);
-    border-radius: var(--borde-radius);
-    font-size: 14px;
-    font-family: var(--fuente-principal);
-    background-color: var(--color-fondo);
-    color: var(--color-texto);
-    transition: border-color 0.3s;
+#campo {
+    display: grid;
+    grid-template-columns: 60px 1fr 1fr;
+    gap: 8px 12px;
+    align-items: center;
+    margin-bottom: 8px;
 }
 
-input[type="text"]:focus,
-select:focus {
-    outline: none;
-    border-color: var(--color-secundario);
-}
-
-input[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--color-secundario);
-    color: var(--color-fondo);
-    border: none;
-    border-radius: var(--borde-radius);
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-input[type="submit"]:hover {
-    background-color: var(--color-acento);
-}
-
-.btn-enviar {
-    display: flex;
-    gap: 8px;
-}
-
-.btn-enviar {
-    padding: 6px 12px;
-    border: none;
-    border-radius: var(--borde-radius);
-    cursor: pointer;
-    font-size: 13px;
-    transition: background-color 0.3s;
-}
-
-.btn-enviar {
-    background-color: var(--color-primario);
-    color: var(--color-secundario);
-}
-
-.btn-enviar {
-    background-color: var(--color-secundario);
-    color: var(--color-fondo);
+#campo label {
+    text-align: center;
+    font-weight: bold;
 }
 
