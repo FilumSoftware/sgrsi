@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="../../css/main.css">
+        <link rel="stylesheet" href="nuevo-ticket.css">
+
+    </head>
+    <body>
+
+         <nav class="sidebar">
+            <ul>
+                <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
+                <li class="sidebar-item activo">Inventario</li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+            </ul>
+        </nav>
+
+        <main>
+         <nav class="topbar-nav">
+                <ul>
+                    <li class="topbar-item activo">Inventario</li>
+                    <li class="topbar-item"><a href="historial-uso-sala.html">Historial de uso de sala</a></li>
+                    <li class="topbar-item"><a href="nuevo-equipo.html">Registro de equipos</a></li>
+                </ul>
+                <div class="topbar-logo">
+                    <img src="../../img/logoFilumsinfondo.png" alt="Logo SGRSI">
+                    <span>SGRSI</span>
+                </div>
+            </nav>
+        <h1>PLANILLA DE REGISTRO DE USO DE LA SALA DE INFORMÁTICA</h1>
+        <form action="" method="post">
+            <label for="fecha">Fecha</label>
+            <input type="text" id="fecha" name="fecha" placeholder="DD/MM/AAAA" required>
+            <label for="hora-entrada">hora entrada</label>
+            <input type="text" id="hora-entrada" name="hora-entrada" placeholder="Ej:18:30" required>
+            <label for="hora-salida">Hora salida</label>
+            <input type="text" id="hora-salida" name="hora-salida" placeholder="Ej:21:05" required>
+            <br>
+            <fieldset>
+                <legend>Salón</legend>
+                <div class="opt-salon">
+                    <input type="radio" id="lab-1" name="salon" value="laboratorio 1">
+                    <label for="lab-1">Laboratorio 1</label>
+                </div>
+                <div class="opt-salon">
+                    <input type="radio" id="lab-2" name="salon" value="laboratorio 2">
+                    <label for="lab-2">Laboratorio 2</label>
+                </div>
+                <div class="opt-salon">
+                    <input type="radio" id="lab-3" name="salon" value="laboratorio 3">
+                    <label for="lab-3">Laboratorio 3</label>
+                </div>
+                <div class="opt-salon">
+                    <input type="radio" id="lab-4" name="salon" value="labratorio 4">
+                    <label for="lab-4">Laboratorio 4</label>
+                </div>
+                <div>
+                    <input type="radio" id="lab-5" name="salon" value="laboratorio 5">
+                    <label for="lab-5">Laboratorio 5</label>
+                </div>
+                <div>
+                    <input type="radio" id="tal-1" name="salon" value="taller 1">
+                    <label for="tal-1">Taller 1</label>
+                </div>
+                <div>
+                    <input type="radio" id="tal-2" name="salon" value="taller 2">
+                    <label for="tal-2">Taller 2</label>
+                </div>
+                <div>
+                    <input type="radio" id="tal-3" name="salon" value="taller 3">
+                    <label for="tal-3">Taller 3</label>
+                </div>
+            </fieldset>
+
+            <label for="num-equipo">N° de equipo</label>
+            <label for="dato-alumno">Nombre y apellido</label>
+            <label for="estado">Estado del equipo</label>
+            <br>
+            <label for="num-equipo1">1</label>
+            <input type="text" name="nombre-apellido-alumno" id="nom-ape" value="nombre y apellido">
+            <input type="text" name="estado-equipo" id="est-equipo" value="estado del equipo">
+            <br>
+            <label for="num-equipo1">2</label>
+            <input type="text" name="nombre-apellido-alumno" id="nom-ape" value="nombre y apellido">
+            <input type="text" name="estado-equipo" id="est-equipo" value="estado del equipo">
+            <br>
+            <label for="num-equipo1">3</label>
+            <input type="text" name="nombre-apellido-alumno" id="nom-ape" value="nombre y apellido">
+            <input type="text" name="estado-equipo" id="est-equipo" value="estado del equipo">
+            <br>
+
+            <label for="notas">Notas</label>
+            <input type="text" name="notas" id="notas" value="notas">
+            <br>
+            <button type="submit" id="btn-enviar">Enviar</button>
+
+        </form>
+</main>
+    </body>
+</html>

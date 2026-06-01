@@ -6,7 +6,7 @@
 }
 
 body {
-  background-color: #451952;
+  background-color: var(--color-fondo);
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -16,11 +16,11 @@ body {
 /* Formulario */
 
 .login-box {
-  background-color: var(--color-rosa);
+  background-color: var(--color-superficie);
   padding: 40px;
   border-radius: 16px;
   width: 420px;
-  box-shadow: var(--sombra);
+  box-shadow: var(--color-acento-2) 0px 4px 12px;
   text-align: center;
 }
 
@@ -51,9 +51,9 @@ body {
 .rol {
   flex: 1;
   padding: 10px 6px;
-  border: 2px solid var(--color-celeste);
+  border: 2px solid var(--color-secundario);
   border-radius: var(--radio-borde);
-  background-color: var(--color-rosa);
+  background-color: var(--color-superficie);
   cursor: pointer;
   font-size: 12px;
   color: var(--color-texto);
@@ -88,18 +88,18 @@ input {
   width: 100%;
   padding: 12px;
   margin-bottom: 16px;
-  border: 1px solid var(--color-celeste);
+  border: 1px solid var(--color-secundario);
   border-radius: var(--radio-borde);
   font-size: 14px;
   color: var(--color-texto);
-  background-color: #ffffff;
+  background-color: var(--color-fondo)
 }
 
 
 input:focus {
   outline: none;
   border-color: var(--color-acento);
-  box-shadow: 0 0 0 3px rgba(232, 115, 90, 0.25);
+  box-shadow: 0 0 0 3px var(--color-acento-2);
 }
 
 
@@ -107,7 +107,7 @@ input:focus {
   width: 100%;
   padding: 13px;
   background-color: var(--color-secundario);
-  color: #ffffff;
+  color: var(--color-texto);
   border: none;
   border-radius: var(--radio-borde);
   font-size: 15px;
@@ -140,6 +140,6 @@ input:focus {
 /* Pie de página */
 .pie {
   font-size: 11px;
-  color: var(--color-rosa);
+  color: var(--color-texto-suave);
   margin-top: 20px;
 }
