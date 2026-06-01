@@ -22,7 +22,7 @@ form {
   form {
     max-width: 480px;
     margin: 32px auto;
-    background-color: #fff;
+    background-color: var(--color-primario);
     border-radius: var(--borde-radius);
     box-shadow: var(--sombra);
     padding: 32px;
@@ -50,11 +50,11 @@ form {
       select {
         width: 100%;
         padding: 10px 14px;
-        border: 1px solid #CCCCCC;
+        border: 1px solid var(--borde-radius);
         border-radius: 4px;
         font-family: inherit;
         font-size: 15px;
-        background-color: #FAFAFA;
+        background-color: var(--color-fondo);
         box-sizing: border-box;
       }
 
@@ -63,13 +63,13 @@ form {
       textarea:focus,
       select:focus {
         outline: none;
-        border-color: #1A1A2E;
-        background-color: #FFFFFF;
+        border-color: var(--sombra);
+        background-color: var(--color-fondo);
       }
 
       /* Fieldset para radio y checkbox */
       fieldset {
-        border: 1px solid #CCCCCC;
+        border: 1px solid var(--borde-radius);
         border-radius: 4px;
         padding: 14px 16px;
         margin-bottom: 20px;
@@ -102,8 +102,8 @@ form {
       button[type="submit"] {
         width: 100%;
         padding: 14px;
-        background-color: #1A1A2E;
-        color: #FFFFFF;
+        background-color: var(--color-texto-suave);
+        color: var(--color-acento);
         border: none;
         border-radius: 4px;
         font-size: 16px;
@@ -112,7 +112,7 @@ form {
       }
 
       button[type="submit"]:hover {
-        background-color: #2E3A5C;
+        background-color: var(--color-secundario);
       }
 
       #campo-unido {
