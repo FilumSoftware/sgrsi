@@ -14,13 +14,11 @@ h1, h2 {
     min-height: 100vh;
 }
 
-
 /* Contenido */
 form {
     padding: 20px;
 }
 
-/*Base del formulario*/
   form {
     max-width: 480px;
     margin: 32px auto;
@@ -29,73 +27,6 @@ form {
     box-shadow: var(--sombra);
     padding: 32px;
 }
-
-/*Componentes del formulario*/
-
-  /* Fieldset para radio y checkbox */
-      fieldset {
-        border: 1px solid var(--borde-radius);
-        border-radius: 4px;
-        padding: 14px 16px;
-        margin-bottom: 20px;
-      }
-      
- legend {
-        font-size: 14px;
-        font-weight: bold;
-        padding: 0 6px;
-      }
-
-.form-grupo {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 20px;
-}
-
-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--color-texto);
-}
-
-input[type="text"],
-select {
-    padding: 10px 12px;
-    border: 1px solid var(--color-primario);
-    border-radius: var(--borde-radius);
-    font-size: 14px;
-    font-family: var(--fuente-principal);
-    background-color: var(--color-fondo);
-    color: var(--color-texto);
-    transition: border-color 0.3s;
-}
-
-input[type="text"]:focus,
-select:focus {
-    outline: none;
-    border-color: var(--color-secundario);
-}
-
-input[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--color-secundario);
-    color: var(--color-fondo);
-    border: none;
-    border-radius: var(--borde-radius);
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-input[type="submit"]:hover {
-    background-color: var(--color-acento);
-}
-
-
-/*agregado */
 
       /* Grupo de campo: label + input juntos */
       .campo {
@@ -127,24 +58,47 @@ input[type="submit"]:hover {
         box-sizing: border-box;
       }
 
-  /* Todos los campos de texto */
-      input[type="text"],
-      input[type="email"],
-      input[type="tel"],
-      input[type="number"],
-      input[type="date"],
-      textarea,
-      select {
-        width: 100%;
-        padding: 10px 14px;
+      /* Campo activo */
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--sombra);
+        background-color: var(--color-fondo);
+      }
+
+      /* Fieldset para radio y checkbox */
+      fieldset {
         border: 1px solid var(--borde-radius);
         border-radius: 4px;
-        font-family: inherit;
-        font-size: 15px;
-        background-color: var(--color-fondo);
-        box-sizing: border-box;
+        padding: 14px 16px;
+        margin-bottom: 20px;
       }
-  /* Botón */
+
+      legend {
+        font-size: 14px;
+        font-weight: bold;
+        padding: 0 6px;
+      }
+
+      .opcion {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+        font-size: 15px;
+      }
+
+      /* Checkbox suelto */
+      .checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 24px;
+        font-size: 14px;
+      }
+
+      /* Botón */
       button[type="submit"] {
         width: 100%;
         padding: 14px;
@@ -156,7 +110,12 @@ input[type="submit"]:hover {
         font-weight: bold;
         cursor: pointer;
       }
-  #campo-unido {
+
+      button[type="submit"]:hover {
+        background-color: var(--color-secundario);
+      }
+
+      #campo-unido {
     display: grid;
     grid-template-columns: 60px 1fr 1fr;
     gap: 0 12px;
@@ -180,4 +139,3 @@ input[type="submit"]:hover {
     text-align: center;
     font-weight: bold;
 }
-
