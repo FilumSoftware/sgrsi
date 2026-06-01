@@ -1,37 +1,43 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="../../css/main.css">
-        <link rel="stylesheet" href="nuevo-ticket.css">
-
-    </head>
-    <body>
-
-         <nav class="sidebar">
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="mesa-de-ayuda.css">
+    <title>Mesa de Ayuda</title>
+</head>
+<body>
+    <div class="container">
+    
+        <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
-                <li class="sidebar-item activo">Inventario</li>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informatica</a></li>
+                <li class="sidebar-item"><a href="../inventario/inventario.html">Inventario</a></li>
+                <li class="sidebar-item activo">Mesa de Ayuda</li>
                 <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
                 <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
             </ul>
         </nav>
-
-        <main>
-         <nav class="topbar-nav">
+    
+        <main class="main">
+    
+            <nav class="topbar-nav">
                 <ul>
-                    <li class="topbar-item activo">Inventario</li>
-                    <li class="topbar-item"><a href="historial-uso-sala.html">Historial de uso de sala</a></li>
-                    <li class="topbar-item"><a href="nuevo-equipo.html">Registro de equipos</a></li>
+                    <li class="topbar-item"><a href="mesa-de-ayuda.html">Historial de tickets</a></li>
+                    <li class="topbar-item activo">Nuevo ticket</li>
                 </ul>
                 <div class="topbar-logo">
-                    <img src="../../img/logoFilumsinfondo.png" alt="Logo SGRSI">
+                    <img src="../../img/logo.png" alt="Logo SGRSI">
                     <span>SGRSI</span>
                 </div>
             </nav>
-        <h1>PLANILLA DE TICKET</h1>
-        <form action="" method="post">
+
+
+            <h1>PLANILLA DE TICKET</h1>
+            <form action="" method="post">
             <div class="campo">
             <label for="fecha">Fecha</label>
             <input type="text" id="fecha" name="fecha" placeholder="DD/MM/AAAA" required>
@@ -90,7 +96,8 @@
             
             <button type="submit" id="btn-enviar">Enviar</button>
 
-        </form>
-</main>
-    </body>
+            </form>
+        </main>
+    </div>
+</body>
 </html>

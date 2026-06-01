@@ -1,0 +1,141 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+h1, h2 {
+    color: var(--color-texto);
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Contenido */
+form {
+    padding: 20px;
+}
+
+  form {
+    max-width: 480px;
+    margin: 32px auto;
+    background-color: #fff;
+    border-radius: var(--borde-radius);
+    box-shadow: var(--sombra);
+    padding: 32px;
+}
+
+      /* Grupo de campo: label + input juntos */
+      .campo {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 6px;
+      }
+
+      /* Todos los campos de texto */
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      input[type="number"],
+      input[type="date"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #CCCCCC;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 15px;
+        background-color: #FAFAFA;
+        box-sizing: border-box;
+      }
+
+      /* Campo activo */
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #1A1A2E;
+        background-color: #FFFFFF;
+      }
+
+      /* Fieldset para radio y checkbox */
+      fieldset {
+        border: 1px solid #CCCCCC;
+        border-radius: 4px;
+        padding: 14px 16px;
+        margin-bottom: 20px;
+      }
+
+      legend {
+        font-size: 14px;
+        font-weight: bold;
+        padding: 0 6px;
+      }
+
+      .opcion {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+        font-size: 15px;
+      }
+
+      /* Checkbox suelto */
+      .checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 24px;
+        font-size: 14px;
+      }
+
+      /* Botón */
+      button[type="submit"] {
+        width: 100%;
+        padding: 14px;
+        background-color: #1A1A2E;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #2E3A5C;
+      }
+
+      #campo-unido {
+    display: grid;
+    grid-template-columns: 60px 1fr 1fr;
+    gap: 0 12px;
+    margin-bottom: 6px;
+}
+
+#campo-unido label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#campo {
+    display: grid;
+    grid-template-columns: 60px 1fr 1fr;
+    gap: 8px 12px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#campo label {
+    text-align: center;
+    font-weight: bold;
+}
