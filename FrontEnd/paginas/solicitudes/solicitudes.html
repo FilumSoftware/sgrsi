@@ -23,7 +23,7 @@
         </nav>
     
         <main class="main">
-    
+ 
             <nav class="topbar-nav">
                 <ul>
                     <li class="topbar-item"><a href="nueva-solicitud.html">Nueva solicitud</a></li>
@@ -36,8 +36,96 @@
                 </div>
             </nav>
 
-                /* Cuerpo de la página */
-
+            <div class="content">
+                <h1>Tickets</h1>
+                <table id="tablaTickets">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Salón</th>
+                            <th>Motivo</th>
+                            <th>Estado</th>
+                            <th>Prioridad</th>
+                            <th>Solicitante</th>
+                            <th>Responsable</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>2026-06-01</td>
+                            <td>Laboratorio 1</td>
+                            <td>PC no enciende</td>
+                            <td>Pendiente</td>
+                            <td>Alta</td>
+                            <td>Juan Pérez</td>
+                            <td>—</td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(1)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(1)">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>2026-06-02</td>
+                            <td>Taller 2</td>
+                            <td>Proyector sin señal</td>
+                            <td>Finalizada</td>
+                            <td>Media</td>
+                            <td>María García</td>
+                            <td>Carlos López</td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(2)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(2)">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>2026-06-03</td>
+                            <td>Laboratorio 3</td>
+                            <td>Red sin conexión en varios equipos</td>
+                            <td>Pendiente</td>
+                            <td>Alta</td>
+                            <td>Ana Rodríguez</td>
+                            <td>Carlos López</td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(3)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(3)">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>2026-06-04</td>
+                            <td>Depósito</td>
+                            <td>Falta inventariar equipos nuevos</td>
+                            <td>Rechazada</td>
+                            <td>Baja</td>
+                            <td>Luis Martínez</td>
+                            <td>—</td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(4)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(4)">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>2026-06-05</td>
+                            <td>Taller 1</td>
+                            <td>Teclado roto en PC 7</td>
+                            <td>Pendiente</td>
+                            <td>Baja</td>
+                            <td>Juan Pérez</td>
+                            <td>—</td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(5)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(5)">Eliminar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </main>
     </div>

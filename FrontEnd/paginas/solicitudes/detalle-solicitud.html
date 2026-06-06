@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="solicitudes.css">
+    <title>Solicitudes</title>
+</head>
+<body>
+    <div class="container">
+    
+        <nav class="sidebar">
+            <ul>
+                <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
+                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informatica</a></li>
+                <li class="sidebar-item"><a href="../inventario/inventario.html">Inventario</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item activo">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+            </ul>
+        </nav>
+    
+        <main class="main">
+    
+            <nav class="topbar-nav">
+                <ul>
+                    <li class="topbar-item activo">Nueva solicitud</li>
+                    <li class="topbar-item"><a href="solicitudes.html">Listado solicitudes</a></li>
+                </ul>
+                <div class="topbar-logo">
+                    <img src="../../img/logo.png" alt="Logo SGRSI">
+                    <span>SGRSI</span>
+                </div>
+            </nav>
+
+                <div class="form-container">
+                <form>
+                    <fieldset>
+                    <legend>Detalle Solicitud</legend>
+                
+                <div class="form-group">
+                    <label for="estado">Estado:</label>
+                    <select id="estado" name="estado">
+                        <option value="pendiente">Pendiente</option>
+                        <option value="finalizada">Finalizada</option>
+                        <option value="rechazada">Rechazada</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="prioridad">Prioridad:</label>
+                    <select id="prioridad" name="prioridad">
+                        <option value="baja">Baja</option>
+                        <option value="media">Media</option>
+                        <option value="alta">Alta</option>
+                    </select>
+                </div>
+                
+                <!-- el solicitante se autocompleta cuando se crea el ticket-->
+                <div class="form-group">
+                    <label for="solicitante-display">Solicitante:</label>
+                    <input type="text" id="solicitante-display" readonly placeholder="Cargando...">
+                    <input type="hidden" id="solicitante" name="solicitante" value="">
+                </div>
+
+                <!-- en el caso del usuario admin, el responsable se elije de un dropdown que viene del backend-->
+                <div class="form-group">
+                    <label for="responsable">Responsable:</label>
+                    <select id="responsable" name="responsable">
+                        <option value="">— Seleccionar técnico —</option>
+                        <!-- acá va el backend -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fecha">Fecha:</label>
+                    <input type="date" id="fecha" name="fecha">
+                </div>
+                <div for="salon" class="form-group">
+                    <label for="salon">Salón:</label>
+                    <select id="salon" name="salon">
+                      <option value="laboratorio-1">Laboratorio 1</option>
+                      <option value="laboratorio-2">Laboratorio 1</option>
+                      <option value="laboratorio-3">Laboratorio 1</option>
+                      <option value="laboratorio-4">Laboratorio 1</option>
+                      <option value="laboratorio-5">Laboratorio 1</option>
+                      <option value="laboratorio-6">Laboratorio 1</option>
+                      <option value="taller-1">Taller 1</option>
+                      <option value="taller-2">Taller 2</option>
+                      <option value="taller-3">Taller 3</option>
+                      <option value="deposito">Depósito</option>
+                    </select>
+                </div>  
+                <div class="form-group">
+                    <label for="motivo">Motivo:</label><br>
+                    <textarea id="motivo" name="motivo" rows="4" cols="50"></textarea><br><br>
+                </div>
+                  
+                  <input type="submit" value="Guardar solicitud">
+              </fieldset>
+            </form>
+            </div>
+
+        </main>
+    </div>
+    <script src="../../js/solicitudes.js"></script>
+</body>
+</html>

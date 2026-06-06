@@ -35,7 +35,38 @@
                 </div>
             </nav>
 
-                /* Cuerpo de la página */
+                <div class="form-container">
+                <form>
+                    <fieldset>
+                    <legend>Nueva Solicitud</legend>
+                <div class="form-group">
+                    <label for="fecha">Fecha:</label>
+                    <input type="date" id="fecha" name="fecha">
+                </div>
+                <div class="form-group">
+                    <label for="salon">Salón:</label>
+                    <select id="salon" name="salon">
+                      <option value="laboratorio-1">Laboratorio 1</option>
+                      <option value="laboratorio-2">Laboratorio 1</option>
+                      <option value="laboratorio-3">Laboratorio 1</option>
+                      <option value="laboratorio-4">Laboratorio 1</option>
+                      <option value="laboratorio-5">Laboratorio 1</option>
+                      <option value="laboratorio-6">Laboratorio 1</option>
+                      <option value="taller-1">Taller 1</option>
+                      <option value="taller-2">Taller 2</option>
+                      <option value="taller-3">Taller 3</option>
+                      <option value="deposito">Depósito</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="motivo">Motivo:</label><br>
+                    <textarea id="motivo" name="motivo" rows="4" cols="50"></textarea><br><br>
+                </div>    
+
+                <input type="submit" value="Enviar solicitud">
+              </fieldset>
+            </form>
+            </div>
 
         </main>
     </div>
