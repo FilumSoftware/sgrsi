@@ -15,10 +15,10 @@
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
                 <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informatica</a></li>
-                <li class="sidebar-item"><a href="../inventario/inventario.html">Inventario</a></li>
+                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
                 <li class="sidebar-item activo">Mesa de Ayuda</li>
-                <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
-                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
             </ul>
         </nav>
     
@@ -26,8 +26,8 @@
     
             <nav class="topbar-nav">
                 <ul>
-                    <li class="topbar-item"><a href="mesa-de-ayuda.html">Historial de tickets</a></li>
                     <li class="topbar-item activo">Nuevo ticket</li>
+                    <li class="topbar-item"><a href="mesa-de-ayuda.html">Historial de tickets</a></li>
                 </ul>
                 <div class="topbar-logo">
                     <img src="../../img/logo.png" alt="Logo SGRSI">
@@ -35,55 +35,49 @@
                 </div>
             </nav>
 
- <div class="form-container">
-            <h1>PLANILLA DE TICKET</h1>
-            <form action="" method="post">
-            <div class="campo">
-            <label for="fecha">Fecha</label>
+            <div class="form-container">
+                <form action="" method="post">
+                    <div class="form-grupo">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" name="fecha" id="fecha" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="hora">Hora</label>
+                        <input type="time" name="hora" id="hora" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="salon">Salon</label>
+                        <select name="salon" id="salon">
+                            <option value="">Elija una opción</option>
+                            <option value="lab-1">Laboratorio 1</option>
+                            <option value="lab-2">Laboratorio 2</option>
+                            <option value="lab-3">Laboratorio 3</option>
+                            <option value="lab-4">Laboratorio 4</option>
+                            <option value="lab-5">Laboratorio 5</option>
+                            <option value="tal-1">Taller 1</option>
+                            <option value="tal-2">Taller 2</option>
+                            <option value="tal-3">Taller 3</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="salon">Equipo</label>
+                        <select name="salon" id="salon">
+                            <option value="">Elija una opción</option>
+                            <option value="equipo-1">Equipo 1</option>
+                            <option value="equipo-2">Equipo 2</option>
+                            <option value="equipo-3">Equipo 3</option>
+                            <option value="equipo-4">Equipo 4</option>
+                            <option value="equipo-5">Equipo 5</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="motivo">Motivo</label>
+                        <textarea name="motivo" id="motivo" rows="5" placeholder="Esriba el motivo..." required></textarea>
+                    </div>
             
-            </div>
-            <div class="campo">
-                <label for="hora">Hora</label>
-            </div>
-            
-            
-             <div class="campo">
-                <label for="salon">Salon</label>
-            <select name="salon" id="salon">
-                <option value="">Elija una opción</option>
-                <option value="lab-1">Laboratorio 1</option>
-                <option value="lab-2">Laboratorio 2</option>
-                <option value="lab-3">Laboratorio 3</option>
-                <option value="lab-4">Laboratorio 4</option>
-                <option value="lab-5">Laboratorio 5</option>
-                <option value="tal-1">Taller 1</option>
-                <option value="tal-2">Taller 2</option>
-                <option value="tal-3">Taller 3</option>
-            </select>
-            </div>
+                    <button type="submit" id="btn-enviar">Enviar</button>
 
-            <div class="campo">
-                <label for="salon">Equipo</label>
-            <select name="salon" id="salon">
-                <option value="">Elija una opción</option>
-                <option value="equipo-1">Equipo 1</option>
-                <option value="equipo-2">Equipo 2</option>
-                <option value="equipo-3">Equipo 3</option>
-                <option value="equipo-4">Equipo 4</option>
-                <option value="equipo-5">Equipo 5</option>
-            </select>
-            </div>
-            
-
-            
-            <div class="campo">
-            <label for="motivo">Motivo</label>
-            <textarea name="motivo" id="motivo" rows="5" placeholder="Esriba el motivo..." required></textarea>
-            </div>
-            
-            <button type="submit" id="btn-enviar">Enviar</button>
-
-            </form>
+                </form>
             </div>
         </main>
     </div>

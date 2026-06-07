@@ -15,10 +15,10 @@
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
                 <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informatica</a></li>
-                <li class="sidebar-item"><a href="../inventario/inventario.html">Inventario</a></li>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></a></li>
-                <li class="sidebar-item">Usuarios</li>
+                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
+                <li class="sidebar-item activo">Usuarios</li>
             </ul>
         </nav>
     
@@ -26,8 +26,8 @@
     
             <nav class="topbar-nav">
                 <ul>
-                    <li class="topbar-item activo">Usuarios</li>
                     <li class="topbar-item"><a href="nuevo-usuario.html">Nuevo usuario</a></li>
+                    <li class="topbar-item activo">Usuarios</li>
                 </ul>
                 <div class="topbar-logo">
                     <img src="../../img/logo.png" alt="Logo SGRSI">
@@ -36,8 +36,7 @@
             </nav>
 
             <div class="content">
-                <h1>Usuarios</h1>
-                <table id="tabla-usuarios">
+                <table>
                     <thead>
                         <tr>
                             <th>Nombre</th>
@@ -53,7 +52,7 @@
                             <td>Solicitante</td>
                             <td class="acciones">
                                 <button class="btn-editar" onclick="editar(1)">Editar</button>
-                                <button class="btn-desactivar" onclick="desactivar(1)">Desactivar</button>
+                                <button class="btn-eliminar" onclick="desactivar(1)">Desactivar</button>
                                 <button class="btn-reiniciar" onclick="reiniciarContrasena(1)">Reiniciar contraseña</button>
                             </td>
                         </tr>
@@ -63,7 +62,7 @@
                             <td>Solicitante</td>
                             <td class="acciones">
                                 <button class="btn-editar" onclick="editar(2)">Editar</button>
-                                <button class="btn-desactivar" onclick="desactivar(2)">Desactivar</button>
+                                <button class="btn-eliminar" onclick="desactivar(2)">Desactivar</button>
                                 <button class="btn-reiniciar" onclick="reiniciarContrasena(2)">Reiniciar contraseña</button>
                             </td>
                         </tr>
@@ -73,7 +72,7 @@
                             <td>Asistente</td>
                             <td class="acciones">
                                 <button class="btn-editar" onclick="editar(3)">Editar</button>
-                                <button class="btn-desactivar" onclick="desactivar(3)">Desactivar</button>
+                                <button class="btn-eliminar" onclick="desactivar(3)">Desactivar</button>
                                 <button class="btn-reiniciar" onclick="reiniciarContrasena(3)">Reiniciar contraseña</button>
                             </td>
                         </tr>
@@ -83,7 +82,7 @@
                             <td>Asistente</td>
                             <td class="acciones">
                                 <button class="btn-editar" onclick="editar(4)">Editar</button>
-                                <button class="btn-desactivar" onclick="desactivar(4)">Desactivar</button>
+                                <button class="btn-eliminar" onclick="desactivar(4)">Desactivar</button>
                                 <button class="btn-reiniciar" onclick="reiniciarContrasena(4)">Reiniciar contraseña</button>
                             </td>
                         </tr>
@@ -93,7 +92,7 @@
                             <td>Coordinador</td>
                             <td class="acciones">
                                 <button class="btn-editar" onclick="editar(5)">Editar</button>
-                                <button class="btn-desactivar" onclick="desactivar(5)">Desactivar</button>
+                                <button class="btn-eliminar" onclick="desactivar(5)">Desactivar</button>
                                 <button class="btn-reiniciar" onclick="reiniciarContrasena(5)">Reiniciar contraseña</button>
                             </td>
                         </tr>
