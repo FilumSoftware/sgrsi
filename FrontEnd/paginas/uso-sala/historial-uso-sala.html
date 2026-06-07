@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/main.css">
     <link rel="stylesheet" href="sala.css">
-    <title>Inventario</title>
+    <title>Sala Informatica</title>
 </head>
 <body>
     <div class="container">
@@ -14,11 +14,12 @@
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
-                <li class="sidebar-item activo">Sala de informatica</a></li>
-                <li class="sidebar-item"><a href="../inventario/inventario.html">Inventario</a></li>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
-                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+                <li class="sidebar-item activo">Sala de informatica</li>
+                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
+                <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
     
@@ -35,7 +36,55 @@
                 </div>
             </nav>
 
-            /* Cuerpo de la página */
+             <div class="content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Docente</th>
+                            <th>Asignatura</th>
+                            <th>Turno</th>
+                            <th>Salon</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>17/05/26</td>
+                            <td>Marcia Ana</td>
+                            <td>Sistemas Operativos</td>
+                            <td>Nocturno</td>
+                            <td>Labratorio 3</td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(1)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(1)">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>30/05/26</td>
+                            <td>Mario Neta</td>
+                            <td>Electricidad</td>
+                            <td>Vespertino</td>
+                            <td>Taller 1</td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(2)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(2)">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>10/07/26</td>
+                            <td>Esteban Quito</td>
+                            <td>Soporte IT</td>
+                            <td>Matutino</td>
+                            <td>Labratrio 5</td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(3)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(3)">Eliminar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </main>
     </div>

@@ -1,0 +1,34 @@
+
+
+.fila-pc {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+  align-items: end;
+  padding: 0.75rem;
+  border: 1px solid var(--color-primario);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+/* Para cuando el JS quiera ocultar una fila */
+.fila-pc.oculta {
+  display: none;
+}
+
+#agregar-pc {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  padding: 8px 16px;
+  background-color: var(--color-secundario);
+  color: var(--color-fondo);
+  border: none;
+  border-radius: var(--borde-radius);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+#agregar-pc:hover {
+  background-color: var(--color-primario);
+  color: var(--color-texto);
+}

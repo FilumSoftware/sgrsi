@@ -15,10 +15,11 @@
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
                 <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informatica</a></li>
-                <li class="sidebar-item"><a href="../inventario/inventario.html">Inventario</a></li>
+                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
                 <li class="sidebar-item activo">Mesa de Ayuda</li>
-                <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
-                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
+                <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
     
@@ -26,8 +27,8 @@
     
             <nav class="topbar-nav">
                 <ul>
-                    <li class="topbar-item activo">Historial de tickets</li>
                     <li class="topbar-item"><a href="nuevo-ticket.html">Nuevo ticket</a></li>
+                    <li class="topbar-item activo">Historial de tickets</li>
                 </ul>
                 <div class="topbar-logo">
                     <img src="../../img/logo.png" alt="Logo SGRSI">
@@ -35,9 +36,61 @@
                 </div>
             </nav>
 
-            /* cuerpo de la pagina */
+            
 
-
+             <div class="content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Salon</th>
+                            <th>Equipo</th>
+                            <th>Motivo</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>24/06/26</td>
+                            <td>12:35</td>
+                            <td>Laboratorio 3</td>
+                            <td>Lab3-03</td>
+                            <td></td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(1)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(1)">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>01/07/26</td>
+                            <td>15:45</td>
+                            <td>Taller 1</td>
+                            <td>Tal1-06</td>
+                            <td></td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(2)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(2)">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>10/07/26</td>
+                            <td>19:45</td>
+                            <td>Laboratorio 1</td>
+                            <td>Lab1-05</td>
+                            <td></td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(3)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(3)">Eliminar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </main>
     </div>

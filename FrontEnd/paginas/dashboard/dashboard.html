@@ -1,32 +1,34 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/main.css">
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
     <title>Mesa de Ayuda</title>
 </head>
+
 <body>
     <div class="container">
-    
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item activo">Dashboard</li>
                 <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informatica</a></li>
-                <li class="sidebar-item"><a href="../inventario/inventario.html">Inventario</a></li>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
-                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
+                <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
-    
-        <div class="main">
-    
-            <nav class="topbar-nav"> /* No sé si aplique la barra esta, pero la dejo por las dudas */
+
+        <main class="main">
+
+            <nav class="topbar-nav">
                 <ul>
-                    <li class="topbar-item activo">Cosa del dashboard 1</li> 
+                    <li class="topbar-item activo">Cosa del dashboard 1</li>
                     <li class="topbar-item"><a href="dashboard.html">Cosa del dashboard 2</a></li>
                 </ul>
                 <div class="topbar-logo">
@@ -35,76 +37,76 @@
                 </div>
             </nav>
 
-      <main class="dashboard-main">
-        <h1 class="saludo">Bienvenido</h1>
-        <p class="saludo-sub">Resumen del sistema</p>
+            <div class="content">
+                <h1 class="saludo">Bienvenido</h1>
+                <p class="saludo-sub">Resumen del sistema</p>
 
-        <div class="tarjetas">
-          <div class="tarjeta tarjeta-violeta">
-            <p class="tarjeta-numero">12</p>
-            <p class="tarjeta-label">Tickets abiertos</p>
-          </div>
-          <div class="tarjeta tarjeta-lila">
-            <p class="tarjeta-numero">34</p>
-            <p class="tarjeta-label">Equipos disponibles</p>
-          </div>
-          <div class="tarjeta tarjeta-naranja">
-            <p class="tarjeta-numero">8</p>
-            <p class="tarjeta-label">Solicitudes pendientes</p>
-          </div>
-          <div class="tarjeta tarjeta-bordo">
-            <p class="tarjeta-numero">5</p>
-            <p class="tarjeta-label">Registros de laboratorio</p>
-          </div>
-        </div>
+                <div class="tarjetas">
+                    <div class="tarjeta tarjeta-violeta">
+                        <p class="tarjeta-numero">12</p>
+                        <p class="tarjeta-label">Tickets abiertos</p>
+                    </div>
+                    <div class="tarjeta tarjeta-lila">
+                        <p class="tarjeta-numero">34</p>
+                        <p class="tarjeta-label">Equipos disponibles</p>
+                    </div>
+                    <div class="tarjeta tarjeta-naranja">
+                        <p class="tarjeta-numero">8</p>
+                        <p class="tarjeta-label">Solicitudes pendientes</p>
+                    </div>
+                    <div class="tarjeta tarjeta-bordo">
+                        <p class="tarjeta-numero">5</p>
+                        <p class="tarjeta-label">Registros de laboratorio</p>
+                    </div>
+                </div>
 
-        
-        <div class="tabla-contenedor">
-          <h2 class="tabla-titulo">Últimos tickets registrados</h2>
-          <table class="tabla">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Solicitante</th>
-                <th>Descripción</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-              </tr>
-            </thead>
-            <tr>
-              <td>001</td>
-              <td>Ratón Pérez</td>
-              <td>Computadora no enciende</td>
-              <td><span class="estado pendiente">Pendiente</span></td>
-              <td>17/05/2026</td>
-            </tr>
-            <tr>
-              <td>002</td>
-              <td>Darío Buffa</td>
-              <td>Instalación de software</td>
-              <td><span class="estado proceso">En proceso</span></td>
-              <td>16/05/2026</td>
-            </tr>
-            <tr>
-              <td>003</td>
-              <td>Massimiliano Pereira</td>
-              <td>Problema con la red</td>
-              <td><span class="estado resuelto">Resuelto</span></td>
-              <td>15/05/2026</td>
-            </tr>
-            <tr>
-              <td>004</td>
-              <td>Bárbara Silva</td>
-              <td>Reparar el aire acondicionado lab 3</td>
-              <td><span class="estado pendiente">Pendiente</span></td>
-              <td>15/05/2026</td>
-            </tr>
-          </table>
-        </div>
 
-      </main>
-    </div>
+                <div class="tabla-contenedor">
+                    <h2 class="tabla-titulo">Últimos tickets registrados</h2>
+                    <table class="tabla">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Solicitante</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td>001</td>
+                            <td>Ratón Pérez</td>
+                            <td>Computadora no enciende</td>
+                            <td><span class="estado pendiente">Pendiente</span></td>
+                            <td>17/05/2026</td>
+                        </tr>
+                        <tr>
+                            <td>002</td>
+                            <td>Darío Buffa</td>
+                            <td>Instalación de software</td>
+                            <td><span class="estado proceso">En proceso</span></td>
+                            <td>16/05/2026</td>
+                        </tr>
+                        <tr>
+                            <td>003</td>
+                            <td>Massimiliano Pereira</td>
+                            <td>Problema con la red</td>
+                            <td><span class="estado resuelto">Resuelto</span></td>
+                            <td>15/05/2026</td>
+                        </tr>
+                        <tr>
+                            <td>004</td>
+                            <td>Bárbara Silva</td>
+                            <td>Reparar el aire acondicionado lab 3</td>
+                            <td><span class="estado pendiente">Pendiente</span></td>
+                            <td>15/05/2026</td>
+                        </tr>
+                    </table>
+                </div>
 
-  </body>
+            </div>
+        </main>
+
+</body>
+
 </html>
-

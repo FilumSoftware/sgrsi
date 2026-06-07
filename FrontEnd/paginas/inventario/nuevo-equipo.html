@@ -16,9 +16,10 @@
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
                 <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informatica</a></li>
                 <li class="sidebar-item activo">Inventario</li>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
-                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
+                <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
     
@@ -26,8 +27,8 @@
     
             <nav class="topbar-nav">
                 <ul>
-                    <li class="topbar-item"><a href="inventario.html">Inventario</a></li>
                     <li class="topbar-item activo">Registro de equipos</li>
+                    <li class="topbar-item"><a href="inventario.html">Equipos</a></li>
                 </ul>
                 <div class="topbar-logo">
                     <img src="../../img/logo.png" alt="Logo SGRSI">
@@ -37,13 +38,28 @@
             <div class="form-container">
             <form>
               <fieldset>
-                <legend>Registro de nuevo equipo</legend>
-                  <div class="form-group">
+                  <div class="form-grupo">
                     <label for="nombre">Nombre del equipo:</label>
                     <input type="text" id="nombre" name="nombre">
                   </div>
 
-                  <div class="form-group">
+                  <div for="salon" class="form-grupo">
+                    <label for="salon">Salón:</label>
+                    <select id="salon" name="salon">
+                      <option value="laboratorio-1">Laboratorio 1</option>
+                      <option value="laboratorio-2">Laboratorio 2</option>
+                      <option value="laboratorio-3">Laboratorio 3</option>
+                      <option value="laboratorio-4">Laboratorio 4</option>
+                      <option value="laboratorio-5">Laboratorio 5</option>
+                      <option value="laboratorio-6">Laboratorio 6</option>
+                      <option value="taller-1">Taller 1</option>
+                      <option value="taller-2">Taller 2</option>
+                      <option value="taller-3">Taller 3</option>
+                      <option value="deposito">Depósito</option>
+                    </select>
+                    </div>
+
+                  <div class="form-grupo">
                     <label for="categoria">Categoría:</label>
                     <select id="categoria" name="categoria">
                       <option value="pc-escritorio">PC escritorio</option>
@@ -54,7 +70,7 @@
                     </select>
                   </div>
                 
-                  <div class="form-group">
+                  <div class="form-grupo">
                     <label for="extras">Extras (opcional):</label><br>
                     <input type="text" id="extras" name="extras"><br><br>
                   </div>
@@ -62,6 +78,7 @@
                   <input type="submit" value="Registrar equipo">
               </fieldset>
             </form>
+            </div>
         </main>
     </div>
 </body>

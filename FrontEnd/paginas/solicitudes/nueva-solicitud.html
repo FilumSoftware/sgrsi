@@ -15,10 +15,11 @@
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
                 <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informatica</a></li>
-                <li class="sidebar-item"><a href="../inventario/inventario.html">Inventario</a></li>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
-                <li class="sidebar-item activo">Solicitudes</a></li>
-                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item activo">Solicitudes</li>
+                <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
+                <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
     
@@ -35,7 +36,37 @@
                 </div>
             </nav>
 
-                /* Cuerpo de la página */
+                <div class="form-container">
+                <form>
+                    <fieldset>
+                    <div class="form-grupo">
+                        <label for="fecha">Fecha:</label>
+                        <input type="date" id="fecha" name="fecha">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="salon">Salón:</label>
+                        <select id="salon" name="salon">
+                            <option value="laboratorio-1">Laboratorio 1</option>
+                            <option value="laboratorio-2">Laboratorio 2</option>
+                            <option value="laboratorio-3">Laboratorio 3</option>
+                            <option value="laboratorio-4">Laboratorio 4</option>
+                            <option value="laboratorio-5">Laboratorio 5</option>
+                            <option value="laboratorio-6">Laboratorio 6</option>
+                            <option value="taller-1">Taller 1</option>
+                            <option value="taller-2">Taller 2</option>
+                            <option value="taller-3">Taller 3</option>
+                            <option value="deposito">Depósito</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="motivo">Motivo:</label><br>
+                        <textarea id="motivo" name="motivo" rows="4" cols="50"></textarea><br><br>
+                    </div>    
+
+                <input type="submit" value="Enviar solicitud">
+              </fieldset>
+            </form>
+            </div>
 
         </main>
     </div>
