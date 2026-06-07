@@ -145,3 +145,14 @@ input:focus {
     color: var(--color-texto-suave);
     margin-top: 20px;
 }
+
+@media (max-width: 576px) {
+    body {
+        align-items: flex-start;
+        padding: 20px;
+    }
+    .login-box {
+        width: 100%;
+        padding: 24px;
+    }
+}
