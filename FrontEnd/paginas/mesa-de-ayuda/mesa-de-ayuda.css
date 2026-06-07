@@ -14,6 +14,11 @@ h1, h2 {
     min-height: 100vh;
 }
 
+/* estilo de tabla*/
+.content {
+    padding: 20px;
+}
+
 /* Contenido */
 form {
     padding: 20px;
@@ -138,4 +143,123 @@ form {
 #campo label {
     text-align: center;
     font-weight: bold;
+}
+/*Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-secundario);
+}
+
+th {
+    background-color: var(--color-primario);
+    color: var(--color-texto);
+}
+
+.form-container {
+    max-width: 480px;
+    margin: 32px auto;
+    background-color: #fff;
+    border-radius: var(--borde-radius);
+    box-shadow: var(--sombra);
+    padding: 32px;
+}
+
+fieldset {
+    border: none;
+    padding: 0;
+}
+
+legend {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--color-secundario);
+    margin-bottom: 24px;
+}
+
+.form-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-texto);
+}
+
+input[type="text"],
+select {
+    padding: 10px 12px;
+    border: 1px solid var(--color-primario);
+    border-radius: var(--borde-radius);
+    font-size: 14px;
+    font-family: var(--fuente-principal);
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--color-secundario);
+}
+
+input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-secundario);
+    color: var(--color-fondo);
+    border: none;
+    border-radius: var(--borde-radius);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: var(--color-acento);
+}
+
+.acciones {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-editar, .btn-eliminar {
+    padding: 6px 12px;
+    border: none;
+    border-radius: var(--borde-radius);
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.3s;
+}
+
+.btn-editar {
+    background-color: var(--color-primario);
+    color: var(--color-secundario);
+}
+
+.btn-editar:hover {
+    background-color: var(--color-secundario);
+    color: var(--color-fondo);
+}
+
+.btn-eliminar {
+    background-color: var(--color-acento);
+    color: var(--color-fondo);
+}
+
+.btn-eliminar:hover {
+    opacity: 0.8;
 }

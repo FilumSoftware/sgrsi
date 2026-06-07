@@ -35,9 +35,59 @@
                 </div>
             </nav>
 
-            /* cuerpo de la pagina */
+            
 
-
+             <div class="content">
+                <h1>Mesa de ayuda</h1>
+                <h2>Ticket's</h2>
+                <table id="tablaEquipos">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Salon</th>
+                            <th>Equipo</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>24/06/26</td>
+                            <td>12:35</td>
+                            <td>Laboratorio 3</td>
+                            <td>Lab3-03</td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(1)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(1)">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>01/07/26</td>
+                            <td>15:45</td>
+                            <td>Taller 1</td>
+                            <td>Tal1-06</td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(2)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(2)">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>10/07/26</td>
+                            <td>19:45</td>
+                            <td>Laboratorio 1</td>
+                            <td>Lab1-05</td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editar(3)">Editar</button>
+                                <button class="btn-eliminar" onclick="eliminar(3)">Eliminar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </main>
     </div>
