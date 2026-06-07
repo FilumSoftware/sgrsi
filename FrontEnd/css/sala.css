@@ -6,7 +6,7 @@
   gap: 1rem;
   align-items: end;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-primario);
   border-radius: 4px;
   margin-bottom: 0.5rem;
 }

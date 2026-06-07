@@ -41,15 +41,15 @@
                 <form action="" method="post">
                     <div class="form-grupo">
                         <label for="fecha">Fecha</label>
-                        <input type="text" id="fecha" name="fecha" placeholder="DD/MM/AAAA" required>
+                        <input type="date" id="fecha" name="fecha" placeholder="DD/MM/AAAA" required>
                     </div>
                     <div class="form-grupo">
                         <label for="hora-entrada">Hora entrada</label>
-                        <input type="text" id="hora-entrada" name="hora-entrada" placeholder="Ej:18:30" required>
+                        <input type="time" id="hora-entrada" name="hora-entrada" placeholder="Ej:18:30" required>
                     </div>
                     <div class="form-grupo">
                         <label for="hora-salida">Hora salida</label>
-                        <input type="text" id="hora-salida" name="hora-salida" placeholder="Ej:21:05" required>
+                        <input type="time" id="hora-salida" name="hora-salida" placeholder="Ej:21:05" required>
                     </div>
                     <div class="form-grupo">
                         <label>Docente</label>
@@ -101,8 +101,8 @@
                                 <input type="text" id="alumno-1" name="alumno[1]"
                                     placeholder="Nombre del alumno">
                             </div>
-                            <button type="button" id="agregar-pc">+ Agregar PC</button>
                         </div>
+                            <button type="button" id="agregar-pc">+ Agregar PC</button>
                     </div>
                     
                     <button type="submit" id="btn-enviar">Enviar</button>
