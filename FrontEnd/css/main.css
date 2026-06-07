@@ -353,3 +353,13 @@ button[type="submit"]:hover {
     background-color: var(--color-secundario);
     color:            var(--color-fondo);
 }
+
+.input-error {
+    border-color: var(--color-acento) !important;
+}
+
+.error-msg {
+    color:     var(--color-acento);
+    font-size: 12px;
+    margin-top: 4px;
+}
