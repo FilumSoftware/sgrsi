@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,10 @@
     <link rel="stylesheet" href="dashboard.css">
     <title>Mesa de Ayuda</title>
 </head>
+
 <body>
     <div class="container">
-    
+
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item activo">Dashboard</li>
@@ -21,12 +23,13 @@
                 <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
             </ul>
         </nav>
-    
+
         <div class="main">
-    
+
+
             <nav class="topbar-nav"> /* No sé si aplique la barra esta, pero la dejo por las dudas */
                 <ul>
-                    <li class="topbar-item activo">Cosa del dashboard 1</li> 
+                    <li class="topbar-item activo">Cosa del dashboard 1</li>
                     <li class="topbar-item"><a href="dashboard.html">Cosa del dashboard 2</a></li>
                 </ul>
                 <div class="topbar-logo">
@@ -35,76 +38,76 @@
                 </div>
             </nav>
 
-      <main class="dashboard-main">
-        <h1 class="saludo">Bienvenido</h1>
-        <p class="saludo-sub">Resumen del sistema</p>
+            <main class="dashboard-main">
+                <h1 class="saludo">Bienvenido</h1>
+                <p class="saludo-sub">Resumen del sistema</p>
 
-        <div class="tarjetas">
-          <div class="tarjeta tarjeta-violeta">
-            <p class="tarjeta-numero">12</p>
-            <p class="tarjeta-label">Tickets abiertos</p>
-          </div>
-          <div class="tarjeta tarjeta-lila">
-            <p class="tarjeta-numero">34</p>
-            <p class="tarjeta-label">Equipos disponibles</p>
-          </div>
-          <div class="tarjeta tarjeta-naranja">
-            <p class="tarjeta-numero">8</p>
-            <p class="tarjeta-label">Solicitudes pendientes</p>
-          </div>
-          <div class="tarjeta tarjeta-bordo">
-            <p class="tarjeta-numero">5</p>
-            <p class="tarjeta-label">Registros de laboratorio</p>
-          </div>
+                <div class="tarjetas">
+                    <div class="tarjeta tarjeta-violeta">
+                        <p class="tarjeta-numero">12</p>
+                        <p class="tarjeta-label">Tickets abiertos</p>
+                    </div>
+                    <div class="tarjeta tarjeta-lila">
+                        <p class="tarjeta-numero">34</p>
+                        <p class="tarjeta-label">Equipos disponibles</p>
+                    </div>
+                    <div class="tarjeta tarjeta-naranja">
+                        <p class="tarjeta-numero">8</p>
+                        <p class="tarjeta-label">Solicitudes pendientes</p>
+                    </div>
+                    <div class="tarjeta tarjeta-bordo">
+                        <p class="tarjeta-numero">5</p>
+                        <p class="tarjeta-label">Registros de laboratorio</p>
+                    </div>
+                </div>
+
+
+                <div class="tabla-contenedor">
+                    <h2 class="tabla-titulo">Últimos tickets registrados</h2>
+                    <table class="tabla">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Solicitante</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td>001</td>
+                            <td>Ratón Pérez</td>
+                            <td>Computadora no enciende</td>
+                            <td><span class="estado pendiente">Pendiente</span></td>
+                            <td>17/05/2026</td>
+                        </tr>
+                        <tr>
+                            <td>002</td>
+                            <td>Darío Buffa</td>
+                            <td>Instalación de software</td>
+                            <td><span class="estado proceso">En proceso</span></td>
+                            <td>16/05/2026</td>
+                        </tr>
+                        <tr>
+                            <td>003</td>
+                            <td>Massimiliano Pereira</td>
+                            <td>Problema con la red</td>
+                            <td><span class="estado resuelto">Resuelto</span></td>
+                            <td>15/05/2026</td>
+                        </tr>
+                        <tr>
+                            <td>004</td>
+                            <td>Bárbara Silva</td>
+                            <td>Reparar el aire acondicionado lab 3</td>
+                            <td><span class="estado pendiente">Pendiente</span></td>
+                            <td>15/05/2026</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </main>
         </div>
 
-        
-        <div class="tabla-contenedor">
-          <h2 class="tabla-titulo">Últimos tickets registrados</h2>
-          <table class="tabla">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Solicitante</th>
-                <th>Descripción</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-              </tr>
-            </thead>
-            <tr>
-              <td>001</td>
-              <td>Ratón Pérez</td>
-              <td>Computadora no enciende</td>
-              <td><span class="estado pendiente">Pendiente</span></td>
-              <td>17/05/2026</td>
-            </tr>
-            <tr>
-              <td>002</td>
-              <td>Darío Buffa</td>
-              <td>Instalación de software</td>
-              <td><span class="estado proceso">En proceso</span></td>
-              <td>16/05/2026</td>
-            </tr>
-            <tr>
-              <td>003</td>
-              <td>Massimiliano Pereira</td>
-              <td>Problema con la red</td>
-              <td><span class="estado resuelto">Resuelto</span></td>
-              <td>15/05/2026</td>
-            </tr>
-            <tr>
-              <td>004</td>
-              <td>Bárbara Silva</td>
-              <td>Reparar el aire acondicionado lab 3</td>
-              <td><span class="estado pendiente">Pendiente</span></td>
-              <td>15/05/2026</td>
-            </tr>
-          </table>
-        </div>
+</body>
 
-      </main>
-    </div>
-
-  </body>
 </html>
-

@@ -1,145 +1,141 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Raleway', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Raleway', sans-serif;
 }
 
 body {
-  background-color: var(--color-fondo);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    background-color: var(--color-fondo);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Formulario */
-
 .login-box {
-  background-color: var(--color-superficie);
-  padding: 40px;
-  border-radius: 16px;
-  width: 420px;
-  box-shadow: var(--color-acento-2) 0px 4px 12px;
-  text-align: center;
+    background-color: var(--color-fondo);
+    padding: 40px;
+    border-radius: 16px;
+    width: 420px;
+    box-shadow: var(--sombra);
+    text-align: center;
 }
 
 .login-box h2 {
-  font-size: 24px;
-  color: var(--color-texto);
-  margin-bottom: 6px;
+    font-size: 24px;
+    color: var(--color-texto);
+    margin-bottom: 6px;
 }
 
 .logo {
-  width: 140px;
-  margin-bottom: 20px;
-  mix-blend-mode: multiply;
-}
-.subtitulo {
-  font-size: 13px;
-  color: var(--color-secundario);
-  margin-bottom: 24px;
+    width: 140px;
+    margin-bottom: 20px;
+    mix-blend-mode: multiply;
 }
 
+.subtitulo {
+    font-size: 13px;
+    color: var(--color-secundario);
+    margin-bottom: 24px;
+}
 
 .roles {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
 }
 
 .rol {
-  flex: 1;
-  padding: 10px 6px;
-  border: 2px solid var(--color-secundario);
-  border-radius: var(--radio-borde);
-  background-color: var(--color-superficie);
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--color-texto);
-  transition: 0.3s;
+    flex: 1;
+    padding: 10px 6px;
+    border: 2px solid var(--color-secundario);
+    border-radius: var(--borde-radius);
+    background-color: var(--color-fondo);
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--color-texto);
+    transition: 0.3s;
 }
 
-
 .rol.activo {
-  border-color: var(--color-acento);
-  background-color: var(--color-acento);
-  color: #ffffff;
+    border-color: var(--color-acento);
+    background-color: var(--color-acento);
+    color: var(--color-fondo)
 }
 
 .rol:hover {
-  border-color: var(--color-acento);
-  background-color: var(--color-acento);
-  color: #ffffff;
+    border-color: var(--color-acento);
+    background-color: var(--color-acento);
+    color: var(--color-fondo)
 }
-
-/* Etiquetas */
 
 label {
-  display: block;
-  text-align: left;
-  font-size: 13px;
-  color: var(--color-texto);
-  margin-bottom: 6px;
+    display: block;
+    text-align: left;
+    font-size: 13px;
+    color: var(--color-texto);
+    margin-bottom: 6px;
 }
-
 
 input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 16px;
-  border: 1px solid var(--color-secundario);
-  border-radius: var(--radio-borde);
-  font-size: 14px;
-  color: var(--color-texto);
-  background-color: var(--color-fondo)
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    border: 1px solid var(--color-secundario);
+    border-radius: var(--borde-radius);
+    font-size: 14px;
+    color: var(--color-texto);
+    background-color: var(--color-fondo)
 }
-
 
 input:focus {
-  outline: none;
-  border-color: var(--color-acento);
-  box-shadow: 0 0 0 3px var(--color-acento-2);
+    outline: none;
+    border-color: var(--color-acento);
+    box-shadow: 0 0 0 3px var(--color-primario)
 }
 
-
 .btn-ingresar {
-  width: 100%;
-  padding: 13px;
-  background-color: var(--color-secundario);
-  color: var(--color-texto);
-  border: none;
-  border-radius: var(--radio-borde);
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
+    width: 100%;
+    padding: 13px;
+    background-color: var(--color-secundario);
+    color: var(--color-texto);
+    border: none;
+    border-radius: var(--borde-radius);
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
 .btn-ingresar:hover {
-  background-color: var(--color-primario);
+    background-color: var(--color-primario);
 }
 
+
 /* Link paracrear una cuenta */
+
 .crear-cuenta {
-  font-size: 13px;
-  color: var(--color-secundario);
-  margin-top: 20px;
+    font-size: 13px;
+    color: var(--color-secundario);
+    margin-top: 20px;
 }
 
 .crear-cuenta a {
-  color: var(--color-acento);
-  text-decoration: none;
-  font-weight: bold;
+    color: var(--color-acento);
+    text-decoration: none;
+    font-weight: bold;
 }
 
 .crear-cuenta a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
+
 /* Pie de página */
+
 .pie {
-  font-size: 11px;
-  color: var(--color-texto-suave);
-  margin-top: 20px;
+    font-size: 11px;
+    color: var(--color-texto-suave);
+    margin-top: 20px;
 }
