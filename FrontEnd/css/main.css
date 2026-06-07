@@ -351,5 +351,54 @@ button[type="submit"]:hover {
 
 .estado.resuelto {
     background-color: var(--color-secundario);
-    color:            var(--color-fondo);
+    color: var(--color-fondo);
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 160px;
+    }
+    .sidebar-item {
+        font-size: 14px;
+        padding: 10px 14px;
+    }
+    .topbar-nav {
+        padding: 8px;
+    }
+    .topbar-logo span {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+        padding: 10px 0;
+    }
+    .sidebar ul {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+    }
+    .sidebar-item {
+        white-space: nowrap;
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+    .sidebar-item.activo {
+        border-left: none;
+        border-bottom: 4px solid var(--color-acento);
+    }
+    .topbar-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .topbar-logo span {
+        font-size: 13px;
+    }
 }
