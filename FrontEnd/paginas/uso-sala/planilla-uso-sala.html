@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/main.css">
-    <link rel="stylesheet" href="sala.css">
+    <link rel="stylesheet" href="../../css/sala.css">
     <title>Sala de Informatica</title>
 </head>
 <body>
@@ -14,11 +14,11 @@
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
-                <li class="sidebar-item activo">Sala de informatica</a></li>
-                <li class="sidebar-item"><a href="../inventario/inventario.html">Inventario</a></li>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/mesa-de-ayuda.html">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/solicitudes.html">Solicitudes</a></li>
-                <li class="sidebar-item"><a href="../usuarios/usuarios.html">Usuarios</a></li>
+                <li class="sidebar-item activo">Sala de informatica</li>
+                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
             </ul>
         </nav>
     
@@ -36,75 +36,77 @@
             </nav>
 
             <div class="form-container">
-
-                <h1>PLANILLA DE REGISTRO DE USO DE LA SALA DE INFORMÁTICA</h1>
+                <h1>Planilla de Registro de Uso de Salas de Informática</h1>
                 <form action="" method="post">
-            <div class="campo">
-                <label for="fecha">Fecha</label>
-                <input type="text" id="fecha" name="fecha" placeholder="DD/MM/AAAA" required>
-            </div>
-            <div class="campo">
-                <label for="hora-entrada">hora entrada</label>
-                <input type="text" id="hora-entrada" name="hora-entrada" placeholder="Ej:18:30" required>
-            </div>
-            <div class="campo">
-                 <label for="hora-salida">Hora salida</label>
-                <input type="text" id="hora-salida" name="hora-salida" placeholder="Ej:21:05" required>
-            </div>
-           
-            <br>
-            <div class="campo">
-                <label for="docente">Docente</label>
-                <input type="text" id="docente" name="docente" placeholder="Ej: nombre y apellido" required>
-            </div>
-            <div class="campo">
-                <label for="asignatura">Asignatura</label>
-                <input type="text" id="asignatura" name="asignatura" placeholder="asignatura">
-            </div>
-            <div class="campo">
-                <label for="grupo">Grupo</label>
-                <input type="text" id="grupo" name="grupo" placeholder="Ej: 1MI">
-            </div>
-            
-            <div class="campo">
-                <label for="turno">Turno</label>
-                <select name="turno" id="turno">
-                <option value="">Elija un turno</option>
-                <option value="matutino">Matutino</option>
-                <option value="vespertino">Vespertino</option>
-                <option value="nocturno">Nocturno</option>
-                </select>
-            </div>
-            <div class="campo">
-                <label for="salon">Salon</label>
-            <select name="salon" id="salon">
-                <option value="">Elija una opción</option>
-                <option value="lab-1">Laboratorio 1</option>
-                <option value="lab-2">Laboratorio 2</option>
-                <option value="lab-3">Laboratorio 3</option>
-                <option value="lab-4">Laboratorio 4</option>
-                <option value="lab-5">Laboratorio 5</option>
-                <option value="tal-1">Taller 1</option>
-                <option value="tal-2">Taller 2</option>
-                <option value="tal-3">Taller 3</option>
-            </select>
-            </div>
-            <br>
-            <div id="campo">
-            <label for="num-equipo">N° de equipo</label>
-            <label for="dato-alumno">Nombre y apellido</label>
-            <label for="estado">Estado del equipo</label>
-            </div>
-            <br>
-            <div id="campo">
-            <label for="num-equipo1">1</label>
-            <input type="text" name="nombre-apellido-alumno" id="nom-ape" value="nombre y apellido">
-            <input type="text" name="estado-equipo" id="est-equipo" value="estado del equipo">
-            <br>
-            </div>
-            <button type="submit" id="btn-enviar">Enviar</button>
+                    <div class="form-grupo">
+                        <label for="fecha">Fecha</label>
+                        <input type="text" id="fecha" name="fecha" placeholder="DD/MM/AAAA" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="hora-entrada">Hora entrada</label>
+                        <input type="text" id="hora-entrada" name="hora-entrada" placeholder="Ej:18:30" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="hora-salida">Hora salida</label>
+                        <input type="text" id="hora-salida" name="hora-salida" placeholder="Ej:21:05" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label>Docente</label>
+                        <input type="text" id="docente" name="docente" readonly value="[nombre del usuario]">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="asignatura">Asignatura</label>
+                        <input type="text" id="asignatura" name="asignatura" placeholder="asignatura">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="grupo">Grupo</label>
+                        <input type="text" id="grupo" name="grupo" placeholder="Ej: 1MI">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="turno">Turno</label>
+                        <select name="turno" id="turno">
+                            <option value="">Elija un turno</option>
+                            <option value="matutino">Matutino</option>
+                            <option value="vespertino">Vespertino</option>
+                            <option value="nocturno">Nocturno</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="salon">Salon</label>
+                        <select name="salon" id="salon">
+                            <option value="">Elija una opción</option>
+                            <option value="lab-1">Laboratorio 1</option>
+                            <option value="lab-2">Laboratorio 2</option>
+                            <option value="lab-3">Laboratorio 3</option>
+                            <option value="lab-4">Laboratorio 4</option>
+                            <option value="lab-5">Laboratorio 5</option>
+                            <option value="tal-1">Taller 1</option>
+                            <option value="tal-2">Taller 2</option>
+                            <option value="tal-3">Taller 3</option>
+                        </select>
+                    </div>
+                    <div id="lista-pcs">
+                        <div class="fila-pc" data-index="1">
+                            <div class="campo">
+                                <label for="pc-1">PC</label>
+                                <select id="pc-1" name="pc[1]">
+                                    <option value="">-- Seleccioná una PC --</option>
+                                    <option value="pc-01">PC-01</option>
+                                    <option value="pc-02">PC-02</option>
+                                </select>
+                            </div>
+                            <div class="campo">
+                                <label for="alumno-1">Alumno</label>
+                                <input type="text" id="alumno-1" name="alumno[1]"
+                                    placeholder="Nombre del alumno">
+                            </div>
+                            <button type="button" id="agregar-pc">+ Agregar PC</button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" id="btn-enviar">Enviar</button>
 
-            </form>
+                </form>
             </div>
         </main>
     </div>

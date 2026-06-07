@@ -1,61 +1,131 @@
 :root {
-    --color-fondo: #EEEEEE;
-    --color-primario: #C4AAC4;
-    --color-secundario: #2E1A38;
-    --color-acento: #86143e;
-    --color-texto: #000026;
-    --color-texto-suave: #555555;    
-    --fuente-principal: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    --fuente-tamanio: 16px;
-    --espaciado: 1rem;
-    --borde-radius: 8px;
-    --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);}
+    --color-fondo:        #EEEEEE;
+    --color-primario:     #C4AAC4;
+    --color-secundario:   #2E1A38;
+    --color-acento:       #86143E;
+    --color-texto:        #000026;
+    --color-texto-suave:  #555555;
+
+    --fuente-principal:   'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --fuente-tamanio:     16px;
+    --espaciado:          1rem;
+    --borde-radius:       8px;
+    --sombra:             0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin:     0;
+    padding:    0;
+    box-sizing: border-box;
+}
 
 body {
-  font-family: var(--fuente-principal);
-  font-size: var(--fuente-tamanio);
-  background-color: var(--color-fondo);
-  color: var(--color-texto);
+    font-family:      var(--fuente-principal);
+    font-size:        var(--fuente-tamanio);
+    background-color: var(--color-fondo);
+    color:            var(--color-texto);
+    min-height:       100vh;
 }
 
 a {
-  text-decoration: none;
-  color: inherit;
-}
-
-h1, h2, h3 {
-  color: var(--color-texto);
-  font-weight: 500;
+    text-decoration: none;
+    color: inherit;
 }
 
 ul {
-  list-style: none;
+    list-style: none;
+}
+
+h1, h2, h3 {
+    color:       var(--color-texto);
+    font-weight: 500;
 }
 
 .container {
-    display: flex;
+    display:    flex;
     min-height: 100vh;
 }
 
-.sidebar {
-    width: 200px;
+.main {
+    flex:             1;
+    display:          flex;
+    flex-direction:   column;
+    background-color: var(--color-fondo);
+}
+
+.content {
+    padding: 20px;
+}
+
+.content h1 {
+    font-size:     24px;
+    margin-bottom: 20px;
+}
+
+.topbar-nav {
+    display:          flex;
+    align-items:      center;
+    justify-content:  space-between;
+    background-color: var(--color-primario);
+    padding:          10px;
+    width:            100%;
+}
+
+.topbar-logo {
+    display:     flex;
+    align-items: center;
+    gap:         8px;
+}
+
+.topbar-logo img {
+    width:        28px;
+    height:       28px;
+    object-fit:   contain;
+}
+
+.topbar-logo span {
+    font-size:   15px;
+    font-weight: 600;
+    color:       var(--color-secundario);
+}
+
+.topbar-nav ul {
+    display:        flex;
+    flex-direction: row;
+    gap:            8px;
+}
+
+.topbar-item {
+    cursor:      pointer;
+    padding:     8px 14px;
+    border-radius: 5px;
+    transition:  background-color 0.3s, color 0.3s;
+}
+
+.topbar-item.activo,
+.topbar-item:hover {
     background-color: var(--color-secundario);
-    color: var(--color-fondo);
-    padding: 20px 0;
-    flex-shrink: 0;
+    color:            var(--color-fondo);
+}
+
+.sidebar {
+    width:            200px;
+    background-color: var(--color-secundario);
+    color:            var(--color-fondo);
+    padding:          20px 0;
+    flex-shrink:      0;
 }
 
 .sidebar ul {
-    list-style: none;
     padding: 0;
 }
 
 .sidebar-item {
-    padding: 12px 20px;
-    color: var(--color-primario);
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    padding:     12px 20px;
+    color:       var(--color-primario);
+    font-size:   16px;
+    cursor:      pointer;
+    transition:  background-color 0.3s;
 }
 
 .sidebar-item a {
@@ -64,7 +134,7 @@ ul {
 
 .sidebar-item:hover {
     background-color: var(--color-primario);
-    color: var(--color-texto);
+    color:            var(--color-texto);
 }
 
 .sidebar-item:hover a {
@@ -73,65 +143,213 @@ ul {
 
 .sidebar-item.activo {
     background-color: var(--color-primario);
-    color: var(--color-secundario);
-    font-weight: bold;
-    border-left: 4px solid var(--color-acento);
-    font-weight: 500;
+    color:            var(--color-secundario);
+    font-weight:      bold;
+    border-left:      4px solid var(--color-acento);
 }
 
-.main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+.tabla-wrapper {
+    width:      100%;
+    overflow-x: auto;
 }
 
-.topbar-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+table {
+    width:           100%;
+    border-collapse: collapse;
+    margin-top:      12px;
+}
+
+th, td {
+    padding:    10px 12px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--color-secundario);
+    color:            var(--color-fondo);
+    font-size:        13px;
+}
+
+td {
+    border-bottom: 1px solid var(--color-primario);
+    font-size:     13px;
+    color:         var(--color-texto);
+}
+
+tbody tr:hover {
     background-color: var(--color-primario);
-    padding: 10px;
-    width: 100%;
 }
 
-.topbar-logo {
+.acciones {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    gap:     8px;
 }
 
-.topbar-logo img {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
+.btn-editar,
+.btn-eliminar,
+.btn-reiniciar {
+    padding:       6px 12px;
+    border:        none;
+    border-radius: var(--borde-radius);
+    cursor:        pointer;
+    font-size:     13px;
+    transition:    background-color 0.3s, opacity 0.3s;
 }
 
-.topbar-logo span {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--color-secundario);
+.btn-editar {
+    background-color: var(--color-primario);
+    color:            var(--color-secundario);
 }
 
-.topbar-nav ul {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    list-style: none;
-}
-
-.topbar-item {
-    cursor: pointer;
-    padding: 8px 14px;
-    border-radius: 5px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.topbar-item.activo {
+.btn-editar:hover {
     background-color: var(--color-secundario);
-    color: var(--color-fondo);
+    color:            var(--color-fondo);
 }
 
-.topbar-item:hover {
+.btn-eliminar {
+    background-color: var(--color-acento);
+    color:            var(--color-fondo);
+}
+
+.btn-eliminar:hover {
+    opacity: 0.8;
+}
+
+.btn-reiniciar {
     background-color: var(--color-secundario);
-    color: var(--color-fondo);
+    color:            var(--color-fondo);
+}
+
+.btn-reiniciar:hover {
+    opacity: 0.8;
+}
+
+.btn-salir {
+    background-color: var(--color-acento);
+    color:            var(--color-fondo);
+    padding:          6px 14px;
+    border-radius:    var(--borde-radius);
+    font-size:        13px;
+    transition:       background-color 0.3s;
+}
+
+.btn-salir:hover {
+    background-color: var(--color-secundario);
+}
+
+.form-container {
+    min-width:        600px;
+    margin:           32px auto;
+    padding:          32px;
+    background-color: var(--color-fondo);
+    border:           1px solid var(--color-primario);
+    border-radius:    var(--borde-radius);
+    box-shadow:       var(--sombra);
+}
+
+.form-container fieldset {
+    border:  none;
+    padding: 0;
+}
+
+.form-container legend {
+    font-size:     1.2rem;
+    font-weight:   600;
+    color:         var(--color-secundario);
+    margin-bottom: 24px;
+    padding:       0 8px;
+}
+
+.form-grupo {
+    display:        flex;
+    flex-direction: column;
+    gap:            6px;
+    margin-bottom:  20px;
+}
+
+.form-grupo label {
+    font-size:   14px;
+    font-weight: 500;
+    color:       var(--color-texto);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+input[type="password"],
+textarea,
+select {
+    width:            100%;
+    padding:          10px 12px;
+    border:           1px solid var(--color-primario);   /* ← bug corregido: era var(--borde-radius) */
+    border-radius:    var(--borde-radius);
+    font-family:      var(--fuente-principal);
+    font-size:        14px;
+    background-color: var(--color-fondo);
+    color:            var(--color-texto);
+    box-sizing:       border-box;
+    transition:       border-color 0.3s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline:      none;
+    border-color: var(--color-secundario);               /* ← bug corregido: era var(--sombra) */
+}
+
+input[readonly],
+input:disabled {
+    opacity: 0.7;
+    cursor:  not-allowed;
+}
+
+textarea {
+    resize:     vertical;
+    min-height: 80px;
+}
+
+input[type="submit"],
+button[type="submit"] {
+    width:            100%;
+    padding:          12px;
+    background-color: var(--color-secundario);
+    color:            var(--color-fondo);
+    border:           none;
+    border-radius:    var(--borde-radius);
+    font-family:      var(--fuente-principal);
+    font-size:        15px;
+    font-weight:      500;
+    cursor:           pointer;
+    transition:       background-color 0.3s;
+}
+
+input[type="submit"]:hover,
+button[type="submit"]:hover {
+    background-color: var(--color-acento);
+}
+
+.estado {
+    display:       inline-block;
+    padding:       4px 10px;
+    border-radius: 20px;
+    font-size:     12px;
+    font-weight:   bold;
+}
+
+.estado.pendiente {
+    background-color: var(--color-primario);
+    color:            var(--color-secundario);
+}
+
+.estado.en-proceso {
+    background-color: var(--color-acento);
+    color:            var(--color-fondo);
+}
+
+.estado.resuelto {
+    background-color: var(--color-secundario);
+    color:            var(--color-fondo);
 }
