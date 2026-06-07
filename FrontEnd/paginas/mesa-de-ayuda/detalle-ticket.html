@@ -40,16 +40,12 @@
             <form action="" method="post">
             <div class="campo">
             <label for="fecha">Fecha</label>
-            <input type="text" id="fecha" name="fecha" placeholder="DD/MM/AAAA" required>
+            
             </div>
             <div class="campo">
-            <label for="hora-entrada">hora entrada</label>
-            <input type="text" id="hora-entrada" name="hora-entrada" placeholder="Ej:18:30" required>
+                <label for="hora">Hora</label>
             </div>
-            <div class="campo">
-            <label for="hora-salida">Hora salida</label>
-            <input type="text" id="hora-salida" name="hora-salida" placeholder="Ej:21:05" required>
-            </div>
+            
             
              <div class="campo">
                 <label for="salon">Salon</label>
@@ -65,33 +61,24 @@
                 <option value="tal-3">Taller 3</option>
             </select>
             </div>
-            <div id="campo-unido">
-            <label for="num-equipo">N° de equipo</label>
-            <label for="dato-alumno">Nombre y apellido</label>
-            <label for="estado">Estado del equipo</label>
+
+            <div class="campo">
+                <label for="salon">Equipo</label>
+            <select name="salon" id="salon">
+                <option value="">Elija una opción</option>
+                <option value="equipo-1">Equipo 1</option>
+                <option value="equipo-2">Equipo 2</option>
+                <option value="equipo-3">Equipo 3</option>
+                <option value="equipo-4">Equipo 4</option>
+                <option value="equipo-5">Equipo 5</option>
+            </select>
             </div>
             
-            <div id="campo">
-            <label for="num-equipo1">1</label>
-            <input type="text" name="nombre-apellido-alumno" id="nom-ape" placeholder="nombre y apellido">
-            <input type="text" name="estado-equipo" id="est-equipo" placeholder="estado del equipo">
-            </div>
-            
-            <div id="campo">
-            <label for="num-equipo1">2</label>
-            <input type="text" name="nombre-apellido-alumno" id="nom-ape" placeholder="nombre y apellido">
-            <input type="text" name="estado-equipo" id="est-equipo" placeholder="estado del equipo">
-            </div>
-            
-            <div id="campo">
-            <label for="num-equipo1">3</label>
-            <input type="text" name="nombre-apellido-alumno" id="nom-ape" placeholder="nombre y apellido">
-            <input type="text" name="estado-equipo" id="est-equipo" placeholder="estado del equipo">
-            </div>
+
             
             <div class="campo">
-            <label for="notas">Notas</label>
-            <input type="text" name="notas" id="notas" placeholder="notas">
+            <label for="motivo">Motivo</label>
+            <textarea name="motivo" id="motivo" rows="5" placeholder="Esriba el motivo..." required></textarea>
             </div>
             
             <button type="submit" id="btn-enviar">Enviar</button>
