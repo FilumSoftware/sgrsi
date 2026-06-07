@@ -46,7 +46,40 @@
                 <label for="hora">Hora</label>
             </div>
             
-            
+             <div class="form-group">
+                    <label for="estado">Estado:</label>
+                    <select id="estado" name="estado">
+                        <option value="pendiente">Pendiente</option>
+                        <option value="finalizada">Finalizada</option>
+                        <option value="rechazada">Rechazada</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="prioridad">Prioridad:</label>
+                    <select id="prioridad" name="prioridad">
+                        <option value="baja">Baja</option>
+                        <option value="media">Media</option>
+                        <option value="alta">Alta</option>
+                    </select>
+                </div>
+
+
+                <!-- el solicitante se autocompleta cuando se crea el ticket-->
+                <div class="form-group">
+                    <label for="solicitante-display">Solicitante:</label>
+                    <input type="text" id="solicitante-display" readonly placeholder="Cargando...">
+                    <input type="hidden" id="solicitante" name="solicitante" value="">
+                </div>
+
+  <!-- en el caso del usuario admin, el responsable se elije de un dropdown que viene del backend-->
+                <div class="form-group">
+                    <label for="responsable">Responsable:</label>
+                    <select id="responsable" name="responsable">
+                        <option value="">— Seleccionar técnico —</option>
+                        <!-- acá va el backend -->
+                    </select>
+                </div>
              <div class="campo">
                 <label for="salon">Salon</label>
             <select name="salon" id="salon">
