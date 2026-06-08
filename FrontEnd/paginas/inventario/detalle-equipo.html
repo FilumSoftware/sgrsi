@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="inventario.css">
+    <title>Detalle de Equipo - Inventario</title>
+</head>
+<body>
+    <div class="container">
+    
+        <nav class="sidebar">
+            <ul>
+                <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
+                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informatica</a></li>
+                <li class="sidebar-item activo">Inventario</li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
+                <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    
+        <main class="main">
+    
+            <nav class="topbar-nav">
+                <ul>
+                    <li class="topbar-item"><a href="nuevo-equipo.html">Registro de equipos</a></li>
+                    <li class="topbar-item"><a href="inventario.html">Equipos</a></li>
+                    <li class="topbar-item activo">Detalle de equipo</li>
+                </ul>
+                <div class="topbar-logo">
+                    <img src="../../img/logo.png" alt="Logo SGRSI">
+                    <span>SGRSI</span>
+                </div>
+            </nav>
+
+            <div class="form-container">
+                <h1>Detalle de Equipo</h1>
+                
+                <form action="" method="post">
+                    <fieldset>
+                        <div class="form-grupo">
+                            <label for="id-equipo">ID Equipo (No editable):</label>
+                            <input type="text" id="id-equipo" name="id-equipo" value="1" readonly>
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="nombre">Nombre del equipo:</label>
+                            <input type="text" id="nombre" name="nombre" value="PC 1" required>
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="salon">Salón:</label>
+                            <select id="salon" name="salon">
+                                <option value="laboratorio-1">Laboratorio 1</option>
+                                <option value="laboratorio-2">Laboratorio 2</option>
+                                <option value="laboratorio-3" selected>Laboratorio 3</option>
+                                <option value="laboratorio-4">Laboratorio 4</option>
+                                <option value="laboratorio-5">Laboratorio 5</option>
+                                <option value="laboratorio-6">Laboratorio 6</option>
+                                <option value="taller-1">Taller 1</option>
+                                <option value="taller-2">Taller 2</option>
+                                <option value="taller-3">Taller 3</option>
+                                <option value="deposito">Depósito</option>
+                            </select>
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="categoria">Categoría:</label>
+                            <select id="categoria" name="categoria">
+                                <option value="pc-escritorio" selected>PC escritorio</option>
+                                <option value="laptop">Laptop</option>
+                                <option value="proyector">Proyector</option>
+                                <option value="impresora">Impresora</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-grupo">
+                            <label for="extras">Extras:</label>
+                            <input type="text" id="extras" name="extras" value="Monitor, teclado, mouse">
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="estado">Estado actual:</label>
+                            <select id="estado" name="estado">
+                                <option value="funcionando" selected>Funcionando</option>
+                                <option value="en-reparacion">En reparación</option>
+                                <option value="de-baja">De baja</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" id="btn-guardar">Guardar Cambios</button>
+                        
+                    </fieldset>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
