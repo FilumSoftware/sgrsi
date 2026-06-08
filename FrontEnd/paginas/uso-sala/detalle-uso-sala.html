@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/sala.css">
+    <title>Detalle de Uso - Sala Informática</title>
+</head>
+<body>
+    <div class="container">
+    
+        <nav class="sidebar">
+            <ul>
+                <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
+                <li class="sidebar-item activo">Sala de informatica</li>
+                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
+                <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    
+        <main class="main">
+    
+            <nav class="topbar-nav">
+                <ul>
+                    <li class="topbar-item"><a href="planilla-uso-sala.html">Nuevo uso</a></li>
+                    <li class="topbar-item"><a href="historial-uso-sala.html">Historial de uso de salas</a></li>
+                    <li class="topbar-item activo">Detalle de uso</li>
+                </ul>
+                <div class="topbar-logo">
+                    <img src="../../img/logo.png" alt="Logo SGRSI">
+                    <span>SGRSI</span>
+                </div>
+            </nav>
+
+            <div class="form-container">
+                <h1>Detalle de Registro de Uso de Sala</h1>
+                
+                <div class="detalle-info-general">
+                    <div class="form-grupo">
+                        <label>Fecha</label>
+                        <input type="text" value="17/05/2026" readonly>
+                    </div>
+                    <div class="form-grupo">
+                        <label>Hora entrada</label>
+                        <input type="text" value="18:30" readonly>
+                    </div>
+                    <div class="form-grupo">
+                        <label>Hora salida</label>
+                        <input type="text" value="21:05" readonly>
+                    </div>
+                    <div class="form-grupo">
+                        <label>Docente</label>
+                        <input type="text" value="Marcia Ana" readonly>
+                    </div>
+                    <div class="form-grupo">
+                        <label>Asignatura</label>
+                        <input type="text" value="Sistemas Operativos" readonly>
+                    </div>
+                    <div class="form-grupo">
+                        <label>Grupo</label>
+                        <input type="text" value="1MI" readonly>
+                    </div>
+                    <div class="form-grupo">
+                        <label>Turno</label>
+                        <input type="text" value="Nocturno" readonly>
+                    </div>
+                    <div class="form-grupo">
+                        <label>Salón</label>
+                        <input type="text" value="Laboratorio 3" readonly>
+                    </div>
+                </div>
+
+                <hr class="separador">
+
+                <div class="form-grupo">
+                    <h2>Asignación de Equipos</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>PC</th>
+                                <th>Alumno</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>PC-01</strong></td>
+                                <td>Juan Pérez</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PC-02</strong></td>
+                                <td>María Rodríguez</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PC-03</strong></td>
+                                <td>Lucas Espósito</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="form-grupo">
+                    <a href="historial-uso-sala.html" class="btn-back">Volver al Historial</a>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</body>
+</html>
