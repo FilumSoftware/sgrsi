@@ -150,3 +150,15 @@ input:focus {
         padding: 24px;
     }
 }
+
+.error-mensaje {
+    color: var(--color-acento);
+    font-size: 12px;
+    margin-top: -12px;
+    margin-bottom: 12px;
+    display: none;
+}
+
+.input-error {
+    border-color: var(--color-acento) !important;
+}
