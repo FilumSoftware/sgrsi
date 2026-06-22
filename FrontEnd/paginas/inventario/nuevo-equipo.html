@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,10 @@
     <link rel="stylesheet" href="inventario.css">
     <title>Inventario</title>
 </head>
+
 <body>
     <div class="container">
-    
+
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
@@ -22,9 +24,9 @@
                 <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
-    
+
         <main class="main">
-    
+
             <nav class="topbar-nav">
                 <ul>
                     <li class="topbar-item activo">Registro de equipos</li>
@@ -36,16 +38,17 @@
                 </div>
             </nav>
             <div class="form-container">
-            <form>
-              <fieldset>
-                  <div class="form-grupo">
-                    <label for="nombre">Nombre del equipo:</label>
-                    <input type="text" id="nombre" name="nombre">
-                  </div>
+                <form id="form-equipo">
+                    <fieldset>
+                        <div class="form-grupo">
+                            <label for="nombre">Nombre del equipo:</label>
+                            <input type="text" id="nombre" name="nombre">
+                            <p class="error-mensaje" id="error-nombre"></p>
+                        </div>
 
-                  <div for="salon" class="form-grupo">
-                    <label for="salon">Salón:</label>
-                    <select id="salon" name="salon">
+                        <div class="form-grupo">
+                            <label for="salon">Salón:</label>
+                            <select id="salon" name="salon">
                       <option value="laboratorio-1">Laboratorio 1</option>
                       <option value="laboratorio-2">Laboratorio 2</option>
                       <option value="laboratorio-3">Laboratorio 3</option>
@@ -57,29 +60,31 @@
                       <option value="taller-3">Taller 3</option>
                       <option value="deposito">Depósito</option>
                     </select>
-                    </div>
+                        </div>
 
-                  <div class="form-grupo">
-                    <label for="categoria">Categoría:</label>
-                    <select id="categoria" name="categoria">
+                        <div class="form-grupo">
+                            <label for="categoria">Categoría:</label>
+                            <select id="categoria" name="categoria">
                       <option value="pc-escritorio">PC escritorio</option>
                       <option value="laptop">Laptop</option>
                       <option value="proyector">Proyector</option>
                       <option value="impresora">Impresora</option>
                       <option value="otro">Otro</option>
                     </select>
-                  </div>
-                
-                  <div class="form-grupo">
-                    <label for="extras">Extras (opcional):</label><br>
-                    <input type="text" id="extras" name="extras"><br><br>
-                  </div>
+                        </div>
 
-                  <input type="submit" value="Registrar equipo">
-              </fieldset>
-            </form>
+                        <div class="form-grupo">
+                            <label for="extras">Extras (opcional):</label><br>
+                            <input type="text" id="extras" name="extras"><br><br>
+                        </div>
+
+                        <input type="submit" value="Registrar equipo">
+                    </fieldset>
+                </form>
             </div>
         </main>
     </div>
+    <script src="../../js/inventario/nuevo-equipo.js"></script>
 </body>
+
 </html>
