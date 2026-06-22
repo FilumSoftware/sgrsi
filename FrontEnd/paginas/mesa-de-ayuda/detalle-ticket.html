@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,10 @@
     <link rel="stylesheet" href="mesa-de-ayuda.css">
     <title>Mesa de Ayuda</title>
 </head>
+
 <body>
     <div class="container">
-    
+
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
@@ -22,9 +24,9 @@
                 <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
-    
+
         <main class="main">
-    
+
             <nav class="topbar-nav">
                 <ul>
                     <li class="topbar-item"><a href="mesa-de-ayuda.html">Historial de tickets</a></li>
@@ -38,49 +40,52 @@
 
             <div class="form-container">
                 <h1>EDICIÓN DE TICKET</h1>
-                <form action="" method="post">
-                <div class="form-grupo">
-                    <label for="fecha">Fecha</label>
-                </div>
-            <div class="form-grupo">
-                <label for="hora">Hora</label>
-            </div>
-            <div class="form-grupo">
-                <label for="estado">Estado:</label>
-                <select id="estado" name="estado">
+                <form id="form-detalle-ticket" action="" method="post">
+                    <div class="form-grupo">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" id="fecha" name="fecha" readonly>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="hora">Hora</label>
+                        <input type="time" id="hora" name="hora" readonly>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="estado">Estado:</label>
+                        <select id="estado" name="estado">
                     <option value="pendiente">Pendiente</option>
                     <option value="finalizada">Finalizada</option>
                     <option value="rechazada">Rechazada</option>
                 </select>
-            </div>
-            <div class="form-grupo">
-                <label for="prioridad">Prioridad:</label>
-                <select id="prioridad" name="prioridad">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="prioridad">Prioridad:</label>
+                        <select id="prioridad" name="prioridad">
                     <option value="baja">Baja</option>
                     <option value="media">Media</option>
                     <option value="alta">Alta</option>
                 </select>
-            </div>
+                    </div>
 
 
-                <!-- el solicitante se autocompleta cuando se crea el ticket-->
-            <div class="form-grupo">
-                <label for="solicitante-display">Solicitante:</label>
-                <input type="text" id="solicitante-display" readonly placeholder="Cargando...">
-                <input type="hidden" id="solicitante" name="solicitante" value="">
-            </div>
+                    <!-- el solicitante se autocompleta cuando se crea el ticket-->
+                    <div class="form-grupo">
+                        <label for="solicitante-display">Solicitante:</label>
+                        <input type="text" id="solicitante-display" readonly placeholder="Cargando...">
+                        <input type="hidden" id="solicitante" name="solicitante" value="">
+                    </div>
 
-                <!-- en el caso del usuario admin, el responsable se elije de un dropdown que viene del backend-->
-            <div class="form-grupo">
-                <label for="responsable">Responsable:</label>
-                <select id="responsable" name="responsable">
+                    <!-- en el caso del usuario admin, el responsable se elije de un dropdown que viene del backend-->
+                    <div class="form-grupo">
+                        <label for="responsable">Responsable:</label>
+                        <select id="responsable" name="responsable">
                     <option value="">— Seleccionar técnico —</option>
-                        <!-- acá va el backend -->
-                </select>
-            </div>
-            <div class="form-grupo">
-                <label for="salon">Salon</label>
-                <select name="salon" id="salon">
+                                 <!-- acá va el backend -->
+                    </select>
+                        <p class="error-mensaje" id="error-responsable"></p>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="salon">Salon</label>
+                        <select name="salon" id="salon">
                     <option value="">Elija una opción</option>
                     <option value="lab-1">Laboratorio 1</option>
                     <option value="lab-2">Laboratorio 2</option>
@@ -91,30 +96,32 @@
                     <option value="tal-2">Taller 2</option>
                     <option value="tal-3">Taller 3</option>
                 </select>
-            </div>
+                    </div>
 
-            <div class="form-grupo">
-                <label for="salon">Equipo</label>
-                <select name="salon" id="salon">
+                    <div class="form-grupo">
+                        <label for="equipo">Equipo</label>
+                        <select name="equipo" id="equipo">
                     <option value="">Elija una opción</option>
                     <option value="equipo-1">Equipo 1</option>
                     <option value="equipo-2">Equipo 2</option>
                     <option value="equipo-3">Equipo 3</option>
                     <option value="equipo-4">Equipo 4</option>
                     <option value="equipo-5">Equipo 5</option>
-                </select>
-            </div>
-            
-            <div class="form-grupo">
-                <label for="motivo">Motivo</label>
-                <textarea name="motivo" id="motivo" rows="5" placeholder="Esriba el motivo..." required></textarea>
-            </div>
-            
-            <button type="submit" id="btn-enviar">Enviar</button>
+                    </select>
+                    </div>
 
-            </form>
+                    <div class="form-grupo">
+                        <label for="motivo">Motivo</label>
+                        <textarea name="motivo" id="motivo" rows="5" placeholder="Escriba el motivo..." required></textarea>
+                    </div>
+
+                    <button type="submit" id="btn-enviar">Enviar</button>
+
+                </form>
             </div>
         </main>
     </div>
+    <script src="../../js/mesa-de-ayuda/detalle-ticket.js"></script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,10 @@
     <link rel="stylesheet" href="../../css/sala.css">
     <title>Sala de Informatica</title>
 </head>
+
 <body>
     <div class="container">
-    
+
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
@@ -22,12 +24,13 @@
                 <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
-    
+
         <main class="main">
-    
+
             <nav class="topbar-nav">
                 <ul>
-                    <li class="topbar-item activo">Nuevo uso</a></li>
+                    <li class="topbar-item activo">Nuevo uso</a>
+                    </li>
                     <li class="topbar-item"><a href="historial-uso-sala.html">Historial de uso de salas</a></li>
                 </ul>
                 <div class="topbar-logo">
@@ -38,18 +41,21 @@
 
             <div class="form-container">
                 <h1>Planilla de Registro de Uso de Salas de Informática</h1>
-                <form action="" method="post">
+                <form id="form-uso-sala" action="" method="post">
                     <div class="form-grupo">
                         <label for="fecha">Fecha</label>
                         <input type="date" id="fecha" name="fecha" placeholder="DD/MM/AAAA" required>
+                        <p class="error-mensaje" id="error-fecha"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="hora-entrada">Hora entrada</label>
                         <input type="time" id="hora-entrada" name="hora-entrada" placeholder="Ej:18:30" required>
+                        <p class="error-mensaje" id="error-hora-entrada"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="hora-salida">Hora salida</label>
                         <input type="time" id="hora-salida" name="hora-salida" placeholder="Ej:21:05" required>
+                        <p class="error-mensaje" id="error-hora-salida"></p>
                     </div>
                     <div class="form-grupo">
                         <label>Docente</label>
@@ -66,25 +72,27 @@
                     <div class="form-grupo">
                         <label for="turno">Turno</label>
                         <select name="turno" id="turno">
-                            <option value="">Elija un turno</option>
-                            <option value="matutino">Matutino</option>
-                            <option value="vespertino">Vespertino</option>
-                            <option value="nocturno">Nocturno</option>
-                        </select>
+                    <option value="">Elija un turno</option>
+                    <option value="matutino">Matutino</option>
+                    <option value="vespertino">Vespertino</option>
+                    <option value="nocturno">Nocturno</option>
+                    </select>
+                        <p class="error-mensaje" id="error-turno"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="salon">Salon</label>
                         <select name="salon" id="salon">
-                            <option value="">Elija una opción</option>
-                            <option value="lab-1">Laboratorio 1</option>
-                            <option value="lab-2">Laboratorio 2</option>
-                            <option value="lab-3">Laboratorio 3</option>
-                            <option value="lab-4">Laboratorio 4</option>
-                            <option value="lab-5">Laboratorio 5</option>
-                            <option value="tal-1">Taller 1</option>
-                            <option value="tal-2">Taller 2</option>
-                            <option value="tal-3">Taller 3</option>
-                        </select>
+                    <option value="">Elija una opción</option>
+                    <option value="lab-1">Laboratorio 1</option>
+                    <option value="lab-2">Laboratorio 2</option>
+                    <option value="lab-3">Laboratorio 3</option>
+                    <option value="lab-4">Laboratorio 4</option>
+                    <option value="lab-5">Laboratorio 5</option>
+                    <option value="tal-1">Taller 1</option>
+                    <option value="tal-2">Taller 2</option>
+                    <option value="tal-3">Taller 3</option>
+                    </select>
+                        <p class="error-mensaje" id="error-salon"></p>
                     </div>
                     <div id="lista-pcs">
                         <div class="fila-pc" data-index="1">
@@ -98,18 +106,19 @@
                             </div>
                             <div class="campo">
                                 <label for="alumno-1">Alumno</label>
-                                <input type="text" id="alumno-1" name="alumno[1]"
-                                    placeholder="Nombre del alumno">
+                                <input type="text" id="alumno-1" name="alumno[1]" placeholder="Nombre del alumno">
                             </div>
                         </div>
-                            <button type="button" id="agregar-pc">+ Agregar PC</button>
+                        <button type="button" id="agregar-pc">+ Agregar PC</button>
                     </div>
-                    
+
                     <button type="submit" id="btn-enviar">Enviar</button>
 
                 </form>
             </div>
         </main>
     </div>
+    <script src="../../js/uso-sala/planilla-uso-sala.js"></script>
 </body>
+
 </html>

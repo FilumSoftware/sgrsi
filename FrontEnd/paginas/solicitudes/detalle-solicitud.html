@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,10 @@
     <link rel="stylesheet" href="solicitudes.css">
     <title>Solicitudes</title>
 </head>
+
 <body>
     <div class="container">
-    
+
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
@@ -22,9 +24,9 @@
                 <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
-    
+
         <main class="main">
-    
+
             <nav class="topbar-nav">
                 <ul>
                     <li class="topbar-item activo">Nueva solicitud</li>
@@ -36,51 +38,52 @@
                 </div>
             </nav>
 
-                <div class="form-container">
-                <form>
+            <div class="form-container">
+                <form id="form-detalle-solicitud">
                     <fieldset>
-                    <legend>Detalle Solicitud</legend>
-                
-                <div class="form-grupo">
-                    <label for="estado">Estado:</label>
-                    <select id="estado" name="estado">
+                        <legend>Detalle Solicitud</legend>
+
+                        <div class="form-grupo">
+                            <label for="estado">Estado:</label>
+                            <select id="estado" name="estado">
                         <option value="pendiente">Pendiente</option>
                         <option value="finalizada">Finalizada</option>
                         <option value="rechazada">Rechazada</option>
                     </select>
-                </div>
-                <div class="form-grupo">
-                    <label for="prioridad">Prioridad:</label>
-                    <select id="prioridad" name="prioridad">
+                        </div>
+                        <div class="form-grupo">
+                            <label for="prioridad">Prioridad:</label>
+                            <select id="prioridad" name="prioridad">
                         <option value="baja">Baja</option>
                         <option value="media">Media</option>
                         <option value="alta">Alta</option>
                     </select>
-                </div>
-                
-                <!-- el solicitante se autocompleta cuando se crea el ticket-->
-                <div class="form-grupo">
-                    <label for="solicitante-display">Solicitante:</label>
-                    <input type="text" id="solicitante-display" readonly placeholder="Cargando...">
-                    <input type="hidden" id="solicitante" name="solicitante" value="">
-                </div>
+                        </div>
 
-                <!-- en el caso del usuario admin, el responsable se elije de un dropdown que viene del backend-->
-                <div class="form-grupo">
-                    <label for="responsable">Responsable:</label>
-                    <select id="responsable" name="responsable">
+                        <!-- el solicitante se autocompleta cuando se crea el ticket-->
+                        <div class="form-grupo">
+                            <label for="solicitante-display">Solicitante:</label>
+                            <input type="text" id="solicitante-display" readonly placeholder="Cargando...">
+                            <input type="hidden" id="solicitante" name="solicitante" value="">
+                        </div>
+
+                        <!-- en el caso del usuario admin, el responsable se elije de un dropdown que viene del backend-->
+                        <div class="form-grupo">
+                            <label for="responsable">Responsable:</label>
+                            <select id="responsable" name="responsable">
                         <option value="">— Seleccionar técnico —</option>
-                        <!-- acá va el backend -->
-                    </select>
-                </div>
-                
-                <div class="form-grupo">
-                    <label for="fecha">Fecha:</label>
-                    <input type="date" id="fecha" name="fecha">
-                </div>
-                <div for="salon" class="form-grupo">
-                    <label for="salon">Salón:</label>
-                    <select id="salon" name="salon">
+                                 <!-- acá va el backend -->
+                        </select>
+                            <p class="error-mensaje" id="error-responsable"></p>
+                        </div>
+
+                        <div class="form-grupo">
+                            <label for="fecha">Fecha:</label>
+                            <input type="date" id="fecha" name="fecha">
+                        </div>
+                        <div class="form-grupo">
+                            <label for="salon">Salón:</label>
+                            <select id="salon" name="salon">
                       <option value="laboratorio-1">Laboratorio 1</option>
                       <option value="laboratorio-2">Laboratorio 1</option>
                       <option value="laboratorio-3">Laboratorio 1</option>
@@ -92,19 +95,20 @@
                       <option value="taller-3">Taller 3</option>
                       <option value="deposito">Depósito</option>
                     </select>
-                </div>  
-                <div class="form-grupo">
-                    <label for="motivo">Motivo:</label><br>
-                    <textarea id="motivo" name="motivo" rows="4" cols="50"></textarea><br><br>
-                </div>
-                  
-                  <input type="submit" value="Guardar solicitud">
-              </fieldset>
-            </form>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="motivo">Motivo:</label><br>
+                            <textarea id="motivo" name="motivo" rows="4" cols="50"></textarea><br><br>
+                        </div>
+
+                        <input type="submit" value="Guardar solicitud">
+                    </fieldset>
+                </form>
             </div>
 
         </main>
     </div>
-    <script src="../../js/solicitudes.js"></script>
+    <script src="../../js/solicitudes/detalle-solicitud.js"></script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,10 @@
     <link rel="stylesheet" href="inventario.css">
     <title>Detalle de Equipo - Inventario</title>
 </head>
+
 <body>
     <div class="container">
-    
+
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
@@ -22,9 +24,9 @@
                 <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
-    
+
         <main class="main">
-    
+
             <nav class="topbar-nav">
                 <ul>
                     <li class="topbar-item"><a href="nuevo-equipo.html">Registro de equipos</a></li>
@@ -39,8 +41,8 @@
 
             <div class="form-container">
                 <h1>Detalle de Equipo</h1>
-                
-                <form action="" method="post">
+
+                <form id="form-detalle-equipo" action="" method="post">
                     <fieldset>
                         <div class="form-grupo">
                             <label for="id-equipo">ID Equipo (No editable):</label>
@@ -50,6 +52,7 @@
                         <div class="form-grupo">
                             <label for="nombre">Nombre del equipo:</label>
                             <input type="text" id="nombre" name="nombre" value="PC 1" required>
+                            <p class="error-mensaje" id="error-nombre"></p>
                         </div>
 
                         <div class="form-grupo">
@@ -78,7 +81,7 @@
                                 <option value="otro">Otro</option>
                             </select>
                         </div>
-                        
+
                         <div class="form-grupo">
                             <label for="extras">Extras:</label>
                             <input type="text" id="extras" name="extras" value="Monitor, teclado, mouse">
@@ -94,11 +97,14 @@
                         </div>
 
                         <button type="submit" id="btn-guardar">Guardar Cambios</button>
-                        
+
                     </fieldset>
                 </form>
             </div>
         </main>
     </div>
+    <script src="../../js/inventario/detalle-equipo.js"></script>
 </body>
+</body>
+
 </html>

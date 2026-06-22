@@ -21,12 +21,14 @@
             <h2>SGRSI</h2>
             <p class="subtitulo">Ingresá tus datos para acceder al sistema</p>
 
-            <form action="paginas/dashboard/dashboard.html" method="get">
-                <label>Correo electrónico</label>
-                <input type="email" placeholder="usuario@iti.edu.uy">
+            <form id="form-login" action="paginas/dashboard/dashboard.html" method="get">
+                <label>C.i</label>
+                <input type="text" id="ci" placeholder="5789043">
+                <p class="error-mensaje" id="error-ci"></p>
 
                 <label>Contraseña</label>
-                <input type="password" placeholder="••••••••">
+                <input type="password" id="password" placeholder="••••••••">
+                <p class="error-mensaje" id="error-password"></p>
 
                 <button type="submit" class="btn-ingresar">Iniciar sesión</button>
             </form>
@@ -36,6 +38,8 @@
         <p class="pie">SGRSI v2.0 — FILUM SOFTWARE © 2026</p>
 
     </div>
+    <script src="js/login.js"></script>
 </body>
+
 
 </html>

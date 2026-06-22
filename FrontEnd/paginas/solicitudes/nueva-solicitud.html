@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,10 @@
     <link rel="stylesheet" href="solicitudes.css">
     <title>Solicitudes</title>
 </head>
+
 <body>
     <div class="container">
-    
+
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
@@ -22,9 +24,9 @@
                 <li class="sidebar-item"><a href="../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
-    
+
         <main class="main">
-    
+
             <nav class="topbar-nav">
                 <ul>
                     <li class="topbar-item activo">Nueva solicitud</li>
@@ -36,16 +38,17 @@
                 </div>
             </nav>
 
-                <div class="form-container">
-                <form>
+            <div class="form-container">
+                <form id="form-solicitud">
                     <fieldset>
-                    <div class="form-grupo">
-                        <label for="fecha">Fecha:</label>
-                        <input type="date" id="fecha" name="fecha">
-                    </div>
-                    <div class="form-grupo">
-                        <label for="salon">Salón:</label>
-                        <select id="salon" name="salon">
+                        <div class="form-grupo">
+                            <label for="fecha">Fecha:</label>
+                            <input type="date" id="fecha" name="fecha">
+                            <p class="error-mensaje" id="error-fecha"></p>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="salon">Salón:</label>
+                            <select id="salon" name="salon">
                             <option value="laboratorio-1">Laboratorio 1</option>
                             <option value="laboratorio-2">Laboratorio 2</option>
                             <option value="laboratorio-3">Laboratorio 3</option>
@@ -57,19 +60,21 @@
                             <option value="taller-3">Taller 3</option>
                             <option value="deposito">Depósito</option>
                         </select>
-                    </div>
-                    <div class="form-grupo">
-                        <label for="motivo">Motivo:</label><br>
-                        <textarea id="motivo" name="motivo" rows="4" cols="50"></textarea><br><br>
-                    </div>    
+                        </div>
+                        <div class="form-grupo">
+                            <label for="motivo">Motivo:</label><br>
+                            <textarea id="motivo" name="motivo" rows="4" cols="50"></textarea>
+                            <p class="error-mensaje" id="error-motivo"></p>
+                        </div>
 
-                <input type="submit" value="Enviar solicitud">
-              </fieldset>
-            </form>
+                        <input type="submit" value="Enviar solicitud">
+                    </fieldset>
+                </form>
             </div>
 
         </main>
     </div>
-    <script src="../../js/solicitudes.js"></script>
+    <script src="../../js/solicitudes/nueva-solicitud.js"></script>
 </body>
+
 </html>
