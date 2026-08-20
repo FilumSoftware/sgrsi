@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,10 @@
     <link rel="stylesheet" href="mesa-de-ayuda.css">
     <title>Mesa de Ayuda</title>
 </head>
+
 <body>
     <div class="container">
-    
+
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
@@ -22,21 +24,23 @@
                 <li class="sidebar-item"><a href="../../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
-    
+
         <main class="main">
-    
-            <nav class="topbar-nav">
-                <ul>
-                    <li class="topbar-item activo">Nuevo ticket</li>
-                    <li class="topbar-item"><a href="mesa-de-ayuda.html">Historial de tickets</a></li>
-                </ul>
+
+            <header class="topbar-nav">
+                <nav>
+                    <ul>
+                        <li class="topbar-item activo">Nuevo ticket</li>
+                        <li class="topbar-item"><a href="mesa-de-ayuda.html">Historial de tickets</a></li>
+                    </ul>
+                </nav>
                 <div class="topbar-logo">
                     <img src="../../img/logo.png" alt="Logo SGRSI">
                     <span>SGRSI</span>
                 </div>
-            </nav>
+            </header>
 
-            <div class="form-container">
+            <section class="form-container">
                 <form action="" method="post">
                     <div class="form-grupo">
                         <label for="fecha">Fecha</label>
@@ -75,13 +79,14 @@
                         <label for="motivo">Motivo</label>
                         <textarea name="motivo" id="motivo" rows="5" placeholder="Escriba el motivo..." required></textarea>
                     </div>
-            
+
                     <button type="submit" id="btn-enviar">Enviar</button>
 
                 </form>
-            </div>
+            </section>
         </main>
     </div>
-     <script src="../../js/mesa-de-ayuda/nuevo-ticket.js"></script>
+    <script src="../../js/mesa-de-ayuda/nuevo-ticket.js"></script>
 </body>
+
 </html>
