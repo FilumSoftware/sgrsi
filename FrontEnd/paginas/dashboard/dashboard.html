@@ -26,22 +26,24 @@
 
         <main class="main">
 
-            <nav class="topbar-nav">
-                <ul>
-                    <li class="topbar-item activo">Cosa del dashboard 1</li>
-                    <li class="topbar-item"><a href="dashboard.html">Cosa del dashboard 2</a></li>
-                </ul>
+            <header class="topbar-nav">
+                <nav>
+                    <ul>
+                        <li class="topbar-item activo">Cosa del dashboard 1</li>
+                        <li class="topbar-item"><a href="dashboard.html">Cosa del dashboard 2</a></li>
+                    </ul>
+                </nav>
                 <div class="topbar-logo">
                     <img src="../../img/logo.png" alt="Logo SGRSI">
                     <span>SGRSI</span>
                 </div>
-            </nav>
+            </header>
 
             <div class="content">
                 <h1 class="saludo">Bienvenido</h1>
                 <p class="saludo-sub">Resumen del sistema</p>
 
-                <div class="tarjetas">
+                <section class="tarjetas">
                     <div class="tarjeta tarjeta-violeta">
                         <p class="tarjeta-numero">12</p>
                         <p class="tarjeta-label">Tickets abiertos</p>
@@ -58,10 +60,10 @@
                         <p class="tarjeta-numero">5</p>
                         <p class="tarjeta-label">Registros de laboratorio</p>
                     </div>
-                </div>
+                </section>
 
 
-                <div class="tabla-contenedor">
+                <section class="tabla-contenedor">
                     <h2 class="tabla-titulo">Últimos tickets registrados</h2>
                     <table class="tabla">
                         <thead>
@@ -73,40 +75,43 @@
                                 <th>Fecha</th>
                             </tr>
                         </thead>
-                        <tr>
-                            <td>001</td>
-                            <td>Ratón Pérez</td>
-                            <td>Computadora no enciende</td>
-                            <td><span class="estado pendiente">Pendiente</span></td>
-                            <td>17/05/2026</td>
-                        </tr>
-                        <tr>
-                            <td>002</td>
-                            <td>Darío Buffa</td>
-                            <td>Instalación de software</td>
-                            <td><span class="estado proceso">En proceso</span></td>
-                            <td>16/05/2026</td>
-                        </tr>
-                        <tr>
-                            <td>003</td>
-                            <td>Massimiliano Pereira</td>
-                            <td>Problema con la red</td>
-                            <td><span class="estado resuelto">Resuelto</span></td>
-                            <td>15/05/2026</td>
-                        </tr>
-                        <tr>
-                            <td>004</td>
-                            <td>Bárbara Silva</td>
-                            <td>Reparar el aire acondicionado lab 3</td>
-                            <td><span class="estado pendiente">Pendiente</span></td>
-                            <td>15/05/2026</td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>001</td>
+                                <td>Ratón Pérez</td>
+                                <td>Computadora no enciende</td>
+                                <td><span class="estado pendiente">Pendiente</span></td>
+                                <td>17/05/2026</td>
+                            </tr>
+                            <tr>
+                                <td>002</td>
+                                <td>Darío Buffa</td>
+                                <td>Instalación de software</td>
+                                <td><span class="estado proceso">En proceso</span></td>
+                                <td>16/05/2026</td>
+                            </tr>
+                            <tr>
+                                <td>003</td>
+                                <td>Massimiliano Pereira</td>
+                                <td>Problema con la red</td>
+                                <td><span class="estado resuelto">Resuelto</span></td>
+                                <td>15/05/2026</td>
+                            </tr>
+                            <tr>
+                                <td>004</td>
+                                <td>Bárbara Silva</td>
+                                <td>Reparar el aire acondicionado lab 3</td>
+                                <td><span class="estado pendiente">Pendiente</span></td>
+                                <td>15/05/2026</td>
+                            </tr>
+                        </tbody>
                     </table>
-                </div>
+                </section>
 
             </div>
         </main>
 
+    </div>
 </body>
 
 </html>
