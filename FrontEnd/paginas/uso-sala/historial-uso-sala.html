@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/main.css">
-    <link rel="stylesheet" href="sala.css">
-    <title>Sala Informatica</title>
+    <link rel="stylesheet" href="../../css/sala.css" <title>Sala Informatica</title>
 </head>
+
 <body>
     <div class="container">
-    
+
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
@@ -22,21 +23,23 @@
                 <li class="sidebar-item"><a href="../../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
-    
+
         <main class="main">
-    
-            <nav class="topbar-nav">
-                <ul>
-                    <li class="topbar-item"><a href="planilla-uso-sala.html">Nuevo uso</a></li>
-                    <li class="topbar-item activo">Historial de uso de salas</li>
-                </ul>
+
+            <header class="topbar-nav">
+                <nav>
+                    <ul>
+                        <li class="topbar-item"><a href="planilla-uso-sala.html">Nuevo uso</a></li>
+                        <li class="topbar-item activo">Historial de uso de salas</li>
+                    </ul>
+                </nav>
                 <div class="topbar-logo">
                     <img src="../../img/logo.png" alt="Logo SGRSI">
                     <span>SGRSI</span>
                 </div>
-            </nav>
+            </header>
 
-             <div class="content">
+            <section class="content">
                 <table>
                     <thead>
                         <tr>
@@ -84,9 +87,11 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </section>
 
         </main>
     </div>
+    <script src="../../js/uso-sala/historial-uso-sala.js"></script>
 </body>
+
 </html>
