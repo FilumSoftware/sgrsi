@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,10 @@
     <link rel="stylesheet" href="usuarios.css">
     <title>Usuarios</title>
 </head>
+
 <body>
     <div class="container">
-    
+
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
@@ -22,21 +24,23 @@
                 <li class="sidebar-item"><a href="../../../index.html" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
-    
+
         <main class="main">
-    
-            <nav class="topbar-nav">
-                <ul>
-                    <li class="topbar-item"><a href="nuevo-usuario.html">Nuevo usuario</a></li>
-                    <li class="topbar-item activo">Usuarios</li>
-                </ul>
+
+            <header class="topbar-nav">
+                <nav>
+                    <ul>
+                        <li class="topbar-item"><a href="nuevo-usuario.html">Nuevo usuario</a></li>
+                        <li class="topbar-item activo">Usuarios</li>
+                    </ul>
+                </nav>
                 <div class="topbar-logo">
                     <img src="../../img/logo.png" alt="Logo SGRSI">
                     <span>SGRSI</span>
                 </div>
-            </nav>
+            </header>
 
-            <div class="content">
+            <section class="content">
                 <table>
                     <thead>
                         <tr>
@@ -99,10 +103,11 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </section>
 
         </main>
     </div>
-    <script src="../../js/usuarios.js"></script>
+    <script src="../../js/usuarios/usuarios.js"></script>
 </body>
+
 </html>
