@@ -27,19 +27,20 @@
 
         <main class="main">
 
-            <nav class="topbar-nav">
-                <ul>
-                    <li class="topbar-item activo">Nuevo uso</a>
-                    </li>
-                    <li class="topbar-item"><a href="historial-uso-sala.html">Historial de uso de salas</a></li>
-                </ul>
+            <header class="topbar-nav">
+                <nav>
+                    <ul>
+                        <li class="topbar-item activo">Nuevo uso</li>
+                        <li class="topbar-item"><a href="historial-uso-sala.html">Historial de uso de salas</a></li>
+                    </ul>
+                </nav>
                 <div class="topbar-logo">
                     <img src="../../img/logo.png" alt="Logo SGRSI">
                     <span>SGRSI</span>
                 </div>
-            </nav>
+            </header>
 
-            <div class="form-container">
+            <section class="form-container">
                 <h1>Planilla de Registro de Uso de Salas de Informática</h1>
                 <form id="form-uso-sala" action="" method="post">
                     <div class="form-grupo">
@@ -58,7 +59,7 @@
                         <p class="error-mensaje" id="error-hora-salida"></p>
                     </div>
                     <div class="form-grupo">
-                        <label>Docente</label>
+                        <label for="docente">Docente</label>
                         <input type="text" id="docente" name="docente" readonly value="[nombre del usuario]">
                     </div>
                     <div class="form-grupo">
@@ -115,7 +116,7 @@
                     <button type="submit" id="btn-enviar">Enviar</button>
 
                 </form>
-            </div>
+            </section>
         </main>
     </div>
     <script src="../../js/uso-sala/planilla-uso-sala.js"></script>
