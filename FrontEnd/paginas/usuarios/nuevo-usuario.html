@@ -27,18 +27,20 @@
 
         <main class="main">
 
-            <nav class="topbar-nav">
-                <ul>
-                    <li class="topbar-item activo">Nuevo usuario</li>
-                    <li class="topbar-item"><a href="usuarios.html">Usuarios</a></li>
-                </ul>
+            <header class="topbar-nav">
+                <nav>
+                    <ul>
+                        <li class="topbar-item activo">Nuevo usuario</li>
+                        <li class="topbar-item"><a href="usuarios.html">Usuarios</a></li>
+                    </ul>
+                </nav>
                 <div class="topbar-logo">
                     <img src="../../img/logo.png" alt="Logo SGRSI">
                     <span>SGRSI</span>
                 </div>
-            </nav>
+            </header>
 
-            <div class="form-container">
+            <section class="form-container">
                 <form id="form-usuario">
                     <fieldset>
                         <div class="form-grupo">
@@ -61,22 +63,21 @@
                             <input type="password" id="confirmar-password" name="confirmar-password">
                             <p class="error-mensaje" id="error-confirmar-password"></p>
                         </div>
-            </div>
-            <div class="form-grupo">
-                <label for="tipo-usuario">Permisos:</label>
-                <select id="tipo-usuario" name="tipo-usuario">
-                            <option value="solicitante">Solicitante</option>
-                            <option value="asistente">Asistente</option>
-                            <option value="coordinador">Coordinador</option>
-                        </select>
-            </div>
+                        <div class="form-grupo">
+                            <label for="tipo-usuario">Permisos:</label>
+                            <select id="tipo-usuario" name="tipo-usuario">
+                                <option value="solicitante">Solicitante</option>
+                                <option value="asistente">Asistente</option>
+                                <option value="coordinador">Coordinador</option>
+                            </select>
+                        </div>
 
-            <input type="submit" value="Crear Cuenta">
+                        <input type="submit" value="Crear Cuenta">
 
-            </fieldset>
-            </form>
-    </div>
-    </main>
+                    </fieldset>
+                </form>
+            </section>
+        </main>
     </div>
     <script src="../../js/usuarios/nuevo-usuario.js"></script>
 </body>
