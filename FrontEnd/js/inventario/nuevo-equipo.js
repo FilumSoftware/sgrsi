@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const formulario = document.getElementById('form-equipo');
 
     formulario.addEventListener('submit', function(evento) {
+        evento.preventDefault();
+
         let formularioValido = true;
 
         const nombre = document.getElementById('nombre');
@@ -14,10 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             errorNombre.style.display = 'none';
             nombre.classList.remove('input-error');
-        }
-
-        if (!formularioValido) {
-            evento.preventDefault();
         }
     });
 });
