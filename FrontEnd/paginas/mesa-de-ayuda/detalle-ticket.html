@@ -30,8 +30,13 @@
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item"><a href="mesa-de-ayuda.html">Historial de tickets</a></li>
-                        <li class="topbar-item activo">Nuevo ticket</li>
+                        <nav>
+                            <ul>
+                                <li class="topbar-item"><a href="mesa-de-ayuda.html">Historial de tickets</a></li>
+                                <li class="topbar-item"><a href="nuevo-ticket.html">Nuevo ticket</a></li>
+                                <li class="topbar-item activo">Detalle de ticket</li>
+                            </ul>
+                        </nav>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
@@ -45,11 +50,11 @@
                 <form id="form-detalle-ticket" action="" method="post">
                     <div class="form-grupo">
                         <label for="fecha">Fecha</label>
-                        <input type="date" id="fecha" name="fecha" readonly>
+                        <input type="date" id="fecha" name="fecha" value="2026-06-24" readonly>
                     </div>
                     <div class="form-grupo">
                         <label for="hora">Hora</label>
-                        <input type="time" id="hora" name="hora" readonly>
+                        <input type="time" id="hora" name="hora" value="12:35" readonly>
                     </div>
                     <div class="form-grupo">
                         <label for="estado">Estado:</label>
@@ -72,8 +77,8 @@
                     <!-- el solicitante se autocompleta cuando se crea el ticket-->
                     <div class="form-grupo">
                         <label for="solicitante-display">Solicitante:</label>
-                        <input type="text" id="solicitante-display" readonly placeholder="Cargando...">
-                        <input type="hidden" id="solicitante" name="solicitante" value="">
+                        <input type="text" id="solicitante-display" readonly value="Ratón Pérez">
+                        <input type="hidden" id="solicitante" name="solicitante" value="raton-perez">
                     </div>
 
                     <!-- en el caso del usuario admin, el responsable se elije de un dropdown que viene del backend-->
