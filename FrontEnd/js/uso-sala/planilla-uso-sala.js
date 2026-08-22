@@ -1,6 +1,24 @@
 document.addEventListener('DOMContentLoaded', function() {
     const formulario = document.getElementById('form-uso-sala');
 
+    // El boton "+ Agregar PC" no hacia nada. Las filas ya estan en el
+    // HTML y arrancan ocultas; el boton va mostrando la siguiente. Es
+    // para lo que ya estaba pensada la clase .oculta.
+    const botonAgregarPc = document.getElementById('agregar-pc');
+    const filasPc = document.querySelectorAll('.fila-pc');
+    let pcsVisibles = 1;
+
+    botonAgregarPc.addEventListener('click', function () {
+        if (pcsVisibles < filasPc.length) {
+            filasPc[pcsVisibles].classList.remove('oculta');
+            pcsVisibles = pcsVisibles + 1;
+        }
+
+        if (pcsVisibles === filasPc.length) {
+            botonAgregarPc.classList.add('oculta');
+        }
+    });
+
     formulario.addEventListener('submit', function(evento) {
         let formularioValido = true;
 
