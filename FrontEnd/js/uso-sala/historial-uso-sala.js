@@ -1,6 +1,3 @@
-// Los id de cada fila, en el mismo orden en que aparecen en la tabla.
-// Son datos de prueba: cuando el backend arme la tabla, estos valores
-// los va a escribir PHP.
 const ids = [1, 2, 3];
 
 const filas = document.querySelectorAll('tbody tr');
