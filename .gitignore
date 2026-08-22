@@ -1,1 +1,6 @@
 .DS_Store
+
+# Credenciales. Se versiona database.example.php en su lugar.
+BackEnd/config/database.php
+.env
+.env.local
