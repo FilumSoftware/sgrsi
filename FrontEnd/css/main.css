@@ -50,6 +50,10 @@ h3 {
 
 .main {
     flex: 1;
+    /* Sin esto un flex item queda con min-width: auto y no se achica por
+       debajo de su contenido, asi que el overflow-x de .tabla-wrapper no
+       llegaba a actuar y la tabla empujaba la pagina a lo ancho. */
+    min-width: 0;
     display: flex;
     flex-direction: column;
     background-color: var(--color-fondo);
