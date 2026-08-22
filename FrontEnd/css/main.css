@@ -347,29 +347,6 @@ button[type="submit"]:hover {
     background-color: var(--color-acento);
 }
 
-.estado {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.estado.pendiente {
-    background-color: var(--color-primario);
-    color: var(--color-secundario);
-}
-
-.estado.en-proceso {
-    background-color: var(--color-acento);
-    color: var(--color-fondo);
-}
-
-.estado.resuelto {
-    background-color: var(--color-secundario);
-    color: var(--color-fondo);
-}
-
 .error-mensaje {
     color: var(--color-acento);
     font-size: 12px;
