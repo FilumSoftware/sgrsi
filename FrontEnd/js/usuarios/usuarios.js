@@ -1,18 +1,30 @@
-function editar(id) {
-    window.location.href = `detalle-usuario.html?id=${id}`;
+const ids = [1, 2, 3, 4, 5];
+
+const filas = document.querySelectorAll('tbody tr');
+const botonesEditar = document.querySelectorAll('.btn-editar');
+const botonesDesactivar = document.querySelectorAll('.btn-eliminar');
+const botonesReiniciar = document.querySelectorAll('.btn-reiniciar');
+
+for (let i = 0; i < botonesEditar.length; i++) {
+    botonesEditar[i].addEventListener('click', function () {
+        window.location.href = 'detalle-usuario.html?id=' + ids[i];
+    });
 }
 
-function desactivar(id) {
-    const confirmar = confirm('¿Desactivar este usuario?');
-    if (!confirmar) return;
-
-    const fila = document.querySelector(`button[onclick="desactivar(${id})"]`).closest('tr');
-    fila.style.opacity = '0.5';
+for (let i = 0; i < botonesDesactivar.length; i++) {
+    botonesDesactivar[i].addEventListener('click', function () {
+        const confirmar = confirm('¿Desactivar este usuario?');
+        if (confirmar) {
+            filas[i].classList.add('fila-desactivada');
+        }
+    });
 }
 
-function reiniciarContrasena(id) {
-    const confirmar = confirm('¿Reiniciar la contraseña de este usuario?');
-    if (!confirmar) return;
-
-    alert('Se envió el reinicio de contraseña');
+for (let i = 0; i < botonesReiniciar.length; i++) {
+    botonesReiniciar[i].addEventListener('click', function () {
+        const confirmar = confirm('¿Reiniciar la contraseña de este usuario?');
+        if (confirmar) {
+            alert('Se envió el reinicio de contraseña');
+        }
+    });
 }

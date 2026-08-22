@@ -50,6 +50,7 @@ h3 {
 
 .main {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     background-color: var(--color-fondo);
@@ -249,7 +250,8 @@ tbody tr:hover {
 }
 
 .form-container {
-    min-width: 600px;
+    width: 100%;
+    max-width: 600px;
     margin: 32px auto;
     padding: 32px;
     background-color: var(--color-fondo);
@@ -295,7 +297,6 @@ select {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid var(--color-primario);
-    /* ← bug corregido: era var(--borde-radius) */
     border-radius: var(--borde-radius);
     font-family: var(--fuente-principal);
     font-size: 14px;
@@ -310,7 +311,6 @@ textarea:focus,
 select:focus {
     outline: none;
     border-color: var(--color-secundario);
-    /* ← bug corregido: era var(--sombra) */
 }
 
 input[readonly],
@@ -344,38 +344,23 @@ button[type="submit"]:hover {
     background-color: var(--color-acento);
 }
 
-.estado {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 20px;
+.error-mensaje {
+    color: var(--color-acento);
     font-size: 12px;
-    font-weight: bold;
-}
-
-.estado.pendiente {
-    background-color: var(--color-primario);
-    color: var(--color-secundario);
-}
-
-.estado.en-proceso {
-    background-color: var(--color-acento);
-    color: var(--color-fondo);
-}
-
-.estado.resuelto {
-    background-color: var(--color-secundario);
-    color: var(--color-fondo);
+    margin-top: 4px;
+    display: none;
 }
 
 .input-error {
     border-color: var(--color-acento) !important;
 }
 
-.error-msg {
-    color: var(--color-acento);
-    font-size: 12px;
-    margin-top: 4px;
-    color: var(--color-fondo);
+.oculta {
+    display: none !important;
+}
+
+.fila-desactivada {
+    opacity: 0.5;
 }
 
 @media (min-width: 576px) {
@@ -425,4 +410,24 @@ button[type="submit"]:hover {
     .topbar-logo span {
         font-size: 15px;
     }
+}
+
+.btn-back {
+    display: inline-block;
+    padding: 10px 16px;
+    background-color: var(--color-secundario);
+    color: var(--color-fondo);
+    border-radius: var(--borde-radius);
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-back:hover {
+    background-color: var(--color-acento);
+}
+
+.separador {
+    border: none;
+    border-top: 1px solid var(--color-primario);
+    margin: 24px 0;
 }
