@@ -36,14 +36,14 @@ Cliente: `C:\Program Files\MariaDB 12.3\bin\mariadb.exe`
 Desde esta carpeta:
 
 ```bash
-"C:\Program Files\MariaDB 12.3\bin\mariadb.exe" -h 127.0.0.1 -P 3307 -u root -p < ddl.sql
+"C:\Program Files\MariaDB 12.3\bin\mariadb.exe" -h 127.0.0.1 -P 3307 -u root < ddl.sql
 ```
 
 ```bash
-"C:\Program Files\MariaDB 12.3\bin\mariadb.exe" -h 127.0.0.1 -P 3307 -u root -p -D sgrsi < dml.sql
+"C:\Program Files\MariaDB 12.3\bin\mariadb.exe" -h 127.0.0.1 -P 3307 -u root -D sgrsi < dml.sql
 ```
 
-`-p` pide la contraseña de root que se definió al instalar MariaDB. También se
+El root de esa instancia no tiene contraseña, por eso no va `-p`. También se
 pueden abrir los dos archivos en HeidiSQL y ejecutarlos con F9.
 
 ## Verificar que PDO tenga el driver
