@@ -249,7 +249,8 @@ tbody tr:hover {
 }
 
 .form-container {
-    min-width: 600px;
+    width: 100%;
+    max-width: 600px;
     margin: 32px auto;
     padding: 32px;
     background-color: var(--color-fondo);
@@ -295,7 +296,6 @@ select {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid var(--color-primario);
-    /* ← bug corregido: era var(--borde-radius) */
     border-radius: var(--borde-radius);
     font-family: var(--fuente-principal);
     font-size: 14px;
@@ -310,7 +310,6 @@ textarea:focus,
 select:focus {
     outline: none;
     border-color: var(--color-secundario);
-    /* ← bug corregido: era var(--sombra) */
 }
 
 input[readonly],
@@ -367,15 +366,23 @@ button[type="submit"]:hover {
     color: var(--color-fondo);
 }
 
+.error-mensaje {
+    color: var(--color-acento);
+    font-size: 12px;
+    margin-top: 4px;
+    display: none;
+}
+
 .input-error {
     border-color: var(--color-acento) !important;
 }
 
-.error-msg {
-    color: var(--color-acento);
-    font-size: 12px;
-    margin-top: 4px;
-    color: var(--color-fondo);
+.oculta {
+    display: none;
+}
+
+.fila-desactivada {
+    opacity: 0.5;
 }
 
 @media (min-width: 576px) {
@@ -425,4 +432,24 @@ button[type="submit"]:hover {
     .topbar-logo span {
         font-size: 15px;
     }
+}
+
+.btn-back {
+    display: inline-block;
+    padding: 10px 16px;
+    background-color: var(--color-secundario);
+    color: var(--color-fondo);
+    border-radius: var(--borde-radius);
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-back:hover {
+    background-color: var(--color-acento);
+}
+
+.separador {
+    border: none;
+    border-top: 1px solid var(--color-primario);
+    margin: 24px 0;
 }
