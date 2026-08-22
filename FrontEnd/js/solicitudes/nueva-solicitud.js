@@ -28,8 +28,10 @@ document.addEventListener('DOMContentLoaded', function() {
             motivo.classList.remove('input-error');
         }
 
-        if (!formularioValido) {
-            evento.preventDefault();
+        evento.preventDefault();
+
+        if (formularioValido) {
+            alert('Solicitud registrada correctamente.');
         }
     });
 });

@@ -16,8 +16,10 @@ document.addEventListener('DOMContentLoaded', function() {
             nombre.classList.remove('input-error');
         }
 
-        if (!formularioValido) {
-            evento.preventDefault();
+        evento.preventDefault();
+
+        if (formularioValido) {
+            alert('Cambios guardados (pendiente de conexión con el backend)');
         }
     });
 });

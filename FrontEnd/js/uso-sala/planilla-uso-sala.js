@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const campos = ['fecha', 'hora-entrada', 'hora-salida', 'turno', 'salon'];
 
-        campos.forEach(function(idCampo) {
-            const campo = document.getElementById(idCampo);
-            const errorCampo = document.getElementById('error-' + idCampo);
+        for (let i = 0; i < campos.length; i++) {
+            const campo = document.getElementById(campos[i]);
+            const errorCampo = document.getElementById('error-' + campos[i]);
 
             if (campo.value.trim() === '') {
                 errorCampo.textContent = 'Este campo es obligatorio.';
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 errorCampo.style.display = 'none';
                 campo.classList.remove('input-error');
             }
-        });
+        }
 
         const horaEntrada = document.getElementById('hora-entrada');
         const horaSalida = document.getElementById('hora-salida');
@@ -31,8 +31,10 @@ document.addEventListener('DOMContentLoaded', function() {
             formularioValido = false;
         }
 
-        if (!formularioValido) {
-            evento.preventDefault();
+        evento.preventDefault();
+
+        if (formularioValido) {
+            alert('Planilla registrada correctamente.');
         }
     });
 });

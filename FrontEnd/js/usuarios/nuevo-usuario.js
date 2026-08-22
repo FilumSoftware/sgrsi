@@ -52,8 +52,10 @@ document.addEventListener('DOMContentLoaded', function() {
             confirmarPassword.classList.remove('input-error');
         }
 
-        if (!formularioValido) {
-            evento.preventDefault();
+        evento.preventDefault();
+
+        if (formularioValido) {
+            alert('Usuario creado correctamente.');
         }
     });
 });

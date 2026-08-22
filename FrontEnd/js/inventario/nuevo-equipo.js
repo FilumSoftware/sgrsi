@@ -17,5 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
             errorNombre.style.display = 'none';
             nombre.classList.remove('input-error');
         }
+
+        if (formularioValido) {
+            alert('Equipo registrado correctamente.');
+        }
     });
 });
