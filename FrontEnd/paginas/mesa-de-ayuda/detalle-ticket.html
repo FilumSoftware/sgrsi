@@ -83,11 +83,10 @@
                     <!-- en el caso del usuario admin, el responsable se elige de un dropdown que viene del backend-->
                     <div class="form-grupo">
                         <label for="responsable">Responsable:</label>
-                        <select id="responsable" name="responsable">
+                        <select id="responsable" name="responsable" required>
                     <option value="">— Seleccionar técnico —</option>
                                  <!-- acá va el backend -->
                     </select>
-                        <p class="error-mensaje" id="error-responsable"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="salon">Salón</label>
@@ -127,7 +126,6 @@
             </section>
         </main>
     </div>
-    <script src="../../js/mesa-de-ayuda/detalle-ticket.js"></script>
 </body>
 
 </html>

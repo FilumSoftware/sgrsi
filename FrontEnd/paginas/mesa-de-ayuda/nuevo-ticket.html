@@ -44,16 +44,14 @@
                     <div class="form-grupo">
                         <label for="fecha">Fecha</label>
                         <input type="date" name="fecha" id="fecha" required>
-                        <p class="error-mensaje" id="error-fecha"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="hora">Hora</label>
                         <input type="time" name="hora" id="hora" required>
-                        <p class="error-mensaje" id="error-hora"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="salon">Salón</label>
-                        <select name="salon" id="salon">
+                        <select name="salon" id="salon" required>
                             <option value="">Elija una opción</option>
                             <option value="lab-1">Laboratorio 1</option>
                             <option value="lab-2">Laboratorio 2</option>
@@ -64,11 +62,10 @@
                             <option value="tal-2">Taller 2</option>
                             <option value="tal-3">Taller 3</option>
                         </select>
-                        <p class="error-mensaje" id="error-salon"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="equipo">Equipo</label>
-                        <select name="equipo" id="equipo">
+                        <select name="equipo" id="equipo" required>
                             <option value="">Elija una opción</option>
                             <option value="equipo-1">Equipo 1</option>
                             <option value="equipo-2">Equipo 2</option>
@@ -76,12 +73,10 @@
                             <option value="equipo-4">Equipo 4</option>
                             <option value="equipo-5">Equipo 5</option>
                         </select>
-                        <p class="error-mensaje" id="error-equipo"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="motivo">Motivo</label>
                         <textarea name="motivo" id="motivo" rows="5" placeholder="Escriba el motivo..." required></textarea>
-                        <p class="error-mensaje" id="error-motivo"></p>
                     </div>
 
                     <button type="submit" id="btn-enviar">Enviar</button>

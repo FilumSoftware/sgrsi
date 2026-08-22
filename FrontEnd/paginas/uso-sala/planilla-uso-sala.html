@@ -46,12 +46,10 @@
                     <div class="form-grupo">
                         <label for="fecha">Fecha</label>
                         <input type="date" id="fecha" name="fecha" placeholder="DD/MM/AAAA" required>
-                        <p class="error-mensaje" id="error-fecha"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="hora-entrada">Hora entrada</label>
                         <input type="time" id="hora-entrada" name="hora-entrada" placeholder="Ej:18:30" required>
-                        <p class="error-mensaje" id="error-hora-entrada"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="hora-salida">Hora salida</label>
@@ -72,17 +70,16 @@
                     </div>
                     <div class="form-grupo">
                         <label for="turno">Turno</label>
-                        <select name="turno" id="turno">
+                        <select name="turno" id="turno" required>
                     <option value="">Elija un turno</option>
                     <option value="matutino">Matutino</option>
                     <option value="vespertino">Vespertino</option>
                     <option value="nocturno">Nocturno</option>
                     </select>
-                        <p class="error-mensaje" id="error-turno"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="salon">Salón</label>
-                        <select name="salon" id="salon">
+                        <select name="salon" id="salon" required>
                     <option value="">Elija una opción</option>
                     <option value="lab-1">Laboratorio 1</option>
                     <option value="lab-2">Laboratorio 2</option>
@@ -93,7 +90,6 @@
                     <option value="tal-2">Taller 2</option>
                     <option value="tal-3">Taller 3</option>
                     </select>
-                        <p class="error-mensaje" id="error-salon"></p>
                     </div>
                     <div id="lista-pcs">
                         <div class="fila-pc" data-index="1">

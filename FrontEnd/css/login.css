@@ -135,11 +135,6 @@ input:focus {
     margin-top: 20px;
 }
 
-.error-mensaje {
-    margin-top: -12px;
-    margin-bottom: 12px;
-}
-
 @media (min-width: 576px) {
     body {
         align-items: center;
