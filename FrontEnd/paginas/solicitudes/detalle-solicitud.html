@@ -30,8 +30,9 @@
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item activo">Nueva solicitud</li>
+                        <li class="topbar-item"><a href="nueva-solicitud.html">Nueva solicitud</a></li>
                         <li class="topbar-item"><a href="solicitudes.html">Listado solicitudes</a></li>
+                        <li class="topbar-item activo">Detalle solicitud</li>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
@@ -58,15 +59,15 @@
                             <select id="prioridad" name="prioridad">
                         <option value="baja">Baja</option>
                         <option value="media">Media</option>
-                        <option value="alta">Alta</option>
+                        <option value="alta" selected>Alta</option>
                     </select>
                         </div>
 
                         <!-- el solicitante se autocompleta cuando se crea el ticket-->
                         <div class="form-grupo">
                             <label for="solicitante-display">Solicitante:</label>
-                            <input type="text" id="solicitante-display" readonly placeholder="Cargando...">
-                            <input type="hidden" id="solicitante" name="solicitante" value="">
+                            <input type="text" id="solicitante-display" readonly value="Juan Pérez">
+                            <input type="hidden" id="solicitante" name="solicitante" value="juan-perez">
                         </div>
 
                         <!-- en el caso del usuario admin, el responsable se elije de un dropdown que viene del backend-->
@@ -81,12 +82,12 @@
 
                         <div class="form-grupo">
                             <label for="fecha">Fecha:</label>
-                            <input type="date" id="fecha" name="fecha">
+                            <input type="date" id="fecha" name="fecha" value="2026-06-01">
                         </div>
                         <div class="form-grupo">
                             <label for="salon">Salón:</label>
                             <select id="salon" name="salon">
-                      <option value="laboratorio-1">Laboratorio 1</option>
+                        <option value="laboratorio-1" selected>Laboratorio 1</option>
                       <option value="laboratorio-2">Laboratorio 2</option>
                       <option value="laboratorio-3">Laboratorio 3</option>
                       <option value="laboratorio-4">Laboratorio 4</option>
@@ -100,7 +101,7 @@
                         </div>
                         <div class="form-grupo">
                             <label for="motivo">Motivo:</label><br>
-                            <textarea id="motivo" name="motivo" rows="4" cols="50"></textarea><br><br>
+                            <textarea id="motivo" name="motivo" rows="4" cols="50">PC no enciende</textarea><br><br>
                         </div>
 
                         <input type="submit" value="Guardar solicitud">
