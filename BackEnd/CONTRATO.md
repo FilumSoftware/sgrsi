@@ -1,8 +1,6 @@
 # Contrato de la capa de datos
 
-Para trabajar en paralelo: acá están los métodos que van a existir y qué
-devuelve cada uno. Las vistas se pueden escribir contra esto antes de que los
-DAO estén implementados.
+Para trabajar en paralelo: qué métodos existen y qué devuelve cada uno.
 
 ## Cómo se usa desde una vista
 
@@ -11,92 +9,109 @@ require_once __DIR__ . '/../../BackEnd/dao/TicketDAO.php';
 
 $dao     = new TicketDAO();
 $tickets = $dao->obtenerTodos();
-
-foreach ($tickets as $t) {
-    echo $t->getIdTicket();
-    echo $t->getNombreSalon();
-    echo $t->getEstadoTicket();
-}
+?>
+<?php foreach ($tickets as $t) { ?>
+    <tr>
+        <td><?php echo $t['id_ticket']; ?></td>
+        <td><?php echo $t['nombre_salon']; ?></td>
+        <td><?php echo $t['estado_ticket']; ?></td>
+    </tr>
+<?php } ?>
 ```
 
-La vista nunca escribe SQL ni instancia `Conexion`. Pide el DAO y muestra.
+La vista no escribe SQL ni instancia `Conexion`. Pide el DAO y muestra.
 
 ## Qué devuelven
 
-Los DAO devuelven **objetos**, no arrays. Un `obtenerTodos()` devuelve un array
-de objetos; un `obtenerPorId()` devuelve un objeto o `null` si no existe.
+Los DAO devuelven **arrays asociativos**, igual que el `ProductoDAO` del
+teórico. Las claves son los nombres de las columnas.
 
-Los modelos tienen los atributos privados y un getter por cada uno. Cuando la
-consulta trae datos de una tabla vecina por JOIN, el modelo los expone como un
-getter más: por ejemplo `Ticket::getNombreSalon()` viene de `equipo`, y
-`Ticket::getNombreResponsable()` de `usuario`.
+- `obtenerTodos()` y similares devuelven un array de filas. Si no hay nada,
+  array vacío, así que el `foreach` no rompe.
+- `obtenerPorId()` devuelve una fila, o **`false`** si no existe. Es lo que
+  devuelve `fetch()` de PDO. Chequear con `if (!$fila)`.
+- `insertar()` devuelve el id nuevo. `actualizar()` y `eliminar()` devuelven
+  `true` o `false`.
+
+Los modelos (`models/`) se usan al revés: se arma el objeto y se le pasa al DAO
+para insertar o actualizar. Además tienen los métodos de negocio, por ejemplo
+`Usuario::esTecnico()` o `Equipo::estaDeBaja()`.
 
 ## Métodos por DAO
 
 ### UsuarioDAO
 | Método | Devuelve |
 |---|---|
-| `obtenerTodos()` | `Usuario[]` |
-| `obtenerPorCi($ci)` | `Usuario` o `null` |
-| `obtenerTecnicos()` | `Usuario[]`, solo Asistentes y Coordinadores. Es el dropdown de responsable. |
-| `insertar(Usuario $u, $claveEnClaro)` | `bool` |
+| `obtenerTodos()` | filas con `ci, nombre_usuario, email, tipo_de_usuario, estado_cuenta` |
+| `obtenerPorCi($ci)` | una fila o `false` |
+| `obtenerParaLogin($ci)` | igual pero incluye `contrasena`. Solo la usa el login. |
+| `obtenerTecnicos()` | Asistentes y Coordinadores activos. Es el dropdown de responsable. |
+| `insertar(Usuario $u, $claveEnClaro)` | `bool`. Hashea la clave adentro. |
 | `actualizar(Usuario $u)` | `bool` |
 | `cambiarEstado($ci, $estado)` | `bool`, para la baja lógica |
+| `cambiarContrasena($ci, $claveEnClaro)` | `bool` |
+
+El hash **no** sale en `obtenerTodos()` ni en `obtenerPorCi()`. Solo en
+`obtenerParaLogin()`.
 
 ### SalonDAO
 | Método | Devuelve |
 |---|---|
-| `obtenerTodos()` | `Salon[]`, para llenar los `<select>` de salón |
-| `obtenerPorNombre($nombre)` | `Salon` o `null` |
+| `obtenerTodos()` | `nombre_salon, descripcion`. Llena los `<select>` de salón. |
+| `obtenerPorNombre($nombre)` | una fila o `false` |
 
 ### EquipoDAO
 | Método | Devuelve |
 |---|---|
-| `obtenerTodos()` | `Equipo[]` |
-| `obtenerPorId($id)` | `Equipo` o `null` |
-| `obtenerPorSalon($nombreSalon)` | `Equipo[]`, para el `<select>` de equipo dependiente del salón |
-| `insertar(Equipo $e)` | `bool` |
+| `obtenerTodos()` | `id_equipo, nombre_equipo, categoria, descripcion, nombre_salon, estado_equipo` |
+| `obtenerPorId($id)` | una fila o `false` |
+| `obtenerPorSalon($nombreSalon)` | para el `<select>` de equipo dependiente del salón |
+| `insertar(Equipo $e)` | id nuevo |
 | `actualizar(Equipo $e)` | `bool` |
 | `eliminar($id)` | `bool` |
 
 ### TicketDAO
+Las filas traen, además de las columnas de `ticket`: `nombre_equipo`,
+`nombre_salon`, `nombre_solicitante` y `nombre_responsable`.
+
+`nombre_responsable` viene en `null` si el ticket todavía no tiene técnico
+asignado. La fila igual aparece, es un `LEFT JOIN`.
+
 | Método | Devuelve |
 |---|---|
-| `obtenerTodos()` | `Ticket[]`, con salón y nombres de solicitante y responsable resueltos |
-| `obtenerPorId($id)` | `Ticket` o `null` |
-| `obtenerPorSolicitante($ci)` | `Ticket[]`, lo que ve un Solicitante |
-| `insertar(Ticket $t)` | `int`, el id nuevo |
+| `obtenerTodos()` | todas, de la más nueva a la más vieja |
+| `obtenerPorId($id)` | una fila o `false` |
+| `obtenerPorSolicitante($ci)` | lo que ve un Solicitante |
+| `obtenerPorEstado($estado)` | filtro de la bandeja |
+| `insertar(Ticket $t)` | id nuevo |
 | `actualizar(Ticket $t)` | `bool` |
+| `eliminar($id)` | `bool` |
+| `contarPorEstado()` | `estado_ticket, cantidad`. Para el dashboard. |
 
 ### SolicitudDAO
-Mismos métodos que `TicketDAO`, con `Solicitud`.
+Mismos métodos que `TicketDAO`, con `nombre_solicitante` y
+`nombre_responsable` resueltos. El salón es columna propia de la tabla.
 
 ### UsoSalaDAO
 | Método | Devuelve |
 |---|---|
-| `obtenerTodos()` | `UsoSala[]`, para el historial |
-| `obtenerPorId($id)` | `UsoSala` o `null` |
-| `obtenerDetalle($idUso)` | `DetalleUso[]`, las filas de PC y alumno |
-| `insertar(UsoSala $u, array $detalles)` | `int`. Cabecera y detalle en una transacción: o entran los dos o no entra ninguno. |
+| `obtenerTodos()` | cabeceras con `nombre_docente` resuelto |
+| `obtenerPorId($id)` | una cabecera o `false` |
+| `obtenerDetalle($idUso)` | `id_equipo, nombre_equipo, nombre_alumno` |
+| `insertar(UsoSala $u, $detalles)` | id nuevo. `$detalles` es un array de `DetalleUso`. |
+| `eliminar($idUso)` | `bool`. La base borra el detalle en cascada. |
 
-### PrestamoDAO
-| Método | Devuelve |
-|---|---|
-| `obtenerTodos()` | `Prestamo[]` |
-| `obtenerVigentes()` | `Prestamo[]`, los que no tienen devolución |
-| `insertar(Prestamo $p)` | `int` |
-| `registrarDevolucion($idPrestamo, $fechaHora)` | `bool` |
+`insertar()` va en transacción: si falla una fila del detalle, no queda la
+cabecera suelta. Si algo sale mal lanza una `Exception` con mensaje genérico,
+hay que envolverla en `try/catch` y mostrar el mensaje al usuario.
 
-### IntervencionDAO
-| Método | Devuelve |
-|---|---|
-| `obtenerPorEquipo($idEquipo)` | `Intervencion[]`, el historial del equipo |
-| `insertar(Intervencion $i)` | `int` |
+`nombre_alumno` puede venir `null`: el docente registra la máquina sin
+identificar quién la usó.
 
 ## Valores de los dominios
 
 Los `<select>` y los badges tienen que usar exactamente estos valores, que son
-los del diccionario de datos y los que acepta la base:
+los que acepta la base:
 
 | Campo | Valores |
 |---|---|
@@ -112,3 +127,8 @@ los del diccionario de datos y los que acepta la base:
 
 Los `<select>` de salón y de equipo no se escriben a mano: salen de
 `SalonDAO::obtenerTodos()` y `EquipoDAO::obtenerPorSalon()`.
+
+## Todavía sin hacer
+
+`PrestamoDAO` e `IntervencionDAO`. No los necesita ninguna pantalla del front,
+por eso quedaron para el final.

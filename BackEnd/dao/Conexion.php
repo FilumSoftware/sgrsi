@@ -15,15 +15,13 @@ class Conexion
              . ';charset=' . $config['charset'];
 
         try {
-            $this->pdo = new PDO($dsn, $config['usuario'], $config['password'], [
-                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES   => false,
-            ]);
+            $this->pdo = new PDO($dsn, $config['usuario'], $config['password']);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            // El detalle va al log del servidor; al usuario nunca.
-            error_log('SGRSI: falló la conexión a la base. ' . $e->getMessage());
-            throw new RuntimeException('No se pudo conectar con la base de datos.');
+            // El detalle va al log del servidor, al usuario nunca.
+            error_log('SGRSI: fallo la conexion. ' . $e->getMessage());
+            throw new Exception('No se pudo conectar con la base de datos.');
         }
     }
 
@@ -41,14 +39,7 @@ class Conexion
         return $this->pdo;
     }
 
-    // Con el constructor privado, clonar y deserializar son las dos vías que
-    // quedan para fabricar una segunda instancia. Se cierran las dos.
     private function __clone()
     {
-    }
-
-    public function __wakeup()
-    {
-        throw new RuntimeException('No se permite deserializar la conexión.');
     }
 }
