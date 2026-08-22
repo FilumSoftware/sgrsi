@@ -377,8 +377,10 @@ button[type="submit"]:hover {
     border-color: var(--color-acento) !important;
 }
 
+/* Clase de utilidad: tiene que poder tapar el display de cualquier
+   elemento, incluido .fila-pc, que es un grid definido en sala.css. */
 .oculta {
-    display: none;
+    display: none !important;
 }
 
 .fila-desactivada {
