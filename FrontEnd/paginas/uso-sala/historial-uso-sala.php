@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $avisos = [
     'creado'    => ['exito', 'El uso de la sala se registró correctamente.'],
+    'guardado'  => ['exito', 'Los cambios se guardaron.'],
     'eliminado' => ['exito', 'El registro se eliminó.'],
     'permiso'   => ['error', 'Solo el coordinador puede eliminar registros.'],
     'ajeno'     => ['error', 'Ese registro no es tuyo.'],
@@ -144,7 +145,7 @@ function v($texto)
                                     <td><?php echo v($uso['turno']); ?></td>
                                     <td><?php echo v($uso['nombre_salon']); ?></td>
                                     <td class="acciones">
-                                        <a class="btn-editar" href="detalle-uso-sala.php?id=<?php echo urlencode($uso['id_uso']); ?>">Ver</a>
+                                        <a class="btn-editar" href="detalle-uso-sala.php?id=<?php echo urlencode($uso['id_uso']); ?>">Editar</a>
 
                                         <?php if (Sesion::esCoordinador()) { ?>
                                             <form action="historial-uso-sala.php" method="post" class="form-en-linea">
