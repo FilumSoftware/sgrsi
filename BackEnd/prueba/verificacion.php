@@ -3,6 +3,16 @@
 // Página de diagnóstico del entorno. No es parte del sistema: sirve para
 // confirmar que el servidor, PHP, PDO y la base están bien conectados.
 
+require_once __DIR__ . '/../logica/ControlAcceso.php';
+
+// Diagnostico reservado al coordinador: expone datos del entorno.
+ControlAcceso::exigirSesion('../../index.php');
+
+if (!Sesion::esCoordinador()) {
+    header('Location: ../../FrontEnd/paginas/dashboard/dashboard.php');
+    exit;
+}
+
 require_once __DIR__ . '/../dao/UsuarioDAO.php';
 require_once __DIR__ . '/../dao/TicketDAO.php';
 require_once __DIR__ . '/../dao/SalonDAO.php';

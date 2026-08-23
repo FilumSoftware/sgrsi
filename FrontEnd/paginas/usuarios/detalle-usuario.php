@@ -1,3 +1,10 @@
+<?php
+
+require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+
+ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -6,7 +13,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/main.css">
-    <title>SGRSI - Nuevo usuario</title>
+    <title>SGRSI - Detalle de usuario</title>
 </head>
 
 <body>
@@ -14,13 +21,13 @@
 
         <nav class="sidebar">
             <ul>
-                <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
-                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informática</a></li>
-                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php">Sala de informática</a></li>
+                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php">Solicitudes</a></li>
                 <li class="sidebar-item activo">Usuarios</li>
-                <li class="sidebar-item"><a href="../../../index.html" class="btn-salir">Cerrar sesión</a></li>
+                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
 
@@ -29,8 +36,9 @@
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item activo">Nuevo usuario</li>
-                        <li class="topbar-item"><a href="usuarios.html">Usuarios</a></li>
+                        <li class="topbar-item"><a href="nuevo-usuario.php">Nuevo usuario</a></li>
+                        <li class="topbar-item"><a href="usuarios.php">Usuarios</a></li>
+                        <li class="topbar-item activo">Detalle de usuario</li>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
@@ -40,20 +48,12 @@
             </header>
 
             <section class="form-container">
-                <form id="form-usuario">
+                <h1>Detalle de Usuario</h1>
+                <form id="form-detalle-usuario">
                     <fieldset>
                         <div class="form-grupo">
                             <label for="nombre">Nombre:</label>
                             <input type="text" id="nombre" name="nombre" required>
-                        </div>
-                        <div class="form-grupo">
-                            <label for="password">Contraseña:</label>
-                            <input type="password" id="password" name="password" required>
-                        </div>
-                        <div class="form-grupo">
-                            <label for="confirmar-password">Repita la contraseña:</label>
-                            <input type="password" id="confirmar-password" name="confirmar-password" required>
-                            <p class="error-mensaje" id="error-confirmar-password"></p>
                         </div>
                         <div class="form-grupo">
                             <label for="tipo-usuario">Permisos:</label>
@@ -64,14 +64,14 @@
                             </select>
                         </div>
 
-                        <input type="submit" value="Crear Cuenta">
+                        <button type="submit" id="btn-guardar">Guardar Cambios</button>
 
                     </fieldset>
                 </form>
             </section>
         </main>
     </div>
-    <script src="../../js/usuarios/nuevo-usuario.js"></script>
+    <script src="../../js/usuarios/detalle-usuario.js"></script>
 </body>
 
 </html>

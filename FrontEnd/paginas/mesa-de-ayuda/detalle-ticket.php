@@ -1,3 +1,10 @@
+<?php
+
+require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+
+ControlAcceso::exigirSesion('../../../index.php');
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -14,13 +21,15 @@
 
         <nav class="sidebar">
             <ul>
-                <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
-                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informática</a></li>
-                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
+                <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php">Sala de informática</a></li>
+                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
                 <li class="sidebar-item activo">Mesa de Ayuda</li>
-                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
-                <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
-                <li class="sidebar-item"><a href="../../../index.html" class="btn-salir">Cerrar sesión</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php">Solicitudes</a></li>
+                <?php if (ControlAcceso::puedeGestionarUsuarios()) { ?>
+                    <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.php">Usuarios</a></li>
+                <?php } ?>
+                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
 
@@ -31,8 +40,8 @@
                     <ul>
                         <nav>
                             <ul>
-                                <li class="topbar-item"><a href="mesa-de-ayuda.html">Historial de tickets</a></li>
-                                <li class="topbar-item"><a href="nuevo-ticket.html">Nuevo ticket</a></li>
+                                <li class="topbar-item"><a href="mesa-de-ayuda.php">Historial de tickets</a></li>
+                                <li class="topbar-item"><a href="nuevo-ticket.php">Nuevo ticket</a></li>
                                 <li class="topbar-item activo">Detalle de ticket</li>
                             </ul>
                         </nav>
