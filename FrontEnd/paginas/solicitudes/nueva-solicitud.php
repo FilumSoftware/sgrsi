@@ -8,7 +8,7 @@ require_once __DIR__ . '/../../../BackEnd/models/Solicitud.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
-const MOTIVO_MINIMO = 10;
+$motivoMinimo = 10;
 
 $solicitudDAO = new SolicitudDAO();
 $salonDAO     = new SalonDAO();
@@ -31,15 +31,19 @@ try {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    foreach (array_keys($valores) as $campo) {
-        $valores[$campo] = trim((string) ($_POST[$campo] ?? ''));
+    foreach ($valores as $campo => $valorActual) {
+        $valores[$campo] = trim((string) (isset($_POST[$campo]) ? $_POST[$campo] : ''));
     }
 
     if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $valores['fecha']) !== 1) {
         $errores['fecha'] = 'Indicá una fecha válida.';
     }
 
-    $nombresSalon = array_column($salones, 'nombre_salon');
+    $nombresSalon = [];
+
+    foreach ($salones as $unSalon) {
+        $nombresSalon[] = $unSalon['nombre_salon'];
+    }
 
     if (!in_array($valores['salon'], $nombresSalon, true)) {
         $errores['salon'] = 'Elegí un salón válido de la lista.';
@@ -49,13 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores['prioridad'] = 'Elegí una prioridad válida de la lista.';
     }
 
-    if (strlen($valores['motivo']) < MOTIVO_MINIMO) {
-        $errores['motivo'] = 'Escribí al menos ' . MOTIVO_MINIMO . ' caracteres.';
+    if (strlen($valores['motivo']) < $motivoMinimo) {
+        $errores['motivo'] = 'Escribí al menos ' . $motivoMinimo . ' caracteres.';
     }
 
     if (empty($errores)) {
         try {
-            // El formulario solo pide la fecha: la hora la pone el servidor.
             $solicitud = new Solicitud(
                 $valores['fecha'] . ' ' . date('H:i:s'),
                 Sesion::ci(),
@@ -144,7 +147,7 @@ function claseError($errores, $campo)
                         <div class="form-grupo">
                             <label for="fecha">Fecha:</label>
                             <input type="date" id="fecha" name="fecha" value="<?php echo v($valores['fecha']); ?>" required>
-                            <p class="error-mensaje" id="error-fecha"<?php echo claseError($errores, 'fecha'); ?>><?php echo v($errores['fecha'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-fecha"<?php echo claseError($errores, 'fecha'); ?>><?php echo v(isset($errores['fecha']) ? $errores['fecha'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
                             <label for="salon">Salón:</label>
@@ -154,7 +157,7 @@ function claseError($errores, $campo)
                                     <option value="<?php echo v($salon['nombre_salon']); ?>"<?php echo $valores['salon'] === $salon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($salon['nombre_salon']); ?></option>
                                 <?php } ?>
                             </select>
-                            <p class="error-mensaje" id="error-salon"<?php echo claseError($errores, 'salon'); ?>><?php echo v($errores['salon'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-salon"<?php echo claseError($errores, 'salon'); ?>><?php echo v(isset($errores['salon']) ? $errores['salon'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
                             <label for="prioridad">Prioridad:</label>
@@ -163,12 +166,12 @@ function claseError($errores, $campo)
                                     <option value="<?php echo v($prioridad); ?>"<?php echo $valores['prioridad'] === $prioridad ? ' selected' : ''; ?>><?php echo v($prioridad); ?></option>
                                 <?php } ?>
                             </select>
-                            <p class="error-mensaje" id="error-prioridad"<?php echo claseError($errores, 'prioridad'); ?>><?php echo v($errores['prioridad'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-prioridad"<?php echo claseError($errores, 'prioridad'); ?>><?php echo v(isset($errores['prioridad']) ? $errores['prioridad'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
                             <label for="motivo">Motivo:</label>
                             <textarea id="motivo" name="motivo" rows="4" required><?php echo v($valores['motivo']); ?></textarea>
-                            <p class="error-mensaje" id="error-motivo"<?php echo claseError($errores, 'motivo'); ?>><?php echo v($errores['motivo'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-motivo"<?php echo claseError($errores, 'motivo'); ?>><?php echo v(isset($errores['motivo']) ? $errores['motivo'] : ''); ?></p>
                         </div>
 
                         <input type="submit" value="Enviar solicitud">

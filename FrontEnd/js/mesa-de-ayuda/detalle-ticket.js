@@ -3,7 +3,6 @@ const inputMotivo = document.getElementById('motivo');
 
 const MOTIVO_MINIMO = 10;
 
-// Al solicitante el formulario le llega deshabilitado: no hay nada que validar.
 if (!inputMotivo.disabled) {
 
     formulario.addEventListener('submit', function (evento) {

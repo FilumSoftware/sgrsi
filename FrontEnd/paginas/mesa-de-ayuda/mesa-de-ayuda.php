@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $id = trim((string) ($_POST['id'] ?? ''));
+    $id = trim((string) (isset($_POST['id']) ? $_POST['id'] : ''));
 
     try {
         $ticketDAO->eliminar($id);
@@ -39,13 +39,12 @@ $avisos = [
 ];
 
 $mensaje = null;
-$aviso   = $_GET['aviso'] ?? '';
+$aviso   = isset($_GET['aviso']) ? $_GET['aviso'] : '';
 
 if (isset($avisos[$aviso])) {
     $mensaje = ['tipo' => $avisos[$aviso][0], 'texto' => $avisos[$aviso][1]];
 }
 
-// Un técnico ve la bandeja entera. Un solicitante ve únicamente lo suyo.
 try {
     if (ControlAcceso::puedeAtender()) {
         $tickets = $ticketDAO->obtenerTodos();

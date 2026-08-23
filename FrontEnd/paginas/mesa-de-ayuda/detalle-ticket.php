@@ -10,14 +10,20 @@ require_once __DIR__ . '/../../../BackEnd/models/Ticket.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
-const MOTIVO_MINIMO = 10;
+$motivoMinimo = 10;
 
 $ticketDAO  = new TicketDAO();
 $salonDAO   = new SalonDAO();
 $equipoDAO  = new EquipoDAO();
 $usuarioDAO = new UsuarioDAO();
 
-$id = trim((string) ($_POST['id'] ?? $_GET['id'] ?? ''));
+$id = '';
+
+if (isset($_POST['id'])) {
+    $id = trim((string) $_POST['id']);
+} elseif (isset($_GET['id'])) {
+    $id = trim((string) $_GET['id']);
+}
 
 if ($id === '') {
     header('Location: mesa-de-ayuda.php?aviso=noexiste');
@@ -39,7 +45,6 @@ if (!$fila) {
 
 $puedeAtender = ControlAcceso::puedeAtender();
 
-// Un solicitante entra solo a sus propios tickets, y de lectura.
 if (!$puedeAtender && $fila['ci_solicitante'] !== Sesion::ci()) {
     header('Location: mesa-de-ayuda.php?aviso=ajeno');
     exit;
@@ -52,10 +57,10 @@ $valores = [
     'defecto'     => $fila['tipo_de_defecto'],
     'prioridad'   => $fila['prioridad'],
     'estado'      => $fila['estado_ticket'],
-    'responsable' => $fila['ci_responsable'] ?? '',
-    'motivo'      => $fila['descripcion'] ?? '',
-    'diagnostico' => $fila['diagnostico'] ?? '',
-    'solucion'    => $fila['solucion'] ?? '',
+    'responsable' => isset($fila['ci_responsable']) ? $fila['ci_responsable'] : '',
+    'motivo'      => isset($fila['descripcion']) ? $fila['descripcion'] : '',
+    'diagnostico' => isset($fila['diagnostico']) ? $fila['diagnostico'] : '',
+    'solucion'    => isset($fila['solucion']) ? $fila['solucion'] : '',
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -65,8 +70,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    foreach (array_keys($valores) as $campo) {
-        $valores[$campo] = trim((string) ($_POST[$campo] ?? ''));
+    foreach ($valores as $campo => $valorActual) {
+        $valores[$campo] = trim((string) (isset($_POST[$campo]) ? $_POST[$campo] : ''));
     }
 }
 
@@ -82,15 +87,23 @@ try {
     $errores['general'] = 'No se pudieron cargar las listas. Intentá de nuevo en unos minutos.';
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guardar') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['accion']) ? $_POST['accion'] : '') === 'guardar') {
 
-    $nombresSalon = array_column($salones, 'nombre_salon');
+    $nombresSalon = [];
+
+    foreach ($salones as $unSalon) {
+        $nombresSalon[] = $unSalon['nombre_salon'];
+    }
 
     if (!in_array($valores['salon'], $nombresSalon, true)) {
         $errores['salon'] = 'Elegí un salón válido de la lista.';
     }
 
-    $idsEquipo = array_map('intval', array_column($equipos, 'id_equipo'));
+    $idsEquipo = [];
+
+    foreach ($equipos as $unEquipo) {
+        $idsEquipo[] = (int) $unEquipo['id_equipo'];
+    }
 
     if (!in_array((int) $valores['equipo'], $idsEquipo, true)) {
         $errores['equipo'] = 'Elegí un equipo del salón seleccionado.';
@@ -108,18 +121,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guard
         $errores['estado'] = 'Elegí un estado válido de la lista.';
     }
 
-    $cedulasTecnico = array_column($tecnicos, 'ci');
+    $cedulasTecnico = [];
+
+    foreach ($tecnicos as $unTecnico) {
+        $cedulasTecnico[] = $unTecnico['ci'];
+    }
 
     if ($valores['responsable'] !== '' && !in_array($valores['responsable'], $cedulasTecnico, true)) {
         $errores['responsable'] = 'Elegí un técnico de la lista.';
     }
 
-    if (strlen($valores['motivo']) < MOTIVO_MINIMO) {
-        $errores['motivo'] = 'Escribí al menos ' . MOTIVO_MINIMO . ' caracteres.';
+    if (strlen($valores['motivo']) < $motivoMinimo) {
+        $errores['motivo'] = 'Escribí al menos ' . $motivoMinimo . ' caracteres.';
     }
 
-    // La base exige responsable y fecha de cierre para dar un ticket por
-    // resuelto (constraint ck_ticket_resuelto).
     if ($valores['estado'] === 'Resuelto' && $valores['responsable'] === '') {
         $errores['responsable'] = 'Para cerrar el ticket hay que asignar un responsable.';
     }
@@ -129,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'guard
         $cierre = null;
 
         if ($valores['estado'] === 'Resuelto') {
-            $cierre = $fila['fecha_hora_cierre'] ?? null;
+            $cierre = isset($fila['fecha_hora_cierre']) ? $fila['fecha_hora_cierre'] : null;
 
             if ($cierre === null) {
                 $ahora  = time();
@@ -256,7 +271,7 @@ function claseError($errores, $campo)
                                 <option value="<?php echo v($salon['nombre_salon']); ?>"<?php echo $valores['salon'] === $salon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($salon['nombre_salon']); ?></option>
                             <?php } ?>
                         </select>
-                        <p class="error-mensaje" id="error-salon"<?php echo claseError($errores, 'salon'); ?>><?php echo v($errores['salon'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-salon"<?php echo claseError($errores, 'salon'); ?>><?php echo v(isset($errores['salon']) ? $errores['salon'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="equipo">Equipo</label>
@@ -265,7 +280,7 @@ function claseError($errores, $campo)
                                 <option value="<?php echo v($equipo['id_equipo']); ?>"<?php echo (int) $valores['equipo'] === (int) $equipo['id_equipo'] ? ' selected' : ''; ?>><?php echo v($equipo['nombre_equipo']); ?></option>
                             <?php } ?>
                         </select>
-                        <p class="error-mensaje" id="error-equipo"<?php echo claseError($errores, 'equipo'); ?>><?php echo v($errores['equipo'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-equipo"<?php echo claseError($errores, 'equipo'); ?>><?php echo v(isset($errores['equipo']) ? $errores['equipo'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="defecto">Tipo de falla</label>
@@ -274,7 +289,7 @@ function claseError($errores, $campo)
                                 <option value="<?php echo v($tipo); ?>"<?php echo $valores['defecto'] === $tipo ? ' selected' : ''; ?>><?php echo v($tipo); ?></option>
                             <?php } ?>
                         </select>
-                        <p class="error-mensaje" id="error-defecto"<?php echo claseError($errores, 'defecto'); ?>><?php echo v($errores['defecto'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-defecto"<?php echo claseError($errores, 'defecto'); ?>><?php echo v(isset($errores['defecto']) ? $errores['defecto'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="prioridad">Prioridad</label>
@@ -283,7 +298,7 @@ function claseError($errores, $campo)
                                 <option value="<?php echo v($prioridad); ?>"<?php echo $valores['prioridad'] === $prioridad ? ' selected' : ''; ?>><?php echo v($prioridad); ?></option>
                             <?php } ?>
                         </select>
-                        <p class="error-mensaje" id="error-prioridad"<?php echo claseError($errores, 'prioridad'); ?>><?php echo v($errores['prioridad'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-prioridad"<?php echo claseError($errores, 'prioridad'); ?>><?php echo v(isset($errores['prioridad']) ? $errores['prioridad'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="estado">Estado</label>
@@ -292,7 +307,7 @@ function claseError($errores, $campo)
                                 <option value="<?php echo v($estado); ?>"<?php echo $valores['estado'] === $estado ? ' selected' : ''; ?>><?php echo v($estado); ?></option>
                             <?php } ?>
                         </select>
-                        <p class="error-mensaje" id="error-estado"<?php echo claseError($errores, 'estado'); ?>><?php echo v($errores['estado'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-estado"<?php echo claseError($errores, 'estado'); ?>><?php echo v(isset($errores['estado']) ? $errores['estado'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="responsable">Responsable</label>
@@ -302,12 +317,12 @@ function claseError($errores, $campo)
                                 <option value="<?php echo v($tecnico['ci']); ?>"<?php echo $valores['responsable'] === $tecnico['ci'] ? ' selected' : ''; ?>><?php echo v($tecnico['nombre_usuario']); ?></option>
                             <?php } ?>
                         </select>
-                        <p class="error-mensaje" id="error-responsable"<?php echo claseError($errores, 'responsable'); ?>><?php echo v($errores['responsable'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-responsable"<?php echo claseError($errores, 'responsable'); ?>><?php echo v(isset($errores['responsable']) ? $errores['responsable'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="motivo">Motivo</label>
                         <textarea name="motivo" id="motivo" rows="4"<?php echo $puedeAtender ? '' : ' disabled'; ?>><?php echo v($valores['motivo']); ?></textarea>
-                        <p class="error-mensaje" id="error-motivo"<?php echo claseError($errores, 'motivo'); ?>><?php echo v($errores['motivo'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-motivo"<?php echo claseError($errores, 'motivo'); ?>><?php echo v(isset($errores['motivo']) ? $errores['motivo'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="diagnostico">Diagnóstico</label>

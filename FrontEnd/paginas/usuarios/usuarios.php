@@ -9,8 +9,8 @@ $usuarioDAO = new UsuarioDAO();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $ci     = trim((string) ($_POST['ci'] ?? ''));
-    $estado = trim((string) ($_POST['estado'] ?? ''));
+    $ci     = trim((string) (isset($_POST['ci']) ? $_POST['ci'] : ''));
+    $estado = trim((string) (isset($_POST['estado']) ? $_POST['estado'] : ''));
 
     if ($ci === Sesion::ci()) {
         header('Location: usuarios.php?aviso=propia');
@@ -45,7 +45,7 @@ $avisos = [
 ];
 
 $mensaje = null;
-$clave   = $_GET['aviso'] ?? '';
+$clave   = isset($_GET['aviso']) ? $_GET['aviso'] : '';
 
 if (isset($avisos[$clave])) {
     $mensaje = ['tipo' => $avisos[$clave][0], 'texto' => $avisos[$clave][1]];

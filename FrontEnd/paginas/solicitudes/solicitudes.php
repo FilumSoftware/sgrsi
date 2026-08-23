@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $id = trim((string) ($_POST['id'] ?? ''));
+    $id = trim((string) (isset($_POST['id']) ? $_POST['id'] : ''));
 
     try {
         $solicitudDAO->eliminar($id);
@@ -39,13 +39,12 @@ $avisos = [
 ];
 
 $mensaje = null;
-$aviso   = $_GET['aviso'] ?? '';
+$aviso   = isset($_GET['aviso']) ? $_GET['aviso'] : '';
 
 if (isset($avisos[$aviso])) {
     $mensaje = ['tipo' => $avisos[$aviso][0], 'texto' => $avisos[$aviso][1]];
 }
 
-// Un técnico ve todas. Un solicitante ve únicamente las suyas.
 try {
     if (ControlAcceso::puedeAtender()) {
         $solicitudes = $solicitudDAO->obtenerTodos();
@@ -147,7 +146,7 @@ function v($texto)
                                     <td><span class="badge <?php echo v(Dominio::claseDelBadge($solicitud['estado_solicitud'])); ?>"><?php echo v($solicitud['estado_solicitud']); ?></span></td>
                                     <td><?php echo v($solicitud['prioridad']); ?></td>
                                     <td><?php echo v($solicitud['nombre_solicitante']); ?></td>
-                                    <td><?php echo v($solicitud['nombre_responsable'] ?? '—'); ?></td>
+                                    <td><?php echo v(isset($solicitud['nombre_responsable']) ? $solicitud['nombre_responsable'] : '—'); ?></td>
                                     <td class="acciones">
                                         <a class="btn-editar" href="detalle-solicitud.php?id=<?php echo urlencode($solicitud['id_solicitud']); ?>">
                                             <?php echo ControlAcceso::puedeAtender() ? 'Atender' : 'Ver'; ?>

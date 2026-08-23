@@ -32,13 +32,11 @@ try {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    foreach (array_keys($valores) as $campo) {
-        $valores[$campo] = trim((string) ($_POST[$campo] ?? ''));
+    foreach ($valores as $campo => $valorActual) {
+        $valores[$campo] = trim((string) (isset($_POST[$campo]) ? $_POST[$campo] : ''));
     }
 }
 
-// Las PC que se pueden asignar son las del salón elegido, así que cambiar el
-// salón reenvía el formulario para repoblar la lista.
 $equipos = [];
 
 if ($valores['salon'] !== '') {
@@ -53,7 +51,7 @@ if ($valores['salon'] !== '') {
 $pcEnviadas     = isset($_POST['pc']) && is_array($_POST['pc']) ? $_POST['pc'] : [];
 $alumnoEnviados = isset($_POST['alumno']) && is_array($_POST['alumno']) ? $_POST['alumno'] : [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'crear') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['accion']) ? $_POST['accion'] : '') === 'crear') {
 
     if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $valores['fecha']) !== 1) {
         $errores['fecha'] = 'Indicá una fecha válida.';
@@ -67,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'crear
         $errores['salida'] = 'Indicá una hora de salida válida.';
     }
 
-    // La base lo exige con el constraint ck_uso_sala_horario.
     if (empty($errores['entrada']) && empty($errores['salida']) && $valores['salida'] <= $valores['entrada']) {
         $errores['salida'] = 'La hora de salida debe ser posterior a la de entrada.';
     }
@@ -88,15 +85,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'crear
         $errores['turno'] = 'Elegí un turno de la lista.';
     }
 
-    $nombresSalon = array_column($salones, 'nombre_salon');
+    $nombresSalon = [];
+
+    foreach ($salones as $unSalon) {
+        $nombresSalon[] = $unSalon['nombre_salon'];
+    }
 
     if (!in_array($valores['salon'], $nombresSalon, true)) {
         $errores['salon'] = 'Elegí un salón válido de la lista.';
     }
 
-    // Detalle: una fila por PC asignada. La clave primaria de detalle_uso es
-    // (id_uso, id_equipo), así que no puede repetirse un equipo.
-    $idsDelSalon = array_map('intval', array_column($equipos, 'id_equipo'));
+    $idsDelSalon = [];
+
+    foreach ($equipos as $unEquipo) {
+        $idsDelSalon[] = (int) $unEquipo['id_equipo'];
+    }
     $detalles    = [];
     $yaUsados    = [];
 
@@ -119,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'crear
 
         $yaUsados[] = (int) $idEquipo;
 
-        $alumno = trim((string) ($alumnoEnviados[$indice] ?? ''));
+        $alumno = trim((string) (isset($alumnoEnviados[$indice]) ? $alumnoEnviados[$indice] : ''));
 
         $detalles[] = new DetalleUso((int) $idEquipo, $alumno !== '' ? $alumno : null);
     }
@@ -218,17 +221,17 @@ function claseError($errores, $campo)
                     <div class="form-grupo">
                         <label for="fecha">Fecha</label>
                         <input type="date" id="fecha" name="fecha" value="<?php echo v($valores['fecha']); ?>" required>
-                        <p class="error-mensaje" id="error-fecha"<?php echo claseError($errores, 'fecha'); ?>><?php echo v($errores['fecha'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-fecha"<?php echo claseError($errores, 'fecha'); ?>><?php echo v(isset($errores['fecha']) ? $errores['fecha'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="entrada">Hora entrada</label>
                         <input type="time" id="entrada" name="entrada" value="<?php echo v($valores['entrada']); ?>" required>
-                        <p class="error-mensaje" id="error-entrada"<?php echo claseError($errores, 'entrada'); ?>><?php echo v($errores['entrada'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-entrada"<?php echo claseError($errores, 'entrada'); ?>><?php echo v(isset($errores['entrada']) ? $errores['entrada'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="salida">Hora salida</label>
                         <input type="time" id="salida" name="salida" value="<?php echo v($valores['salida']); ?>" required>
-                        <p class="error-mensaje" id="error-salida"<?php echo claseError($errores, 'salida'); ?>><?php echo v($errores['salida'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-salida"<?php echo claseError($errores, 'salida'); ?>><?php echo v(isset($errores['salida']) ? $errores['salida'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="docente">Docente</label>
@@ -237,12 +240,12 @@ function claseError($errores, $campo)
                     <div class="form-grupo">
                         <label for="asignatura">Asignatura</label>
                         <input type="text" id="asignatura" name="asignatura" value="<?php echo v($valores['asignatura']); ?>" required>
-                        <p class="error-mensaje" id="error-asignatura"<?php echo claseError($errores, 'asignatura'); ?>><?php echo v($errores['asignatura'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-asignatura"<?php echo claseError($errores, 'asignatura'); ?>><?php echo v(isset($errores['asignatura']) ? $errores['asignatura'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="grupo">Grupo</label>
                         <input type="text" id="grupo" name="grupo" value="<?php echo v($valores['grupo']); ?>" placeholder="Ej: 1MI" required>
-                        <p class="error-mensaje" id="error-grupo"<?php echo claseError($errores, 'grupo'); ?>><?php echo v($errores['grupo'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-grupo"<?php echo claseError($errores, 'grupo'); ?>><?php echo v(isset($errores['grupo']) ? $errores['grupo'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="turno">Turno</label>
@@ -252,7 +255,7 @@ function claseError($errores, $campo)
                                 <option value="<?php echo v($turno); ?>"<?php echo $valores['turno'] === $turno ? ' selected' : ''; ?>><?php echo v($turno); ?></option>
                             <?php } ?>
                         </select>
-                        <p class="error-mensaje" id="error-turno"<?php echo claseError($errores, 'turno'); ?>><?php echo v($errores['turno'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-turno"<?php echo claseError($errores, 'turno'); ?>><?php echo v(isset($errores['turno']) ? $errores['turno'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="salon">Salón</label>
@@ -262,7 +265,7 @@ function claseError($errores, $campo)
                                 <option value="<?php echo v($salon['nombre_salon']); ?>"<?php echo $valores['salon'] === $salon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($salon['nombre_salon']); ?></option>
                             <?php } ?>
                         </select>
-                        <p class="error-mensaje" id="error-salon"<?php echo claseError($errores, 'salon'); ?>><?php echo v($errores['salon'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-salon"<?php echo claseError($errores, 'salon'); ?>><?php echo v(isset($errores['salon']) ? $errores['salon'] : ''); ?></p>
                     </div>
 
                     <div id="lista-pcs">
@@ -272,7 +275,7 @@ function claseError($errores, $campo)
 
                         <?php foreach ($equipos as $numero => $equipo) { ?>
                             <?php $fila = $numero + 1; ?>
-                            <?php $elegida = trim((string) ($pcEnviadas[$fila] ?? '')); ?>
+                            <?php $elegida = trim((string) (isset($pcEnviadas[$fila]) ? $pcEnviadas[$fila] : '')); ?>
                             <div class="fila-pc<?php echo ($fila > 1 && $elegida === '') ? ' oculta' : ''; ?>" data-index="<?php echo $fila; ?>">
                                 <div class="campo">
                                     <label for="pc-<?php echo $fila; ?>">PC</label>
@@ -285,7 +288,7 @@ function claseError($errores, $campo)
                                 </div>
                                 <div class="campo">
                                     <label for="alumno-<?php echo $fila; ?>">Alumno</label>
-                                    <input type="text" id="alumno-<?php echo $fila; ?>" name="alumno[<?php echo $fila; ?>]" value="<?php echo v($alumnoEnviados[$fila] ?? ''); ?>" placeholder="Nombre del alumno">
+                                    <input type="text" id="alumno-<?php echo $fila; ?>" name="alumno[<?php echo $fila; ?>]" value="<?php echo v(isset($alumnoEnviados[$fila]) ? $alumnoEnviados[$fila] : ''); ?>" placeholder="Nombre del alumno">
                                 </div>
                             </div>
                         <?php } ?>
@@ -294,7 +297,7 @@ function claseError($errores, $campo)
                             <button type="button" id="agregar-pc">+ Agregar PC</button>
                         <?php } ?>
 
-                        <p class="error-mensaje" id="error-pcs"<?php echo claseError($errores, 'pcs'); ?>><?php echo v($errores['pcs'] ?? ''); ?></p>
+                        <p class="error-mensaje" id="error-pcs"<?php echo claseError($errores, 'pcs'); ?>><?php echo v(isset($errores['pcs']) ? $errores['pcs'] : ''); ?></p>
                     </div>
 
                     <button type="submit" id="btn-enviar" name="accion" value="crear">Enviar</button>
