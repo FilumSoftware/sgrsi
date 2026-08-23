@@ -25,9 +25,11 @@
             <form id="form-login" action="FrontEnd/paginas/dashboard/dashboard.html" method="get">
                 <label for="ci">Cédula</label>
                 <input type="text" id="ci" name="ci" placeholder="5789043" required>
+                <p class="error-mensaje" id="error-ci"></p>
 
                 <label for="password">Contraseña</label>
                 <input type="password" id="password" name="password" placeholder="••••••••" required>
+                <p class="error-mensaje" id="error-password"></p>
 
                 <button type="submit" class="btn-ingresar">Iniciar sesión</button>
             </form>
@@ -39,6 +41,8 @@
         </footer>
 
     </main>
+    <script src="FrontEnd/js/validacion.js"></script>
+    <script src="FrontEnd/js/login.js"></script>
 </body>
 
 
