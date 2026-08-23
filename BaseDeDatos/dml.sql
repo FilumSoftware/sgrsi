@@ -10,15 +10,15 @@ SET NAMES utf8mb4;
 -- usuarios -------------------------------------------------------------
 -- Esteban Quito queda Inactivo para probar la baja lógica.
 
-INSERT INTO usuario (ci, nombre_usuario, email, contrasena, tipo_de_usuario, estado_cuenta) VALUES
-('52618740', 'Luis Martínez',  'lmartinez@itr.edu.uy',  '$2y$10$LltYL72bjZ/ts31kylDIqueujG.AObyxazdL83C3mBclTe9ftv4qC', 'Coordinador', 'Activa'),
-('39482156', 'Carlos López',   'clopez@itr.edu.uy',     '$2y$10$aHFk3heTJgkM7cuI7MHLnezg1GikFbXOpVqcgJEICgdkOhau0PwY6', 'Asistente',   'Activa'),
-('44905381', 'Ana Rodríguez',  'arodriguez@itr.edu.uy', '$2y$10$Tu6Sv8TrKeggydJHOeqzhOnieiqIwvfQiq1IqlNBJPpFh/cGQuEoy', 'Asistente',   'Activa'),
-('48219073', 'Juan Pérez',     'jperez@itr.edu.uy',     '$2y$10$yN37wikwWgH12/GuVLgKce.mwioyGG0JbydufKCcA0Qcn9TW8ez96', 'Solicitante', 'Activa'),
-('51730864', 'María García',   'mgarcia@itr.edu.uy',    '$2y$10$xgACGhAOBYrp4Du2uT8zZuk3eNM7VD3FmdAt68WCw4kRx4dEY4nYO', 'Solicitante', 'Activa'),
-('41073925', 'Marcia Antúnez', 'mantunez@itr.edu.uy',   '$2y$10$w8jLaHma1WoPcnnA47FEhOhGJ1X01JMHIaD..NzX98nIPQyXTzdf2', 'Solicitante', 'Activa'),
-('37514962', 'Mario Neta',     'mneta@itr.edu.uy',      '$2y$10$T75D9SlL8qvAY6td3IYO4OfXB0mPucvzRk1F8yC75Hd4fwW8kOkEC', 'Solicitante', 'Activa'),
-('46283015', 'Esteban Quito',  'equito@itr.edu.uy',     '$2y$10$QiAqCf7jmxIcYeWeNrLinOXF5gZ0tdgRtD61pebQnLL8uWPyENwfa', 'Solicitante', 'Inactiva');
+INSERT INTO usuario (ci, nombre_usuario, contrasena, tipo_de_usuario, estado_cuenta) VALUES
+('52618740', 'Luis Martínez',  '$2y$10$LltYL72bjZ/ts31kylDIqueujG.AObyxazdL83C3mBclTe9ftv4qC', 'Coordinador', 'Activa'),
+('39482156', 'Carlos López',   '$2y$10$aHFk3heTJgkM7cuI7MHLnezg1GikFbXOpVqcgJEICgdkOhau0PwY6', 'Asistente',   'Activa'),
+('44905381', 'Ana Rodríguez',  '$2y$10$Tu6Sv8TrKeggydJHOeqzhOnieiqIwvfQiq1IqlNBJPpFh/cGQuEoy', 'Asistente',   'Activa'),
+('48219073', 'Juan Pérez',     '$2y$10$yN37wikwWgH12/GuVLgKce.mwioyGG0JbydufKCcA0Qcn9TW8ez96', 'Solicitante', 'Activa'),
+('51730864', 'María García',   '$2y$10$xgACGhAOBYrp4Du2uT8zZuk3eNM7VD3FmdAt68WCw4kRx4dEY4nYO', 'Solicitante', 'Activa'),
+('41073925', 'Marcia Antúnez', '$2y$10$w8jLaHma1WoPcnnA47FEhOhGJ1X01JMHIaD..NzX98nIPQyXTzdf2', 'Solicitante', 'Activa'),
+('37514962', 'Mario Neta',     '$2y$10$T75D9SlL8qvAY6td3IYO4OfXB0mPucvzRk1F8yC75Hd4fwW8kOkEC', 'Solicitante', 'Activa'),
+('46283015', 'Esteban Quito',  '$2y$10$QiAqCf7jmxIcYeWeNrLinOXF5gZ0tdgRtD61pebQnLL8uWPyENwfa', 'Solicitante', 'Inactiva');
 
 
 -- salones --------------------------------------------------------------
@@ -119,32 +119,6 @@ INSERT INTO solicitud (id_solicitud, fecha_hora_alta, ci_solicitante, nombre_sal
 (5, '2026-08-11 13:05:00', '48219073', 'Laboratorio 5',
     'Instalar el simulador de redes para el módulo de conectividad.',
     'Prioritario', 'Pendiente', NULL, NULL);
-
-
--- intervenciones -------------------------------------------------------
-
-INSERT INTO intervencion (id_intervencion, id_equipo, fecha, ci_responsable, tipo_intervencion, descripcion) VALUES
-(1, 13, '2026-07-02', '39482156', 'Diagnóstico',
-    'Se constata suciedad bajo las teclas por derrame de líquido.'),
-(2, 13, '2026-07-03', '39482156', 'Reparación',
-    'Limpieza completa del teclado y reemplazo de dos teclas.'),
-(3,  5, '2026-07-11', '44905381', 'Diagnóstico',
-    'La placa de red integrada no responde. Se solicita placa PCI de repuesto.'),
-(4,  1, '2026-07-22', '39482156', 'Reparación',
-    'Sustitución de la fuente de alimentación por una de repuesto.'),
-(5, 16, '2026-08-06', '44905381', 'Derivación',
-    'Se deriva a servicio técnico externo por rotura de bisagra.'),
-(6, 17, '2026-08-12', '52618740', 'Baja',
-    'Equipo obsoleto sin repuestos disponibles. Se inicia el trámite de baja.');
-
-
--- prestamos ------------------------------------------------------------
--- El 3 está vigente.
-
-INSERT INTO prestamo (id_prestamo, id_equipo, ci_solicitante, ci_responsable, fecha_hora_entrega, fecha_devolucion_prevista, documento_garantia, fecha_hora_devolucion) VALUES
-(1, 14, '48219073', '39482156', '2026-06-10 08:00:00', '2026-06-10', 'Cédula',            '2026-06-10 13:15:00'),
-(2, 15, '41073925', '44905381', '2026-07-15 09:30:00', '2026-07-18', 'Cédula',            '2026-07-18 11:00:00'),
-(3, 15, '51730864', '39482156', '2026-08-18 08:45:00', '2026-08-25', 'Carné estudiantil', NULL);
 
 
 -- uso de salas ---------------------------------------------------------

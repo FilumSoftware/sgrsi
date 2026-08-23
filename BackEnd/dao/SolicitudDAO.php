@@ -109,4 +109,14 @@ class SolicitudDAO
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function obtenerPorEstado($estado)
+    {
+        $stmt = $this->pdo->prepare(
+            $this->consultaBase() . ' WHERE c.estado_solicitud = :estado ORDER BY c.fecha_hora_alta DESC'
+        );
+        $stmt->execute([':estado' => $estado]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

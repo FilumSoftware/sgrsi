@@ -4,3 +4,6 @@
 BackEnd/config/database.php
 .env
 .env.local
+
+# Config local del editor.
+.claude/

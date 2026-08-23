@@ -12,7 +12,6 @@ class TicketDAO
         $this->pdo = Conexion::getInstancia()->getPdo();
     }
 
-    // El salon sale del equipo, no se guarda en ticket.
     private function consultaBase()
     {
         return 'SELECT t.id_ticket, t.fecha_hora_alta, t.tipo_de_defecto, t.descripcion,
@@ -119,7 +118,6 @@ class TicketDAO
         return $stmt->execute([':id' => $idTicket]);
     }
 
-    // Para el dashboard.
     public function contarPorEstado()
     {
         $stmt = $this->pdo->query(

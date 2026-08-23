@@ -1,6 +1,8 @@
-const formulario = document.getElementById('form-login');
+const formulario = document.getElementById('form-registro');
 const inputCi = document.getElementById('ci');
+const inputNombre = document.getElementById('nombre');
 const inputPassword = document.getElementById('password');
+const inputConfirmar = document.getElementById('confirmar-password');
 
 const CI_VALIDA = /^\d{8}$/;
 const LARGO_MINIMO_CLAVE = 8;
@@ -25,11 +27,25 @@ function validarPassword() {
     return true;
 }
 
-formulario.addEventListener('submit', function (evento) {
-    const ciValida = validarCi();
-    const passwordValida = validarPassword();
+function validarConfirmacion() {
+    if (inputConfirmar.value !== inputPassword.value) {
+        mostrarError(inputConfirmar, 'error-confirmar-password', 'Las contraseñas no coinciden.');
+        return false;
+    }
 
-    if (!ciValida || !passwordValida) {
+    limpiarError(inputConfirmar, 'error-confirmar-password');
+    return true;
+}
+
+formulario.addEventListener('submit', function (evento) {
+    const ciOk = validarCi();
+    const nombreOk = validarTexto(inputNombre, 'error-nombre', 1, 'el nombre');
+    const claveOk = validarPassword();
+    const confirmacionOk = validarConfirmacion();
+
+    if (!ciOk || !nombreOk || !claveOk || !confirmacionOk) {
         evento.preventDefault();
     }
 });
+
+limpiarAlEscribir(inputNombre, 'error-nombre', 1);

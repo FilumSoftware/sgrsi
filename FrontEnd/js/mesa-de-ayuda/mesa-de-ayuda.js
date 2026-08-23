@@ -1,20 +1,9 @@
-const ids = [1, 2, 3];
-
-const filas = document.querySelectorAll('tbody tr');
-const botonesEditar = document.querySelectorAll('.btn-editar');
-const botonesEliminar = document.querySelectorAll('.btn-eliminar');
-
-for (let i = 0; i < botonesEditar.length; i++) {
-    botonesEditar[i].addEventListener('click', function () {
-        window.location.href = 'detalle-ticket.html?id=' + ids[i];
-    });
-}
+const botonesEliminar = document.querySelectorAll('button[data-confirmar]');
 
 for (let i = 0; i < botonesEliminar.length; i++) {
-    botonesEliminar[i].addEventListener('click', function () {
-        const confirmar = confirm('¿Eliminar este ticket?');
-        if (confirmar) {
-            filas[i].classList.add('oculta');
+    botonesEliminar[i].addEventListener('click', function (evento) {
+        if (!confirm('¿Eliminar este ticket? No se puede deshacer.')) {
+            evento.preventDefault();
         }
     });
 }

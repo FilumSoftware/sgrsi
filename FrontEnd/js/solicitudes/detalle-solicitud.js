@@ -1,4 +1,4 @@
-const formulario = document.getElementById('form-detalle-ticket');
+const formulario = document.getElementById('form-detalle-solicitud');
 const inputMotivo = document.getElementById('motivo');
 
 const MOTIVO_MINIMO = 10;

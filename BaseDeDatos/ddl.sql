@@ -16,7 +16,6 @@ USE sgrsi;
 CREATE TABLE usuario (
     ci               CHAR(8)      NOT NULL,
     nombre_usuario   VARCHAR(60)  NOT NULL,
-    email            VARCHAR(120) NOT NULL,
     contrasena       VARCHAR(255) NOT NULL,
     tipo_de_usuario  ENUM('Solicitante', 'Asistente', 'Coordinador')
                      NOT NULL DEFAULT 'Solicitante',
@@ -24,9 +23,7 @@ CREATE TABLE usuario (
                      NOT NULL DEFAULT 'Activa',
 
     CONSTRAINT pk_usuario       PRIMARY KEY (ci),
-    CONSTRAINT uq_usuario_email UNIQUE (email),
-    CONSTRAINT ck_usuario_ci    CHECK (ci REGEXP '^[0-9]{8}$'),
-    CONSTRAINT ck_usuario_email CHECK (email LIKE '%_@_%._%')
+    CONSTRAINT ck_usuario_ci    CHECK (ci REGEXP '^[0-9]{8}$')
 ) ENGINE = InnoDB;
 
 
@@ -61,29 +58,6 @@ CREATE TABLE equipo (
 ) ENGINE = InnoDB;
 
 CREATE INDEX idx_equipo_estado ON equipo (estado_equipo);
-
-
--- intervencion ---------------------------------------------------------
-
-CREATE TABLE intervencion (
-    id_intervencion   INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    id_equipo         INT UNSIGNED NOT NULL,
-    fecha             DATE         NOT NULL,
-    ci_responsable    CHAR(8)      NOT NULL,
-    tipo_intervencion ENUM('Diagnóstico', 'Reparación', 'Derivación',
-                           'Retorno', 'Baja') NOT NULL,
-    descripcion       VARCHAR(500) NOT NULL,
-
-    CONSTRAINT pk_intervencion             PRIMARY KEY (id_intervencion),
-    CONSTRAINT fk_intervencion_equipo      FOREIGN KEY (id_equipo)
-        REFERENCES equipo (id_equipo)
-        ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_intervencion_responsable FOREIGN KEY (ci_responsable)
-        REFERENCES usuario (ci)
-        ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE = InnoDB;
-
-CREATE INDEX idx_intervencion_fecha ON intervencion (fecha);
 
 
 -- ticket ---------------------------------------------------------------
@@ -172,41 +146,6 @@ CREATE TABLE solicitud (
 
 CREATE INDEX idx_solicitud_estado ON solicitud (estado_solicitud);
 CREATE INDEX idx_solicitud_alta   ON solicitud (fecha_hora_alta);
-
-
--- prestamo -------------------------------------------------------------
--- fecha_hora_devolucion nula = préstamo vigente.
--- Se registra el tipo de documento dejado en garantía, nunca el número.
-
-CREATE TABLE prestamo (
-    id_prestamo               INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    id_equipo                 INT UNSIGNED NOT NULL,
-    ci_solicitante            CHAR(8)      NOT NULL,
-    ci_responsable            CHAR(8)      NOT NULL,
-    fecha_hora_entrega        DATETIME     NOT NULL,
-    fecha_devolucion_prevista DATE         NOT NULL,
-    documento_garantia        ENUM('Cédula', 'Carné estudiantil', 'Otro')
-                              NOT NULL,
-    fecha_hora_devolucion     DATETIME     NULL,
-
-    CONSTRAINT pk_prestamo             PRIMARY KEY (id_prestamo),
-    CONSTRAINT fk_prestamo_equipo      FOREIGN KEY (id_equipo)
-        REFERENCES equipo (id_equipo)
-        ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_prestamo_solicitante FOREIGN KEY (ci_solicitante)
-        REFERENCES usuario (ci)
-        ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_prestamo_responsable FOREIGN KEY (ci_responsable)
-        REFERENCES usuario (ci)
-        ON UPDATE CASCADE ON DELETE RESTRICT,
-
-    CONSTRAINT ck_prestamo_devolucion CHECK (
-        fecha_hora_devolucion IS NULL
-        OR fecha_hora_devolucion >= fecha_hora_entrega
-    )
-) ENGINE = InnoDB;
-
-CREATE INDEX idx_prestamo_vigente ON prestamo (fecha_hora_devolucion);
 
 
 -- uso_sala -------------------------------------------------------------
