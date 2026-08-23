@@ -1,11 +1,12 @@
 <?php
 
 require_once __DIR__ . '/BackEnd/logica/Autenticador.php';
+require_once __DIR__ . '/BackEnd/logica/ControlAcceso.php';
 
 Sesion::iniciar();
 
 if (Sesion::hayUsuario()) {
-    header('Location: FrontEnd/paginas/dashboard/dashboard.php');
+    header('Location: ' . ControlAcceso::pantallaInicial());
     exit;
 }
 
@@ -20,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $resultado = $auth->ingresar($ciEnviada, $clave);
 
     if ($resultado['ok']) {
-        header('Location: FrontEnd/paginas/dashboard/dashboard.php');
+        header('Location: ' . ControlAcceso::pantallaInicial());
         exit;
     }
 
@@ -74,8 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <button type="submit" class="btn-ingresar">Iniciar sesión</button>
             </form>
-
-            <p class="pie"><a href="FrontEnd/paginas/usuarios/registro.php">Crear una cuenta</a></p>
 
         </section>
 

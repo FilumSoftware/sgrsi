@@ -87,7 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <nav class="sidebar">
             <ul>
-                <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                <?php if (Sesion::esCoordinador()) { ?>
+                    <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                <?php } ?>
                 <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php">Sala de informática</a></li>
                 <li class="sidebar-item activo">Inventario</li>
                 <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php">Mesa de Ayuda</a></li>

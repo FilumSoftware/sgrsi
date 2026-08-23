@@ -21,7 +21,7 @@
                 <p class="subtitulo">Tu rol no tiene permiso para entrar a esta pantalla.</p>
             </header>
 
-            <p class="pie"><a href="../dashboard/dashboard.php">Volver al panel</a></p>
+            <p class="pie"><a href="../../../<?php echo ControlAcceso::pantallaInicial(); ?>">Volver al panel</a></p>
 
         </section>
 

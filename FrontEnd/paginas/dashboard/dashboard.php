@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Resumen.php';
 
-ControlAcceso::exigirSesion('../../../index.php');
+ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
 
 $cuantosTickets = 5;
 
