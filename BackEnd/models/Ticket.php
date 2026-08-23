@@ -66,7 +66,6 @@ class Ticket
         return $this->ciResponsable != null;
     }
 
-    // La base exige responsable y fecha de cierre para marcarlo Resuelto.
     public function sePuedeCerrar()
     {
         return $this->tieneResponsable() && $this->fechaHoraCierre != null;

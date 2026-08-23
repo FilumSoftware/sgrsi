@@ -44,7 +44,6 @@ class UsoSala
     public function setGrupo($grupo)             { $this->grupo = $grupo; }
     public function setTurno($turno)             { $this->turno = $turno; }
 
-    // La base tambien lo valida, pero conviene avisar antes de llegar ahi.
     public function horarioEsValido()
     {
         return $this->horaFin > $this->horaInicio;

@@ -93,4 +93,28 @@ class EquipoDAO
 
         return $stmt->execute([':id' => $idEquipo]);
     }
+
+    public function obtenerPorEstado($estado)
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT id_equipo, nombre_equipo, categoria, descripcion, nombre_salon, estado_equipo
+               FROM equipo
+              WHERE estado_equipo = :estado
+              ORDER BY nombre_equipo'
+        );
+        $stmt->execute([':estado' => $estado]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function contarPorEstado()
+    {
+        $stmt = $this->pdo->query(
+            'SELECT estado_equipo, COUNT(*) AS cantidad
+               FROM equipo
+              GROUP BY estado_equipo'
+        );
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
