@@ -15,7 +15,7 @@ class UsuarioDAO
     public function obtenerTodos()
     {
         $stmt = $this->pdo->query(
-            'SELECT ci, nombre_usuario, email, tipo_de_usuario, estado_cuenta
+            'SELECT ci, nombre_usuario, tipo_de_usuario, estado_cuenta
                FROM usuario
               ORDER BY nombre_usuario'
         );
@@ -26,7 +26,7 @@ class UsuarioDAO
     public function obtenerPorCi($ci)
     {
         $stmt = $this->pdo->prepare(
-            'SELECT ci, nombre_usuario, email, tipo_de_usuario, estado_cuenta
+            'SELECT ci, nombre_usuario, tipo_de_usuario, estado_cuenta
                FROM usuario
               WHERE ci = :ci'
         );
@@ -35,11 +35,10 @@ class UsuarioDAO
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Trae tambien el hash. Solo la usa el login, por eso va aparte.
     public function obtenerParaLogin($ci)
     {
         $stmt = $this->pdo->prepare(
-            'SELECT ci, nombre_usuario, email, contrasena, tipo_de_usuario, estado_cuenta
+            'SELECT ci, nombre_usuario, contrasena, tipo_de_usuario, estado_cuenta
                FROM usuario
               WHERE ci = :ci'
         );
@@ -64,14 +63,13 @@ class UsuarioDAO
     public function insertar(Usuario $usuario, $claveEnClaro)
     {
         $stmt = $this->pdo->prepare(
-            'INSERT INTO usuario (ci, nombre_usuario, email, contrasena, tipo_de_usuario, estado_cuenta)
-             VALUES (:ci, :nombre, :email, :contrasena, :tipo, :estado)'
+            'INSERT INTO usuario (ci, nombre_usuario, contrasena, tipo_de_usuario, estado_cuenta)
+             VALUES (:ci, :nombre, :contrasena, :tipo, :estado)'
         );
 
         return $stmt->execute([
             ':ci'         => $usuario->getCi(),
             ':nombre'     => $usuario->getNombreUsuario(),
-            ':email'      => $usuario->getEmail(),
             ':contrasena' => password_hash($claveEnClaro, PASSWORD_DEFAULT),
             ':tipo'       => $usuario->getTipoDeUsuario(),
             ':estado'     => $usuario->getEstadoCuenta()
@@ -83,7 +81,6 @@ class UsuarioDAO
         $stmt = $this->pdo->prepare(
             'UPDATE usuario
                 SET nombre_usuario = :nombre,
-                    email = :email,
                     tipo_de_usuario = :tipo,
                     estado_cuenta = :estado
               WHERE ci = :ci'
@@ -91,14 +88,12 @@ class UsuarioDAO
 
         return $stmt->execute([
             ':nombre' => $usuario->getNombreUsuario(),
-            ':email'  => $usuario->getEmail(),
             ':tipo'   => $usuario->getTipoDeUsuario(),
             ':estado' => $usuario->getEstadoCuenta(),
             ':ci'     => $usuario->getCi()
         ]);
     }
 
-    // La baja es logica: el usuario queda, la cuenta se desactiva.
     public function cambiarEstado($ci, $estado)
     {
         $stmt = $this->pdo->prepare(
