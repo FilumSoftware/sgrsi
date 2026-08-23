@@ -180,11 +180,39 @@ class UsoSalaDAO
         }
     }
 
-    public function contar()
+        public function contar()
     {
         $stmt = $this->pdo->query('SELECT COUNT(*) AS cantidad FROM uso_sala');
         $fila = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return (int) $fila['cantidad'];
+    }
+
+    public function existeSolapamiento($nombreSalon, $fecha, $horaInicio, $horaFin, $idExcluir = null)
+    {
+        $sql = 'SELECT COUNT(*) AS cantidad
+                  FROM uso_sala
+                 WHERE nombre_salon = :salon
+                   AND fecha = :fecha
+                   AND hora_inicio < :fin
+                   AND hora_fin > :inicio';
+
+        $parametros = [
+            ':salon'  => $nombreSalon,
+            ':fecha'  => $fecha,
+            ':inicio' => $horaInicio,
+            ':fin'    => $horaFin,
+        ];
+
+        if ($idExcluir !== null) {
+            $sql .= ' AND id_uso != :excluir';
+            $parametros[':excluir'] = $idExcluir;
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($parametros);
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return (int) $fila['cantidad'] > 0;
     }
 }
