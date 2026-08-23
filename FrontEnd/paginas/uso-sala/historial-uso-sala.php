@@ -1,3 +1,10 @@
+<?php
+
+require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+
+ControlAcceso::exigirSesion('../../../index.php');
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -15,13 +22,15 @@
 
         <nav class="sidebar">
             <ul>
-                <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
+                <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
                 <li class="sidebar-item activo">Sala de informática</li>
-                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
-                <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
-                <li class="sidebar-item"><a href="../../../index.html" class="btn-salir">Cerrar sesión</a></li>
+                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php">Solicitudes</a></li>
+                <?php if (ControlAcceso::puedeGestionarUsuarios()) { ?>
+                    <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.php">Usuarios</a></li>
+                <?php } ?>
+                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
 
@@ -30,7 +39,7 @@
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item"><a href="planilla-uso-sala.html">Nuevo uso</a></li>
+                        <li class="topbar-item"><a href="planilla-uso-sala.php">Nuevo uso</a></li>
                         <li class="topbar-item activo">Historial de uso de salas</li>
                     </ul>
                 </nav>

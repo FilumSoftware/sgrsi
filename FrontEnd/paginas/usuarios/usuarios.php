@@ -1,3 +1,10 @@
+<?php
+
+require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+
+ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -14,13 +21,13 @@
 
         <nav class="sidebar">
             <ul>
-                <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
-                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informática</a></li>
-                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php">Sala de informática</a></li>
+                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php">Mesa de Ayuda</a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php">Solicitudes</a></li>
                 <li class="sidebar-item activo">Usuarios</li>
-                <li class="sidebar-item"><a href="../../../index.html" class="btn-salir">Cerrar sesión</a></li>
+                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
 
@@ -29,7 +36,7 @@
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item"><a href="nuevo-usuario.html">Nuevo usuario</a></li>
+                        <li class="topbar-item"><a href="nuevo-usuario.php">Nuevo usuario</a></li>
                         <li class="topbar-item activo">Usuarios</li>
                     </ul>
                 </nav>
