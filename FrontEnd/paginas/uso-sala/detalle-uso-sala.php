@@ -1,8 +1,43 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/dao/UsoSalaDAO.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
+
+$usoSalaDAO = new UsoSalaDAO();
+
+$id = trim((string) ($_GET['id'] ?? ''));
+
+if ($id === '') {
+    header('Location: historial-uso-sala.php?aviso=noexiste');
+    exit;
+}
+
+try {
+    $uso      = $usoSalaDAO->obtenerPorId($id);
+    $detalles = $uso ? $usoSalaDAO->obtenerDetalle($id) : [];
+} catch (Exception $e) {
+    error_log('SGRSI detalle-uso-sala.php cargar: ' . $e->getMessage());
+    header('Location: historial-uso-sala.php?aviso=error');
+    exit;
+}
+
+if (!$uso) {
+    header('Location: historial-uso-sala.php?aviso=noexiste');
+    exit;
+}
+
+// Un docente entra solo a sus propios registros.
+if (!ControlAcceso::puedeAtender() && $uso['ci_solicitante'] !== Sesion::ci()) {
+    header('Location: historial-uso-sala.php?aviso=ajeno');
+    exit;
+}
+
+function v($texto)
+{
+    return htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
+}
 
 ?>
 <!DOCTYPE html>
@@ -39,8 +74,8 @@ ControlAcceso::exigirSesion('../../../index.php');
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item"><a href="planilla-uso-sala.php">Nuevo uso</a></li>
-                        <li class="topbar-item"><a href="historial-uso-sala.php">Historial de uso de salas</a></li>
+                        <li class="topbar-item"><a href="planilla-uso-sala.php">Planilla de uso</a></li>
+                        <li class="topbar-item"><a href="historial-uso-sala.php">Historial de uso</a></li>
                         <li class="topbar-item activo">Detalle de uso</li>
                     </ul>
                 </nav>
@@ -56,35 +91,35 @@ ControlAcceso::exigirSesion('../../../index.php');
                 <div class="detalle-info-general">
                     <div class="form-grupo">
                         <label for="fecha">Fecha</label>
-                        <input type="text" id="fecha" value="17/05/2026" readonly>
+                        <input type="text" id="fecha" value="<?php echo v(date('d/m/Y', strtotime($uso['fecha']))); ?>" readonly>
                     </div>
                     <div class="form-grupo">
                         <label for="hora-entrada">Hora entrada</label>
-                        <input type="text" id="hora-entrada" value="18:30" readonly>
+                        <input type="text" id="hora-entrada" value="<?php echo v(substr($uso['hora_inicio'], 0, 5)); ?>" readonly>
                     </div>
                     <div class="form-grupo">
                         <label for="hora-salida">Hora salida</label>
-                        <input type="text" id="hora-salida" value="21:05" readonly>
+                        <input type="text" id="hora-salida" value="<?php echo v(substr($uso['hora_fin'], 0, 5)); ?>" readonly>
                     </div>
                     <div class="form-grupo">
                         <label for="docente">Docente</label>
-                        <input type="text" id="docente" value="Marcia Ana" readonly>
+                        <input type="text" id="docente" value="<?php echo v($uso['nombre_docente']); ?>" readonly>
                     </div>
                     <div class="form-grupo">
                         <label for="asignatura">Asignatura</label>
-                        <input type="text" id="asignatura" value="Sistemas Operativos" readonly>
+                        <input type="text" id="asignatura" value="<?php echo v($uso['asignatura']); ?>" readonly>
                     </div>
                     <div class="form-grupo">
                         <label for="grupo">Grupo</label>
-                        <input type="text" id="grupo" value="1MI" readonly>
+                        <input type="text" id="grupo" value="<?php echo v($uso['grupo']); ?>" readonly>
                     </div>
                     <div class="form-grupo">
                         <label for="turno">Turno</label>
-                        <input type="text" id="turno" value="Nocturno" readonly>
+                        <input type="text" id="turno" value="<?php echo v($uso['turno']); ?>" readonly>
                     </div>
                     <div class="form-grupo">
                         <label for="salon">Salón</label>
-                        <input type="text" id="salon" value="Laboratorio 3" readonly>
+                        <input type="text" id="salon" value="<?php echo v($uso['nombre_salon']); ?>" readonly>
                     </div>
                 </div>
 
@@ -101,18 +136,18 @@ ControlAcceso::exigirSesion('../../../index.php');
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><strong>PC-01</strong></td>
-                                    <td>Juan Pérez</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>PC-02</strong></td>
-                                    <td>María Rodríguez</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>PC-03</strong></td>
-                                    <td>Lucas Espósito</td>
-                                </tr>
+                                <?php if (empty($detalles)) { ?>
+                                    <tr>
+                                        <td colspan="2">Este registro no tiene equipos asignados.</td>
+                                    </tr>
+                                <?php } ?>
+
+                                <?php foreach ($detalles as $detalle) { ?>
+                                    <tr>
+                                        <td><strong><?php echo v($detalle['nombre_equipo']); ?></strong></td>
+                                        <td><?php echo v($detalle['nombre_alumno'] ?? 'Sin identificar'); ?></td>
+                                    </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
