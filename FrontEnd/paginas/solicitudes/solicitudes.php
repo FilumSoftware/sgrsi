@@ -1,8 +1,67 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
+require_once __DIR__ . '/../../../BackEnd/dao/SolicitudDAO.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
+
+$solicitudDAO = new SolicitudDAO();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    if (!Sesion::esCoordinador()) {
+        header('Location: solicitudes.php?aviso=permiso');
+        exit;
+    }
+
+    $id = trim((string) ($_POST['id'] ?? ''));
+
+    try {
+        $solicitudDAO->eliminar($id);
+        header('Location: solicitudes.php?aviso=eliminada');
+        exit;
+    } catch (Exception $e) {
+        error_log('SGRSI solicitudes.php eliminar: ' . $e->getMessage());
+        header('Location: solicitudes.php?aviso=error');
+        exit;
+    }
+}
+
+$avisos = [
+    'creada'    => ['exito', 'La solicitud se registró correctamente.'],
+    'guardada'  => ['exito', 'Los cambios se guardaron.'],
+    'eliminada' => ['exito', 'La solicitud se eliminó.'],
+    'permiso'   => ['error', 'Solo el coordinador puede eliminar solicitudes.'],
+    'ajena'     => ['error', 'Esa solicitud no es tuya.'],
+    'noexiste'  => ['error', 'No existe una solicitud con ese número.'],
+    'error'     => ['error', 'No se pudo completar la operación. Intentá de nuevo en unos minutos.'],
+];
+
+$mensaje = null;
+$aviso   = $_GET['aviso'] ?? '';
+
+if (isset($avisos[$aviso])) {
+    $mensaje = ['tipo' => $avisos[$aviso][0], 'texto' => $avisos[$aviso][1]];
+}
+
+// Un técnico ve todas. Un solicitante ve únicamente las suyas.
+try {
+    if (ControlAcceso::puedeAtender()) {
+        $solicitudes = $solicitudDAO->obtenerTodos();
+    } else {
+        $solicitudes = $solicitudDAO->obtenerPorSolicitante(Sesion::ci());
+    }
+} catch (Exception $e) {
+    error_log('SGRSI solicitudes.php listar: ' . $e->getMessage());
+    $solicitudes = [];
+    $mensaje = ['tipo' => 'error', 'texto' => 'No se pudo cargar el listado de solicitudes. Intentá de nuevo en unos minutos.'];
+}
+
+function v($texto)
+{
+    return htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
+}
 
 ?>
 <!DOCTYPE html>
@@ -19,6 +78,7 @@ ControlAcceso::exigirSesion('../../../index.php');
 
 <body>
     <div class="container">
+
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
@@ -49,6 +109,13 @@ ControlAcceso::exigirSesion('../../../index.php');
             </header>
 
             <section class="content">
+
+                <?php if ($mensaje) { ?>
+                    <p class="error-mensaje <?php echo $mensaje['tipo'] === 'exito' ? 'mensaje-exito' : ''; ?>" style="display: block;">
+                        <?php echo v($mensaje['texto']); ?>
+                    </p>
+                <?php } ?>
+
                 <div class="tabla-wrapper">
                     <table>
                         <thead>
@@ -65,76 +132,36 @@ ControlAcceso::exigirSesion('../../../index.php');
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>2026-06-01</td>
-                                <td>Laboratorio 1</td>
-                                <td>PC no enciende</td>
-                                <td><span class="badge bg-warning text-dark">Pendiente</span></td>
-                                <td>Alta</td>
-                                <td>Juan Pérez</td>
-                                <td>—</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Eliminar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>2026-06-02</td>
-                                <td>Taller 2</td>
-                                <td>Proyector sin señal</td>
-                                <td><span class="badge bg-success">Finalizada</span></td>
-                                <td>Media</td>
-                                <td>María García</td>
-                                <td>Carlos López</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Eliminar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>2026-06-03</td>
-                                <td>Laboratorio 3</td>
-                                <td>Red sin conexión en varios equipos</td>
-                                <td><span class="badge bg-warning text-dark">Pendiente</span></td>
-                                <td>Alta</td>
-                                <td>Ana Rodríguez</td>
-                                <td>Carlos López</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Eliminar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>2026-06-04</td>
-                                <td>Depósito</td>
-                                <td>Falta inventariar equipos nuevos</td>
-                                <td><span class="badge bg-danger">Rechazada</span></td>
-                                <td>Baja</td>
-                                <td>Luis Martínez</td>
-                                <td>—</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Eliminar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>2026-06-05</td>
-                                <td>Taller 1</td>
-                                <td>Teclado roto en PC 7</td>
-                                <td><span class="badge bg-warning text-dark">Pendiente</span></td>
-                                <td>Baja</td>
-                                <td>Juan Pérez</td>
-                                <td>—</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Eliminar</button>
-                                </td>
-                            </tr>
+                            <?php if (empty($solicitudes)) { ?>
+                                <tr>
+                                    <td colspan="9">Todavía no hay solicitudes registradas.</td>
+                                </tr>
+                            <?php } ?>
+
+                            <?php foreach ($solicitudes as $solicitud) { ?>
+                                <tr>
+                                    <td><?php echo v($solicitud['id_solicitud']); ?></td>
+                                    <td><?php echo v(date('d/m/y', strtotime($solicitud['fecha_hora_alta']))); ?></td>
+                                    <td><?php echo v($solicitud['nombre_salon']); ?></td>
+                                    <td><?php echo v($solicitud['descripcion']); ?></td>
+                                    <td><span class="badge <?php echo v(Dominio::claseDelBadge($solicitud['estado_solicitud'])); ?>"><?php echo v($solicitud['estado_solicitud']); ?></span></td>
+                                    <td><?php echo v($solicitud['prioridad']); ?></td>
+                                    <td><?php echo v($solicitud['nombre_solicitante']); ?></td>
+                                    <td><?php echo v($solicitud['nombre_responsable'] ?? '—'); ?></td>
+                                    <td class="acciones">
+                                        <a class="btn-editar" href="detalle-solicitud.php?id=<?php echo urlencode($solicitud['id_solicitud']); ?>">
+                                            <?php echo ControlAcceso::puedeAtender() ? 'Atender' : 'Ver'; ?>
+                                        </a>
+
+                                        <?php if (Sesion::esCoordinador()) { ?>
+                                            <form action="solicitudes.php" method="post" class="form-en-linea">
+                                                <input type="hidden" name="id" value="<?php echo v($solicitud['id_solicitud']); ?>">
+                                                <button type="submit" class="btn-eliminar" data-confirmar="1">Eliminar</button>
+                                            </form>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

@@ -2,14 +2,20 @@
 
 class Dominio
 {
-    const ESTADOS_TICKET   = ['Pendiente', 'En proceso', 'Resuelto'];
-    const PRIORIDADES      = ['Urgente', 'Prioritario', 'Normal'];
-    const TIPOS_DE_DEFECTO = ['No enciende', 'Sin imagen', 'Sin red', 'Sin audio',
-                              'Periférico dañado', 'Software', 'Otros'];
+    const ESTADOS_TICKET    = ['Pendiente', 'En proceso', 'Resuelto'];
+    const ESTADOS_SOLICITUD = ['Pendiente', 'En proceso', 'Resuelta'];
+    const PRIORIDADES       = ['Urgente', 'Prioritario', 'Normal'];
+    const TIPOS_DE_DEFECTO  = ['No enciende', 'Sin imagen', 'Sin red', 'Sin audio',
+                               'Periférico dañado', 'Software', 'Otros'];
 
     public static function esEstadoTicket($valor)
     {
         return in_array($valor, self::ESTADOS_TICKET, true);
+    }
+
+    public static function esEstadoSolicitud($valor)
+    {
+        return in_array($valor, self::ESTADOS_SOLICITUD, true);
     }
 
     public static function esPrioridad($valor)
@@ -24,7 +30,7 @@ class Dominio
 
     public static function claseDelBadge($estado)
     {
-        if ($estado === 'Resuelto') {
+        if ($estado === 'Resuelto' || $estado === 'Resuelta') {
             return 'bg-success';
         }
 
