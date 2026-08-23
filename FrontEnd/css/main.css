@@ -199,12 +199,25 @@ tbody tr:hover {
 
 .btn-editar,
 .btn-eliminar {
+    display: inline-block;
     padding: 6px 12px;
     border: none;
     border-radius: var(--borde-radius);
     cursor: pointer;
+    font-family: inherit;
     font-size: 13px;
+    text-decoration: none;
     transition: background-color 0.3s, opacity 0.3s;
+}
+
+.form-en-linea {
+    display: inline;
+}
+
+.sin-accion {
+    align-self: center;
+    color: var(--color-texto-suave);
+    font-size: 13px;
 }
 
 .btn-editar {
@@ -339,6 +352,11 @@ button[type="submit"]:hover {
     font-size: 12px;
     margin-top: 4px;
     display: none;
+}
+
+.mensaje-exito {
+    color: var(--color-secundario);
+    font-weight: 600;
 }
 
 .input-error {
