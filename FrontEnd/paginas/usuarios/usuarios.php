@@ -1,8 +1,68 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/dao/UsuarioDAO.php';
 
 ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
+
+$usuarioDAO = new UsuarioDAO();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $ci     = trim((string) ($_POST['ci'] ?? ''));
+    $estado = trim((string) ($_POST['estado'] ?? ''));
+
+    if ($ci === Sesion::ci()) {
+        header('Location: usuarios.php?aviso=propia');
+        exit;
+    }
+
+    if (!in_array($estado, ['Activa', 'Inactiva'], true)) {
+        header('Location: usuarios.php?aviso=estado');
+        exit;
+    }
+
+    try {
+        $usuarioDAO->cambiarEstado($ci, $estado);
+        header('Location: usuarios.php?aviso=' . ($estado === 'Activa' ? 'activada' : 'desactivada'));
+        exit;
+    } catch (Exception $e) {
+        error_log('SGRSI usuarios.php cambiarEstado: ' . $e->getMessage());
+        header('Location: usuarios.php?aviso=error');
+        exit;
+    }
+}
+
+$avisos = [
+    'activada'     => ['exito', 'La cuenta quedó habilitada.'],
+    'desactivada'  => ['exito', 'La cuenta quedó inhabilitada.'],
+    'creada'       => ['exito', 'Usuario creado correctamente.'],
+    'guardada'     => ['exito', 'Los cambios se guardaron.'],
+    'propia'       => ['error', 'No podés cambiar el estado de tu propia cuenta.'],
+    'estado'       => ['error', 'El estado indicado no es válido.'],
+    'noencontrado' => ['error', 'No existe un usuario con esa cédula.'],
+    'error'        => ['error', 'No se pudo completar la operación. Intentá de nuevo en unos minutos.'],
+];
+
+$mensaje = null;
+$clave   = $_GET['aviso'] ?? '';
+
+if (isset($avisos[$clave])) {
+    $mensaje = ['tipo' => $avisos[$clave][0], 'texto' => $avisos[$clave][1]];
+}
+
+try {
+    $usuarios = $usuarioDAO->obtenerTodos();
+} catch (Exception $e) {
+    error_log('SGRSI usuarios.php obtenerTodos: ' . $e->getMessage());
+    $usuarios = [];
+    $mensaje  = ['tipo' => 'error', 'texto' => 'No se pudo cargar el listado de usuarios. Intentá de nuevo en unos minutos.'];
+}
+
+function v($texto)
+{
+    return htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
+}
 
 ?>
 <!DOCTYPE html>
@@ -47,62 +107,55 @@ ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
             </header>
 
             <section class="content">
+
+                <?php if ($mensaje) { ?>
+                    <p class="error-mensaje <?php echo $mensaje['tipo'] === 'exito' ? 'mensaje-exito' : ''; ?>" style="display: block;">
+                        <?php echo v($mensaje['texto']); ?>
+                    </p>
+                <?php } ?>
+
                 <div class="tabla-wrapper">
                     <table>
                         <thead>
                             <tr>
+                                <th>C.I.</th>
                                 <th>Nombre</th>
-                                <th>Mail</th>
-                                <th>Tipo</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Juan Pérez</td>
-                                <td>jperez@itr.edu.uy</td>
-                                <td>Solicitante</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Desactivar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>María García</td>
-                                <td>mgarcia@itr.edu.uy</td>
-                                <td>Solicitante</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Desactivar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Carlos López</td>
-                                <td>clopez@itr.edu.uy</td>
-                                <td>Asistente</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Desactivar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Ana Rodríguez</td>
-                                <td>arodriguez@itr.edu.uy</td>
-                                <td>Asistente</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Desactivar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Luis Martínez</td>
-                                <td>lmartinez@itr.edu.uy</td>
-                                <td>Coordinador</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Desactivar</button>
-                                </td>
-                            </tr>
+                            <?php if (empty($usuarios)) { ?>
+                                <tr>
+                                    <td colspan="5">No hay usuarios registrados.</td>
+                                </tr>
+                            <?php } ?>
+
+                            <?php foreach ($usuarios as $usuario) { ?>
+                                <?php $inactiva = $usuario['estado_cuenta'] === 'Inactiva'; ?>
+                                <tr<?php echo $inactiva ? ' class="fila-desactivada"' : ''; ?>>
+                                    <td><?php echo v($usuario['ci']); ?></td>
+                                    <td><?php echo v($usuario['nombre_usuario']); ?></td>
+                                    <td><?php echo v($usuario['tipo_de_usuario']); ?></td>
+                                    <td><?php echo v($usuario['estado_cuenta']); ?></td>
+                                    <td class="acciones">
+                                        <a class="btn-editar" href="detalle-usuario.php?ci=<?php echo urlencode($usuario['ci']); ?>">Editar</a>
+
+                                        <?php if ($usuario['ci'] === Sesion::ci()) { ?>
+                                            <span class="sin-accion">Tu cuenta</span>
+                                        <?php } else { ?>
+                                            <form action="usuarios.php" method="post" class="form-en-linea">
+                                                <input type="hidden" name="ci" value="<?php echo v($usuario['ci']); ?>">
+                                                <input type="hidden" name="estado" value="<?php echo $inactiva ? 'Activa' : 'Inactiva'; ?>">
+                                                <button type="submit" class="<?php echo $inactiva ? 'btn-editar' : 'btn-eliminar'; ?>" data-confirmar="<?php echo $inactiva ? 'habilitar' : 'inhabilitar'; ?>">
+                                                    <?php echo $inactiva ? 'Habilitar' : 'Inhabilitar'; ?>
+                                                </button>
+                                            </form>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>
