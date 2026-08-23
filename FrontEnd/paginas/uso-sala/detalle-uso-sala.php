@@ -155,6 +155,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['accion']) ? $_POST['
         $errores['salon'] = 'Elegí un salón válido de la lista.';
     }
 
+    if (empty($errores['fecha']) && empty($errores['entrada']) && empty($errores['salida']) && empty($errores['salon'])) {
+        try {
+            if ($usoSalaDAO->existeSolapamiento($valores['salon'], $valores['fecha'], $valores['entrada'] . ':00', $valores['salida'] . ':00', $fila['id_uso'])) {
+                $errores['salon'] = 'La sala ya está ocupada en ese horario.';
+            }
+        } catch (Exception $e) {
+            error_log('SGRSI detalle-uso-sala.php solapamiento: ' . $e->getMessage());
+            $errores['general'] = 'No se pudo verificar la disponibilidad de la sala. Intentá de nuevo en unos minutos.';
+        }
+    }
+
     $idsDelSalon = [];
 
     foreach ($equipos as $unEquipo) {
