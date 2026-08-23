@@ -1,8 +1,24 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/dao/EquipoDAO.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
+
+$equipoDAO = new EquipoDAO();
+$mensaje   = null;
+
+if (isset($_GET['ok'])) {
+    $mensaje = ['tipo' => 'exito', 'texto' => 'Equipo registrado correctamente.'];
+}
+
+try {
+    $equipos = $equipoDAO->obtenerTodos();
+} catch (Exception $e) {
+    error_log('SGRSI inventario.php: ' . $e->getMessage());
+    $mensaje = ['tipo' => 'error', 'texto' => 'No se pudo cargar el listado de equipos. Intentá de nuevo en unos minutos.'];
+    $equipos = [];
+}
 
 ?>
 <!DOCTYPE html>
@@ -49,6 +65,13 @@ ControlAcceso::exigirSesion('../../../index.php');
             </header>
 
             <section class="content">
+
+                <?php if ($mensaje) { ?>
+                    <p class="error-mensaje <?php echo $mensaje['tipo'] === 'exito' ? 'mensaje-exito' : ''; ?>" style="display: block;">
+                        <?php echo htmlspecialchars($mensaje['texto']); ?>
+                    </p>
+                <?php } ?>
+
                 <div class="tabla-wrapper">
                     <table>
                         <thead>
@@ -57,51 +80,32 @@ ControlAcceso::exigirSesion('../../../index.php');
                                 <th>Nombre</th>
                                 <th>Categoría</th>
                                 <th>Extras</th>
+                                <th>Salón</th>
                                 <th>Estado</th>
-                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>PC 1</td>
-                                <td>PC escritorio</td>
-                                <td>Monitor, teclado, mouse</td>
-                                <td>Funcionando</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Eliminar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>PC 2</td>
-                                <td>PC escritorio</td>
-                                <td>Monitor, teclado, mouse</td>
-                                <td>En reparación</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Eliminar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>PC 3</td>
-                                <td>Laptop</td>
-                                <td>Cargador</td>
-                                <td>Funcionando</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Eliminar</button>
-                                </td>
-                            </tr>
+                            <?php if (empty($equipos)) { ?>
+                                <tr>
+                                    <td colspan="6">Todavía no hay equipos registrados.</td>
+                                </tr>
+                            <?php } ?>
+                            <?php foreach ($equipos as $equipo) { ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($equipo['id_equipo']); ?></td>
+                                    <td><?php echo htmlspecialchars($equipo['nombre_equipo']); ?></td>
+                                    <td><?php echo htmlspecialchars($equipo['categoria']); ?></td>
+                                    <td><?php echo htmlspecialchars($equipo['descripcion'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($equipo['nombre_salon']); ?></td>
+                                    <td><?php echo htmlspecialchars($equipo['estado_equipo']); ?></td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>
             </section>
         </main>
     </div>
-    <script src="../../js/inventario/inventario.js"></script>
 </body>
 
 </html>
