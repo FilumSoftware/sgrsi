@@ -7,7 +7,7 @@ ControlAcceso::exigirSesion('../../../index.php');
 
 $usoSalaDAO = new UsoSalaDAO();
 
-$id = trim((string) ($_GET['id'] ?? ''));
+$id = trim((string) (isset($_GET['id']) ? $_GET['id'] : ''));
 
 if ($id === '') {
     header('Location: historial-uso-sala.php?aviso=noexiste');
@@ -28,7 +28,6 @@ if (!$uso) {
     exit;
 }
 
-// Un docente entra solo a sus propios registros.
 if (!ControlAcceso::puedeAtender() && $uso['ci_solicitante'] !== Sesion::ci()) {
     header('Location: historial-uso-sala.php?aviso=ajeno');
     exit;
@@ -145,7 +144,7 @@ function v($texto)
                                 <?php foreach ($detalles as $detalle) { ?>
                                     <tr>
                                         <td><strong><?php echo v($detalle['nombre_equipo']); ?></strong></td>
-                                        <td><?php echo v($detalle['nombre_alumno'] ?? 'Sin identificar'); ?></td>
+                                        <td><?php echo v(isset($detalle['nombre_alumno']) ? $detalle['nombre_alumno'] : 'Sin identificar'); ?></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>

@@ -1,12 +1,44 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
+require_once __DIR__ . '/../../../BackEnd/logica/Resumen.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
+$cuantosTickets = 5;
+
+$mensaje = null;
+
+$tarjetas = [
+    'tickets'     => 0,
+    'equipos'     => 0,
+    'solicitudes' => 0,
+    'usos'        => 0,
+];
+
+$tickets = [];
+
+try {
+    $resumen = new Resumen();
+
+    $tarjetas['tickets']     = $resumen->ticketsAbiertos();
+    $tarjetas['equipos']     = $resumen->equiposOperativos();
+    $tarjetas['solicitudes'] = $resumen->solicitudesPendientes();
+    $tarjetas['usos']        = $resumen->registrosDeLaboratorio();
+
+    $tickets = ControlAcceso::puedeAtender()
+        ? $resumen->ultimosTickets($cuantosTickets)
+        : $resumen->ultimosTickets($cuantosTickets, Sesion::ci());
+
+} catch (Exception $e) {
+    error_log('SGRSI dashboard.php: ' . $e->getMessage());
+    $mensaje = 'No se pudo cargar el resumen del sistema. Intentá de nuevo en unos minutos.';
+}
+
 function v($texto)
 {
-    return htmlspecialchars($texto, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 }
 
 ?>
@@ -57,25 +89,28 @@ function v($texto)
                 <h1 class="saludo">Hola, <?php echo v(Sesion::nombre()); ?></h1>
                 <p class="saludo-sub">Resumen del sistema · <?php echo v(Sesion::rol()); ?></p>
 
+                <?php if ($mensaje !== null) { ?>
+                    <p class="error-mensaje" style="display: block;"><?php echo v($mensaje); ?></p>
+                <?php } ?>
+
                 <section class="tarjetas">
                     <div class="tarjeta tarjeta-violeta">
-                        <p class="tarjeta-numero">12</p>
+                        <p class="tarjeta-numero"><?php echo v($tarjetas['tickets']); ?></p>
                         <p class="tarjeta-label">Tickets abiertos</p>
                     </div>
                     <div class="tarjeta tarjeta-lila">
-                        <p class="tarjeta-numero">34</p>
-                        <p class="tarjeta-label">Equipos disponibles</p>
+                        <p class="tarjeta-numero"><?php echo v($tarjetas['equipos']); ?></p>
+                        <p class="tarjeta-label">Equipos operativos</p>
                     </div>
                     <div class="tarjeta tarjeta-naranja">
-                        <p class="tarjeta-numero">8</p>
+                        <p class="tarjeta-numero"><?php echo v($tarjetas['solicitudes']); ?></p>
                         <p class="tarjeta-label">Solicitudes pendientes</p>
                     </div>
                     <div class="tarjeta tarjeta-bordo">
-                        <p class="tarjeta-numero">5</p>
+                        <p class="tarjeta-numero"><?php echo v($tarjetas['usos']); ?></p>
                         <p class="tarjeta-label">Registros de laboratorio</p>
                     </div>
                 </section>
-
 
                 <section class="tabla-contenedor">
                     <h2 class="tabla-titulo">Últimos tickets registrados</h2>
@@ -85,40 +120,29 @@ function v($texto)
                                 <tr>
                                     <th>#</th>
                                     <th>Solicitante</th>
+                                    <th>Equipo</th>
                                     <th>Descripción</th>
                                     <th>Estado</th>
                                     <th>Fecha</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>001</td>
-                                    <td>Ratón Pérez</td>
-                                    <td>Computadora no enciende</td>
-                                    <td><span class="badge bg-warning text-dark">Pendiente</span></td>
-                                    <td>17/05/2026</td>
-                                </tr>
-                                <tr>
-                                    <td>002</td>
-                                    <td>Darío Buffa</td>
-                                    <td>Instalación de software</td>
-                                    <td><span class="badge bg-success">Finalizada</span></td>
-                                    <td>16/05/2026</td>
-                                </tr>
-                                <tr>
-                                    <td>003</td>
-                                    <td>Massimiliano Pereira</td>
-                                    <td>Problema con la red</td>
-                                    <td><span class="badge bg-success">Finalizada</span></td>
-                                    <td>15/05/2026</td>
-                                </tr>
-                                <tr>
-                                    <td>004</td>
-                                    <td>Bárbara Silva</td>
-                                    <td>Reparar el aire acondicionado lab 3</td>
-                                    <td><span class="badge bg-danger">Rechazada</span></td>
-                                    <td>15/05/2026</td>
-                                </tr>
+                                <?php if (empty($tickets)) { ?>
+                                    <tr>
+                                        <td colspan="6">Todavía no hay tickets registrados.</td>
+                                    </tr>
+                                <?php } ?>
+
+                                <?php foreach ($tickets as $ticket) { ?>
+                                    <tr>
+                                        <td><?php echo v($ticket['id_ticket']); ?></td>
+                                        <td><?php echo v($ticket['nombre_solicitante']); ?></td>
+                                        <td><?php echo v($ticket['nombre_equipo']); ?></td>
+                                        <td><?php echo v($ticket['tipo_de_defecto']); ?></td>
+                                        <td><span class="badge <?php echo v(Dominio::claseDelBadge($ticket['estado_ticket'])); ?>"><?php echo v($ticket['estado_ticket']); ?></span></td>
+                                        <td><?php echo v(date('d/m/Y', strtotime($ticket['fecha_hora_alta']))); ?></td>
+                                    </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>

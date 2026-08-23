@@ -6,8 +6,6 @@ const errorSalida = document.getElementById('error-salida');
 const botonAgregarPc = document.getElementById('agregar-pc');
 const filasPc = document.querySelectorAll('.fila-pc');
 
-// Las filas las arma el servidor con los equipos del salón elegido, así que
-// puede no haber ninguna todavía.
 if (botonAgregarPc !== null) {
 
     let pcsVisibles = document.querySelectorAll('.fila-pc:not(.oculta)').length;

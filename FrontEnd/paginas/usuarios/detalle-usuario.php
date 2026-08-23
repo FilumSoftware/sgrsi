@@ -6,12 +6,18 @@ require_once __DIR__ . '/../../../BackEnd/models/Usuario.php';
 
 ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
 
-const ROLES_VALIDOS   = ['Solicitante', 'Asistente', 'Coordinador'];
-const ESTADOS_VALIDOS = ['Activa', 'Inactiva'];
+$rolesValidos = ['Solicitante', 'Asistente', 'Coordinador'];
+$estadosValidos = ['Activa', 'Inactiva'];
 
 $usuarioDAO = new UsuarioDAO();
 
-$ci = trim((string) ($_POST['ci'] ?? $_GET['ci'] ?? ''));
+$ci = '';
+
+if (isset($_POST['ci'])) {
+    $ci = trim((string) $_POST['ci']);
+} elseif (isset($_GET['ci'])) {
+    $ci = trim((string) $_GET['ci']);
+}
 
 if ($ci === '') {
     header('Location: usuarios.php?aviso=noencontrado');
@@ -42,12 +48,10 @@ $valores = [
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $valores['nombre'] = trim((string) ($_POST['nombre'] ?? ''));
+    $valores['nombre'] = trim((string) (isset($_POST['nombre']) ? $_POST['nombre'] : ''));
 
-    // Sobre la cuenta propia solo se edita el nombre: cambiarse el rol o el
-    // estado dejaría al coordinador afuera del sistema.
-    $valores['rol']    = $esPropia ? $fila['tipo_de_usuario'] : trim((string) ($_POST['tipo-usuario'] ?? ''));
-    $valores['estado'] = $esPropia ? $fila['estado_cuenta']   : trim((string) ($_POST['estado'] ?? ''));
+    $valores['rol']    = $esPropia ? $fila['tipo_de_usuario'] : trim((string) (isset($_POST['tipo-usuario']) ? $_POST['tipo-usuario'] : ''));
+    $valores['estado'] = $esPropia ? $fila['estado_cuenta']   : trim((string) (isset($_POST['estado']) ? $_POST['estado'] : ''));
 
     if ($valores['nombre'] === '') {
         $errores['nombre'] = 'El nombre es obligatorio.';
@@ -55,11 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores['nombre'] = 'El nombre no puede superar los 60 caracteres.';
     }
 
-    if (!in_array($valores['rol'], ROLES_VALIDOS, true)) {
+    if (!in_array($valores['rol'], $rolesValidos, true)) {
         $errores['rol'] = 'Elegí un rol válido de la lista.';
     }
 
-    if (!in_array($valores['estado'], ESTADOS_VALIDOS, true)) {
+    if (!in_array($valores['estado'], $estadosValidos, true)) {
         $errores['estado'] = 'Elegí un estado válido de la lista.';
     }
 
@@ -147,25 +151,25 @@ function v($texto)
                         <div class="form-grupo">
                             <label for="nombre">Nombre:</label>
                             <input type="text" id="nombre" name="nombre" value="<?php echo v($valores['nombre']); ?>" required>
-                            <p class="error-mensaje" id="error-nombre"<?php echo !empty($errores['nombre']) ? ' style="display: block;"' : ''; ?>><?php echo v($errores['nombre'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-nombre"<?php echo !empty($errores['nombre']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['nombre']) ? $errores['nombre'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
                             <label for="tipo-usuario">Permisos:</label>
                             <select id="tipo-usuario" name="tipo-usuario"<?php echo $esPropia ? ' disabled' : ''; ?>>
-                                <?php foreach (ROLES_VALIDOS as $rol) { ?>
+                                <?php foreach ($rolesValidos as $rol) { ?>
                                     <option value="<?php echo v($rol); ?>"<?php echo $valores['rol'] === $rol ? ' selected' : ''; ?>><?php echo v($rol); ?></option>
                                 <?php } ?>
                             </select>
-                            <p class="error-mensaje" id="error-rol"<?php echo !empty($errores['rol']) ? ' style="display: block;"' : ''; ?>><?php echo v($errores['rol'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-rol"<?php echo !empty($errores['rol']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['rol']) ? $errores['rol'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
                             <label for="estado">Estado de la cuenta:</label>
                             <select id="estado" name="estado"<?php echo $esPropia ? ' disabled' : ''; ?>>
-                                <?php foreach (ESTADOS_VALIDOS as $estado) { ?>
+                                <?php foreach ($estadosValidos as $estado) { ?>
                                     <option value="<?php echo v($estado); ?>"<?php echo $valores['estado'] === $estado ? ' selected' : ''; ?>><?php echo v($estado); ?></option>
                                 <?php } ?>
                             </select>
-                            <p class="error-mensaje" id="error-estado"<?php echo !empty($errores['estado']) ? ' style="display: block;"' : ''; ?>><?php echo v($errores['estado'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-estado"<?php echo !empty($errores['estado']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['estado']) ? $errores['estado'] : ''); ?></p>
                         </div>
 
                         <button type="submit" id="btn-guardar">Guardar Cambios</button>

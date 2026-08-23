@@ -6,8 +6,8 @@ require_once __DIR__ . '/../../../BackEnd/models/Usuario.php';
 
 ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
 
-const ROLES_VALIDOS  = ['Solicitante', 'Asistente', 'Coordinador'];
-const LARGO_MINIMO_CLAVE = 8;
+$rolesValidos = ['Solicitante', 'Asistente', 'Coordinador'];
+$largoMinimoClave = 8;
 
 $usuarioDAO = new UsuarioDAO();
 
@@ -16,12 +16,12 @@ $valores = ['ci' => '', 'nombre' => '', 'rol' => 'Solicitante'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $valores['ci']     = trim((string) ($_POST['ci'] ?? ''));
-    $valores['nombre'] = trim((string) ($_POST['nombre'] ?? ''));
-    $valores['rol']    = trim((string) ($_POST['tipo-usuario'] ?? ''));
+    $valores['ci']     = trim((string) (isset($_POST['ci']) ? $_POST['ci'] : ''));
+    $valores['nombre'] = trim((string) (isset($_POST['nombre']) ? $_POST['nombre'] : ''));
+    $valores['rol']    = trim((string) (isset($_POST['tipo-usuario']) ? $_POST['tipo-usuario'] : ''));
 
-    $clave         = (string) ($_POST['password'] ?? '');
-    $claveRepetida = (string) ($_POST['confirmar-password'] ?? '');
+    $clave         = (string) (isset($_POST['password']) ? $_POST['password'] : '');
+    $claveRepetida = (string) (isset($_POST['confirmar-password']) ? $_POST['confirmar-password'] : '');
 
     if (preg_match('/^[0-9]{8}$/', $valores['ci']) !== 1) {
         $errores['ci'] = 'La cédula son ocho dígitos, sin puntos ni guiones.';
@@ -33,12 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores['nombre'] = 'El nombre no puede superar los 60 caracteres.';
     }
 
-    if (!in_array($valores['rol'], ROLES_VALIDOS, true)) {
+    if (!in_array($valores['rol'], $rolesValidos, true)) {
         $errores['rol'] = 'Elegí un rol válido de la lista.';
     }
 
-    if (strlen($clave) < LARGO_MINIMO_CLAVE) {
-        $errores['password'] = 'La contraseña necesita al menos ' . LARGO_MINIMO_CLAVE . ' caracteres.';
+    if (strlen($clave) < $largoMinimoClave) {
+        $errores['password'] = 'La contraseña necesita al menos ' . $largoMinimoClave . ' caracteres.';
     }
 
     if ($clave !== $claveRepetida) {
@@ -121,31 +121,31 @@ function v($texto)
                         <div class="form-grupo">
                             <label for="ci">Cédula:</label>
                             <input type="text" id="ci" name="ci" value="<?php echo v($valores['ci']); ?>" required>
-                            <p class="error-mensaje" id="error-ci"<?php echo !empty($errores['ci']) ? ' style="display: block;"' : ''; ?>><?php echo v($errores['ci'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-ci"<?php echo !empty($errores['ci']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['ci']) ? $errores['ci'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
                             <label for="nombre">Nombre:</label>
                             <input type="text" id="nombre" name="nombre" value="<?php echo v($valores['nombre']); ?>" required>
-                            <p class="error-mensaje" id="error-nombre"<?php echo !empty($errores['nombre']) ? ' style="display: block;"' : ''; ?>><?php echo v($errores['nombre'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-nombre"<?php echo !empty($errores['nombre']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['nombre']) ? $errores['nombre'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
                             <label for="password">Contraseña:</label>
                             <input type="password" id="password" name="password" required>
-                            <p class="error-mensaje" id="error-password"<?php echo !empty($errores['password']) ? ' style="display: block;"' : ''; ?>><?php echo v($errores['password'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-password"<?php echo !empty($errores['password']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['password']) ? $errores['password'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
                             <label for="confirmar-password">Repita la contraseña:</label>
                             <input type="password" id="confirmar-password" name="confirmar-password" required>
-                            <p class="error-mensaje" id="error-confirmar-password"<?php echo !empty($errores['confirmar']) ? ' style="display: block;"' : ''; ?>><?php echo v($errores['confirmar'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-confirmar-password"<?php echo !empty($errores['confirmar']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['confirmar']) ? $errores['confirmar'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
                             <label for="tipo-usuario">Permisos:</label>
                             <select id="tipo-usuario" name="tipo-usuario">
-                                <?php foreach (ROLES_VALIDOS as $rol) { ?>
+                                <?php foreach ($rolesValidos as $rol) { ?>
                                     <option value="<?php echo v($rol); ?>"<?php echo $valores['rol'] === $rol ? ' selected' : ''; ?>><?php echo v($rol); ?></option>
                                 <?php } ?>
                             </select>
-                            <p class="error-mensaje" id="error-rol"<?php echo !empty($errores['rol']) ? ' style="display: block;"' : ''; ?>><?php echo v($errores['rol'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-rol"<?php echo !empty($errores['rol']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['rol']) ? $errores['rol'] : ''); ?></p>
                         </div>
 
                         <input type="submit" value="Crear Cuenta">

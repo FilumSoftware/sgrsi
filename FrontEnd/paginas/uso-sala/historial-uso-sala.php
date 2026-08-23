@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $id = trim((string) ($_POST['id'] ?? ''));
+    $id = trim((string) (isset($_POST['id']) ? $_POST['id'] : ''));
 
     try {
         $usoSalaDAO->eliminar($id);
@@ -37,13 +37,12 @@ $avisos = [
 ];
 
 $mensaje = null;
-$aviso   = $_GET['aviso'] ?? '';
+$aviso   = isset($_GET['aviso']) ? $_GET['aviso'] : '';
 
 if (isset($avisos[$aviso])) {
     $mensaje = ['tipo' => $avisos[$aviso][0], 'texto' => $avisos[$aviso][1]];
 }
 
-// Un técnico ve el historial entero. Un docente ve solo sus registros.
 try {
     if (ControlAcceso::puedeAtender()) {
         $usos = $usoSalaDAO->obtenerTodos();
