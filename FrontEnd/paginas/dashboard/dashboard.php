@@ -1,3 +1,15 @@
+<?php
+
+require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+
+ControlAcceso::exigirSesion('../../../index.php');
+
+function v($texto)
+{
+    return htmlspecialchars($texto, ENT_QUOTES, 'UTF-8');
+}
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -20,8 +32,10 @@
                 <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
                 <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
                 <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
-                <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
-                <li class="sidebar-item"><a href="../../../index.html" class="btn-salir">Cerrar sesión</a></li>
+                <?php if (ControlAcceso::puedeGestionarUsuarios()) { ?>
+                    <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.html">Usuarios</a></li>
+                <?php } ?>
+                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir">Cerrar sesión</a></li>
             </ul>
         </nav>
 
@@ -40,8 +54,8 @@
             </header>
 
             <div class="content">
-                <h1 class="saludo">Bienvenido</h1>
-                <p class="saludo-sub">Resumen del sistema</p>
+                <h1 class="saludo">Hola, <?php echo v(Sesion::nombre()); ?></h1>
+                <p class="saludo-sub">Resumen del sistema · <?php echo v(Sesion::rol()); ?></p>
 
                 <section class="tarjetas">
                     <div class="tarjeta tarjeta-violeta">
