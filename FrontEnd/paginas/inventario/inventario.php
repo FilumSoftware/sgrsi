@@ -8,7 +8,9 @@ ControlAcceso::exigirSesion('../../../index.php');
 $equipoDAO = new EquipoDAO();
 $mensaje   = null;
 
-if (isset($_GET['ok'])) {
+if (isset($_GET['ok']) && $_GET['ok'] === '2') {
+    $mensaje = ['tipo' => 'exito', 'texto' => 'Equipo actualizado correctamente.'];
+} elseif (isset($_GET['ok'])) {
     $mensaje = ['tipo' => 'exito', 'texto' => 'Equipo registrado correctamente.'];
 }
 
@@ -82,12 +84,13 @@ try {
                                 <th>Extras</th>
                                 <th>Salón</th>
                                 <th>Estado</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($equipos)) { ?>
                                 <tr>
-                                    <td colspan="6">Todavía no hay equipos registrados.</td>
+                                    <td colspan="7">Todavía no hay equipos registrados.</td>
                                 </tr>
                             <?php } ?>
                             <?php foreach ($equipos as $equipo) { ?>
@@ -98,6 +101,9 @@ try {
                                     <td><?php echo htmlspecialchars(isset($equipo['descripcion']) ? $equipo['descripcion'] : ''); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['nombre_salon']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['estado_equipo']); ?></td>
+                                    <td class="acciones">
+                                        <a class="btn-editar" href="detalle-equipo.php?id=<?php echo (int) $equipo['id_equipo']; ?>">Editar</a>
+                                    </td>
                                 </tr>
                             <?php } ?>
                         </tbody>

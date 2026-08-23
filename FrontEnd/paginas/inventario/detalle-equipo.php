@@ -1,5 +1,101 @@
 <?php
 
+require_once __DIR__ . '/../../../BackEnd/dao/EquipoDAO.php';
+require_once __DIR__ . '/../../../BackEnd/dao/SalonDAO.php';
+require_once __DIR__ . '/../../../BackEnd/models/Equipo.php';
+
+const CATEGORIAS_VALIDAS = ['PC de escritorio', 'Laptop', 'Proyector', 'Impresora', 'Otro'];
+const ESTADOS_VALIDOS = ['Operativo', 'En reparación', 'Derivado', 'En trámite de baja', 'De baja'];
+
+$salonDAO  = new SalonDAO();
+$equipoDAO = new EquipoDAO();
+
+$idEquipo = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+
+if ($idEquipo <= 0) {
+    header('Location: inventario.php');
+    exit;
+}
+
+$errores = [];
+
+try {
+    $salones = $salonDAO->obtenerTodos();
+} catch (Exception $e) {
+    error_log('SGRSI detalle-equipo.php: ' . $e->getMessage());
+    $salones = [];
+    $errores['general'] = 'No se pudo cargar la lista de salones. Intentá de nuevo en unos minutos.';
+}
+
+try {
+    $equipoActual = $equipoDAO->obtenerPorId($idEquipo);
+} catch (Exception $e) {
+    error_log('SGRSI detalle-equipo.php: ' . $e->getMessage());
+    $equipoActual = false;
+}
+
+if (!$equipoActual) {
+    header('Location: inventario.php');
+    exit;
+}
+
+$valores = [
+    'nombre'    => $equipoActual['nombre_equipo'],
+    'salon'     => $equipoActual['nombre_salon'],
+    'categoria' => $equipoActual['categoria'],
+    'extras'    => $equipoActual['descripcion'] ?? '',
+    'estado'    => $equipoActual['estado_equipo'],
+];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $valores['nombre']    = trim((string) ($_POST['nombre'] ?? ''));
+    $valores['salon']     = trim((string) ($_POST['salon'] ?? ''));
+    $valores['categoria'] = trim((string) ($_POST['categoria'] ?? ''));
+    $valores['extras']    = trim((string) ($_POST['extras'] ?? ''));
+    $valores['estado']    = trim((string) ($_POST['estado'] ?? ''));
+
+    if ($valores['nombre'] === '') {
+        $errores['nombre'] = 'El nombre del equipo es obligatorio.';
+    } elseif (strlen($valores['nombre']) > 100) {
+        $errores['nombre'] = 'El nombre del equipo no puede superar los 100 caracteres.';
+    }
+
+    $nombresSalon = array_column($salones, 'nombre_salon');
+    if ($valores['salon'] === '' || !in_array($valores['salon'], $nombresSalon, true)) {
+        $errores['salon'] = 'Elegí un salón válido de la lista.';
+    }
+
+    if ($valores['categoria'] === '' || !in_array($valores['categoria'], CATEGORIAS_VALIDAS, true)) {
+        $errores['categoria'] = 'Elegí una categoría válida de la lista.';
+    }
+
+    if ($valores['estado'] === '' || !in_array($valores['estado'], ESTADOS_VALIDOS, true)) {
+        $errores['estado'] = 'Elegí un estado válido de la lista.';
+    }
+
+    if (empty($errores)) {
+        try {
+            $equipo = new Equipo(
+                $valores['nombre'],
+                $valores['categoria'],
+                $valores['extras'] !== '' ? $valores['extras'] : null,
+                $valores['salon'],
+                $valores['estado'],
+                $idEquipo
+            );
+
+            $equipoDAO->actualizar($equipo);
+
+            header('Location: inventario.php?ok=2');
+            exit;
+
+        } catch (Exception $e) {
+            error_log('SGRSI detalle-equipo.php actualizar: ' . $e->getMessage());
+            $errores['general'] = 'No se pudo guardar el equipo. Intentá de nuevo en unos minutos.';
+        }
+    }
+}
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
@@ -52,58 +148,65 @@ ControlAcceso::exigirSesion('../../../index.php');
             <section class="form-container">
                 <h1>Detalle de Equipo</h1>
 
-                <form id="form-detalle-equipo" action="" method="post">
+                <?php if (!empty($errores['general'])) { ?>
+                    <p class="error-mensaje" style="display: block;"><?php echo htmlspecialchars($errores['general']); ?></p>
+                <?php } ?>
+
+                <form id="form-detalle-equipo" action="detalle-equipo.php?id=<?php echo (int) $idEquipo; ?>" method="post">
                     <fieldset>
                         <div class="form-grupo">
                             <label for="id-equipo">ID Equipo (No editable):</label>
-                            <input type="text" id="id-equipo" name="id-equipo" value="1" readonly>
+                            <input type="text" id="id-equipo" name="id-equipo" value="<?php echo (int) $idEquipo; ?>" readonly>
                         </div>
 
                         <div class="form-grupo">
                             <label for="nombre">Nombre del equipo:</label>
-                            <input type="text" id="nombre" name="nombre" value="PC 1" required>
-                            <p class="error-mensaje" id="error-nombre"></p>
+                            <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($valores['nombre']); ?>" required>
+                            <p class="error-mensaje" id="error-nombre"<?php echo !empty($errores['nombre']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars($errores['nombre'] ?? ''); ?></p>
                         </div>
 
                         <div class="form-grupo">
                             <label for="salon">Salón:</label>
                             <select id="salon" name="salon">
-                                <option value="laboratorio-1">Laboratorio 1</option>
-                                <option value="laboratorio-2">Laboratorio 2</option>
-                                <option value="laboratorio-3" selected>Laboratorio 3</option>
-                                <option value="laboratorio-4">Laboratorio 4</option>
-                                <option value="laboratorio-5">Laboratorio 5</option>
-                                <option value="laboratorio-6">Laboratorio 6</option>
-                                <option value="taller-1">Taller 1</option>
-                                <option value="taller-2">Taller 2</option>
-                                <option value="taller-3">Taller 3</option>
-                                <option value="deposito">Depósito</option>
+                                <?php foreach ($salones as $salon) { ?>
+                                    <option value="<?php echo htmlspecialchars($salon['nombre_salon']); ?>"
+                                        <?php echo $salon['nombre_salon'] === $valores['salon'] ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($salon['nombre_salon']); ?>
+                                    </option>
+                                <?php } ?>
                             </select>
+                            <p class="error-mensaje" id="error-salon"<?php echo !empty($errores['salon']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars($errores['salon'] ?? ''); ?></p>
                         </div>
 
                         <div class="form-grupo">
                             <label for="categoria">Categoría:</label>
                             <select id="categoria" name="categoria">
-                                <option value="pc-escritorio" selected>PC escritorio</option>
-                                <option value="laptop">Laptop</option>
-                                <option value="proyector">Proyector</option>
-                                <option value="impresora">Impresora</option>
-                                <option value="otro">Otro</option>
+                                <?php foreach (CATEGORIAS_VALIDAS as $categoria) { ?>
+                                    <option value="<?php echo htmlspecialchars($categoria); ?>"
+                                        <?php echo $categoria === $valores['categoria'] ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($categoria); ?>
+                                    </option>
+                                <?php } ?>
                             </select>
+                            <p class="error-mensaje" id="error-categoria"<?php echo !empty($errores['categoria']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars($errores['categoria'] ?? ''); ?></p>
                         </div>
 
                         <div class="form-grupo">
                             <label for="extras">Extras:</label>
-                            <input type="text" id="extras" name="extras" value="Monitor, teclado, mouse">
+                            <input type="text" id="extras" name="extras" value="<?php echo htmlspecialchars($valores['extras']); ?>">
                         </div>
 
                         <div class="form-grupo">
                             <label for="estado">Estado actual:</label>
                             <select id="estado" name="estado">
-                                <option value="funcionando" selected>Funcionando</option>
-                                <option value="en-reparacion">En reparación</option>
-                                <option value="de-baja">De baja</option>
+                                <?php foreach (ESTADOS_VALIDOS as $estado) { ?>
+                                    <option value="<?php echo htmlspecialchars($estado); ?>"
+                                        <?php echo $estado === $valores['estado'] ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($estado); ?>
+                                    </option>
+                                <?php } ?>
                             </select>
+                            <p class="error-mensaje" id="error-estado"<?php echo !empty($errores['estado']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars($errores['estado'] ?? ''); ?></p>
                         </div>
 
                         <button type="submit" id="btn-guardar">Guardar Cambios</button>
