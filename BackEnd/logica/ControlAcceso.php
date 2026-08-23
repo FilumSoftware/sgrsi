@@ -23,6 +23,19 @@ class ControlAcceso
         }
     }
 
+    public static function pantallaInicial()
+    {
+        if (Sesion::esCoordinador()) {
+            return 'FrontEnd/paginas/dashboard/dashboard.php';
+        }
+
+        if (Sesion::esTecnico()) {
+            return 'FrontEnd/paginas/mesa-de-ayuda/mesa-de-ayuda.php';
+        }
+
+        return 'FrontEnd/paginas/uso-sala/planilla-uso-sala.php';
+    }
+
     public static function puedeGestionarUsuarios()
     {
         return Sesion::esCoordinador();

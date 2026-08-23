@@ -81,7 +81,9 @@ function v($texto)
 
         <nav class="sidebar">
             <ul>
-                <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                <?php if (Sesion::esCoordinador()) { ?>
+                    <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                <?php } ?>
                 <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php">Sala de informática</a></li>
                 <?php if (ControlAcceso::puedeAtender()) { ?>
                     <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
