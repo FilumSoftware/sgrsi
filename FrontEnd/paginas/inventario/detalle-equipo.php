@@ -1,11 +1,14 @@
 <?php
 
+require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/dao/EquipoDAO.php';
 require_once __DIR__ . '/../../../BackEnd/dao/SalonDAO.php';
 require_once __DIR__ . '/../../../BackEnd/models/Equipo.php';
 
-const CATEGORIAS_VALIDAS = ['PC de escritorio', 'Laptop', 'Proyector', 'Impresora', 'Otro'];
-const ESTADOS_VALIDOS = ['Operativo', 'En reparación', 'Derivado', 'En trámite de baja', 'De baja'];
+ControlAcceso::exigirSesion('../../../index.php');
+
+$categoriasValidas = ['PC de escritorio', 'Laptop', 'Proyector', 'Impresora', 'Otro'];
+$estadosValidos    = ['Operativo', 'En reparación', 'Derivado', 'En trámite de baja', 'De baja'];
 
 $salonDAO  = new SalonDAO();
 $equipoDAO = new EquipoDAO();
@@ -43,17 +46,17 @@ $valores = [
     'nombre'    => $equipoActual['nombre_equipo'],
     'salon'     => $equipoActual['nombre_salon'],
     'categoria' => $equipoActual['categoria'],
-    'extras'    => $equipoActual['descripcion'] ?? '',
+    'extras'    => isset($equipoActual['descripcion']) ? $equipoActual['descripcion'] : '',
     'estado'    => $equipoActual['estado_equipo'],
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $valores['nombre']    = trim((string) ($_POST['nombre'] ?? ''));
-    $valores['salon']     = trim((string) ($_POST['salon'] ?? ''));
-    $valores['categoria'] = trim((string) ($_POST['categoria'] ?? ''));
-    $valores['extras']    = trim((string) ($_POST['extras'] ?? ''));
-    $valores['estado']    = trim((string) ($_POST['estado'] ?? ''));
+    $valores['nombre']    = trim((string) (isset($_POST['nombre']) ? $_POST['nombre'] : ''));
+    $valores['salon']     = trim((string) (isset($_POST['salon']) ? $_POST['salon'] : ''));
+    $valores['categoria'] = trim((string) (isset($_POST['categoria']) ? $_POST['categoria'] : ''));
+    $valores['extras']    = trim((string) (isset($_POST['extras']) ? $_POST['extras'] : ''));
+    $valores['estado']    = trim((string) (isset($_POST['estado']) ? $_POST['estado'] : ''));
 
     if ($valores['nombre'] === '') {
         $errores['nombre'] = 'El nombre del equipo es obligatorio.';
@@ -61,16 +64,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores['nombre'] = 'El nombre del equipo no puede superar los 100 caracteres.';
     }
 
-    $nombresSalon = array_column($salones, 'nombre_salon');
+    $nombresSalon = [];
+
+    foreach ($salones as $unSalon) {
+        $nombresSalon[] = $unSalon['nombre_salon'];
+    }
+
     if ($valores['salon'] === '' || !in_array($valores['salon'], $nombresSalon, true)) {
         $errores['salon'] = 'Elegí un salón válido de la lista.';
     }
 
-    if ($valores['categoria'] === '' || !in_array($valores['categoria'], CATEGORIAS_VALIDAS, true)) {
+    if ($valores['categoria'] === '' || !in_array($valores['categoria'], $categoriasValidas, true)) {
         $errores['categoria'] = 'Elegí una categoría válida de la lista.';
     }
 
-    if ($valores['estado'] === '' || !in_array($valores['estado'], ESTADOS_VALIDOS, true)) {
+    if ($valores['estado'] === '' || !in_array($valores['estado'], $estadosValidos, true)) {
         $errores['estado'] = 'Elegí un estado válido de la lista.';
     }
 
@@ -96,9 +104,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
-
-ControlAcceso::exigirSesion('../../../index.php');
 
 ?>
 <!DOCTYPE html>
@@ -162,7 +167,7 @@ ControlAcceso::exigirSesion('../../../index.php');
                         <div class="form-grupo">
                             <label for="nombre">Nombre del equipo:</label>
                             <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($valores['nombre']); ?>" required>
-                            <p class="error-mensaje" id="error-nombre"<?php echo !empty($errores['nombre']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars($errores['nombre'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-nombre"<?php echo !empty($errores['nombre']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars(isset($errores['nombre']) ? $errores['nombre'] : ''); ?></p>
                         </div>
 
                         <div class="form-grupo">
@@ -175,20 +180,20 @@ ControlAcceso::exigirSesion('../../../index.php');
                                     </option>
                                 <?php } ?>
                             </select>
-                            <p class="error-mensaje" id="error-salon"<?php echo !empty($errores['salon']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars($errores['salon'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-salon"<?php echo !empty($errores['salon']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars(isset($errores['salon']) ? $errores['salon'] : ''); ?></p>
                         </div>
 
                         <div class="form-grupo">
                             <label for="categoria">Categoría:</label>
                             <select id="categoria" name="categoria">
-                                <?php foreach (CATEGORIAS_VALIDAS as $categoria) { ?>
+                                <?php foreach ($categoriasValidas as $categoria) { ?>
                                     <option value="<?php echo htmlspecialchars($categoria); ?>"
                                         <?php echo $categoria === $valores['categoria'] ? 'selected' : ''; ?>>
                                         <?php echo htmlspecialchars($categoria); ?>
                                     </option>
                                 <?php } ?>
                             </select>
-                            <p class="error-mensaje" id="error-categoria"<?php echo !empty($errores['categoria']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars($errores['categoria'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-categoria"<?php echo !empty($errores['categoria']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars(isset($errores['categoria']) ? $errores['categoria'] : ''); ?></p>
                         </div>
 
                         <div class="form-grupo">
@@ -199,14 +204,14 @@ ControlAcceso::exigirSesion('../../../index.php');
                         <div class="form-grupo">
                             <label for="estado">Estado actual:</label>
                             <select id="estado" name="estado">
-                                <?php foreach (ESTADOS_VALIDOS as $estado) { ?>
+                                <?php foreach ($estadosValidos as $estado) { ?>
                                     <option value="<?php echo htmlspecialchars($estado); ?>"
                                         <?php echo $estado === $valores['estado'] ? 'selected' : ''; ?>>
                                         <?php echo htmlspecialchars($estado); ?>
                                     </option>
                                 <?php } ?>
                             </select>
-                            <p class="error-mensaje" id="error-estado"<?php echo !empty($errores['estado']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars($errores['estado'] ?? ''); ?></p>
+                            <p class="error-mensaje" id="error-estado"<?php echo !empty($errores['estado']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars(isset($errores['estado']) ? $errores['estado'] : ''); ?></p>
                         </div>
 
                         <button type="submit" id="btn-guardar">Guardar Cambios</button>
