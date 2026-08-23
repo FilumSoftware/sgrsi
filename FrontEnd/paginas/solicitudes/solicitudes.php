@@ -82,7 +82,9 @@ function v($texto)
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
                 <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php">Sala de informática</a></li>
-                <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
+                <?php if (ControlAcceso::puedeAtender()) { ?>
+                    <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
+                <?php } ?>
                 <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php">Mesa de Ayuda</a></li>
                 <li class="sidebar-item activo">Solicitudes</li>
                 <?php if (ControlAcceso::puedeGestionarUsuarios()) { ?>

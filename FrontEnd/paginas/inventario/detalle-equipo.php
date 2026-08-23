@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../../BackEnd/dao/EquipoDAO.php';
 require_once __DIR__ . '/../../../BackEnd/dao/SalonDAO.php';
 require_once __DIR__ . '/../../../BackEnd/models/Equipo.php';
 
-ControlAcceso::exigirSesion('../../../index.php');
+ControlAcceso::exigirRol(['Asistente', 'Coordinador'], '../../../index.php');
 
 $categoriasValidas = ['PC de escritorio', 'Laptop', 'Proyector', 'Impresora', 'Otro'];
 $estadosValidos    = ['Operativo', 'En reparación', 'Derivado', 'En trámite de baja', 'De baja'];
