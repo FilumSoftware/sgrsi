@@ -95,7 +95,7 @@ try {
                                     <td><?php echo htmlspecialchars($equipo['id_equipo']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['nombre_equipo']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['categoria']); ?></td>
-                                    <td><?php echo htmlspecialchars($equipo['descripcion'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars(isset($equipo['descripcion']) ? $equipo['descripcion'] : ''); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['nombre_salon']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['estado_equipo']); ?></td>
                                 </tr>
