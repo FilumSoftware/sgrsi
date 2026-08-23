@@ -5,6 +5,7 @@ class Dominio
     const ESTADOS_TICKET    = ['Pendiente', 'En proceso', 'Resuelto'];
     const ESTADOS_SOLICITUD = ['Pendiente', 'En proceso', 'Resuelta'];
     const PRIORIDADES       = ['Urgente', 'Prioritario', 'Normal'];
+    const TURNOS            = ['Matutino', 'Vespertino', 'Nocturno'];
     const TIPOS_DE_DEFECTO  = ['No enciende', 'Sin imagen', 'Sin red', 'Sin audio',
                                'Periférico dañado', 'Software', 'Otros'];
 
@@ -21,6 +22,11 @@ class Dominio
     public static function esPrioridad($valor)
     {
         return in_array($valor, self::PRIORIDADES, true);
+    }
+
+    public static function esTurno($valor)
+    {
+        return in_array($valor, self::TURNOS, true);
     }
 
     public static function esTipoDeDefecto($valor)

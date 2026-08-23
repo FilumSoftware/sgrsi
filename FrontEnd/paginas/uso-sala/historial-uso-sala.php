@@ -1,8 +1,65 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/dao/UsoSalaDAO.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
+
+$usoSalaDAO = new UsoSalaDAO();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    if (!Sesion::esCoordinador()) {
+        header('Location: historial-uso-sala.php?aviso=permiso');
+        exit;
+    }
+
+    $id = trim((string) ($_POST['id'] ?? ''));
+
+    try {
+        $usoSalaDAO->eliminar($id);
+        header('Location: historial-uso-sala.php?aviso=eliminado');
+        exit;
+    } catch (Exception $e) {
+        error_log('SGRSI historial-uso-sala.php eliminar: ' . $e->getMessage());
+        header('Location: historial-uso-sala.php?aviso=error');
+        exit;
+    }
+}
+
+$avisos = [
+    'creado'    => ['exito', 'El uso de la sala se registró correctamente.'],
+    'eliminado' => ['exito', 'El registro se eliminó.'],
+    'permiso'   => ['error', 'Solo el coordinador puede eliminar registros.'],
+    'ajeno'     => ['error', 'Ese registro no es tuyo.'],
+    'noexiste'  => ['error', 'No existe un registro con ese número.'],
+    'error'     => ['error', 'No se pudo completar la operación. Intentá de nuevo en unos minutos.'],
+];
+
+$mensaje = null;
+$aviso   = $_GET['aviso'] ?? '';
+
+if (isset($avisos[$aviso])) {
+    $mensaje = ['tipo' => $avisos[$aviso][0], 'texto' => $avisos[$aviso][1]];
+}
+
+// Un técnico ve el historial entero. Un docente ve solo sus registros.
+try {
+    if (ControlAcceso::puedeAtender()) {
+        $usos = $usoSalaDAO->obtenerTodos();
+    } else {
+        $usos = $usoSalaDAO->obtenerPorSolicitante(Sesion::ci());
+    }
+} catch (Exception $e) {
+    error_log('SGRSI historial-uso-sala.php listar: ' . $e->getMessage());
+    $usos = [];
+    $mensaje = ['tipo' => 'error', 'texto' => 'No se pudo cargar el historial. Intentá de nuevo en unos minutos.'];
+}
+
+function v($texto)
+{
+    return htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
+}
 
 ?>
 <!DOCTYPE html>
@@ -39,8 +96,8 @@ ControlAcceso::exigirSesion('../../../index.php');
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item"><a href="planilla-uso-sala.php">Nuevo uso</a></li>
-                        <li class="topbar-item activo">Historial de uso de salas</li>
+                        <li class="topbar-item"><a href="planilla-uso-sala.php">Planilla de uso</a></li>
+                        <li class="topbar-item activo">Historial de uso</li>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
@@ -50,52 +107,55 @@ ControlAcceso::exigirSesion('../../../index.php');
             </header>
 
             <section class="content">
+
+                <?php if ($mensaje) { ?>
+                    <p class="error-mensaje <?php echo $mensaje['tipo'] === 'exito' ? 'mensaje-exito' : ''; ?>" style="display: block;">
+                        <?php echo v($mensaje['texto']); ?>
+                    </p>
+                <?php } ?>
+
                 <div class="tabla-wrapper">
                     <table>
                         <thead>
                             <tr>
                                 <th>Fecha</th>
+                                <th>Horario</th>
                                 <th>Docente</th>
                                 <th>Asignatura</th>
+                                <th>Grupo</th>
                                 <th>Turno</th>
                                 <th>Salón</th>
-                                <th></th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>17/05/26</td>
-                                <td>Marcia Ana</td>
-                                <td>Sistemas Operativos</td>
-                                <td>Nocturno</td>
-                                <td>Labratorio 3</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Eliminar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>30/05/26</td>
-                                <td>Mario Neta</td>
-                                <td>Electricidad</td>
-                                <td>Vespertino</td>
-                                <td>Taller 1</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Eliminar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>10/07/26</td>
-                                <td>Esteban Quito</td>
-                                <td>Soporte IT</td>
-                                <td>Matutino</td>
-                                <td>Labratrio 5</td>
-                                <td class="acciones">
-                                    <button class="btn-editar">Editar</button>
-                                    <button class="btn-eliminar">Eliminar</button>
-                                </td>
-                            </tr>
+                            <?php if (empty($usos)) { ?>
+                                <tr>
+                                    <td colspan="8">Todavía no hay registros de uso de sala.</td>
+                                </tr>
+                            <?php } ?>
+
+                            <?php foreach ($usos as $uso) { ?>
+                                <tr>
+                                    <td><?php echo v(date('d/m/y', strtotime($uso['fecha']))); ?></td>
+                                    <td><?php echo v(substr($uso['hora_inicio'], 0, 5)); ?> a <?php echo v(substr($uso['hora_fin'], 0, 5)); ?></td>
+                                    <td><?php echo v($uso['nombre_docente']); ?></td>
+                                    <td><?php echo v($uso['asignatura']); ?></td>
+                                    <td><?php echo v($uso['grupo']); ?></td>
+                                    <td><?php echo v($uso['turno']); ?></td>
+                                    <td><?php echo v($uso['nombre_salon']); ?></td>
+                                    <td class="acciones">
+                                        <a class="btn-editar" href="detalle-uso-sala.php?id=<?php echo urlencode($uso['id_uso']); ?>">Ver</a>
+
+                                        <?php if (Sesion::esCoordinador()) { ?>
+                                            <form action="historial-uso-sala.php" method="post" class="form-en-linea">
+                                                <input type="hidden" name="id" value="<?php echo v($uso['id_uso']); ?>">
+                                                <button type="submit" class="btn-eliminar" data-confirmar="1">Eliminar</button>
+                                            </form>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>
