@@ -198,8 +198,7 @@ tbody tr:hover {
 }
 
 .btn-editar,
-.btn-eliminar,
-.btn-reiniciar {
+.btn-eliminar {
     padding: 6px 12px;
     border: none;
     border-radius: var(--borde-radius);
@@ -224,15 +223,6 @@ tbody tr:hover {
 }
 
 .btn-eliminar:hover {
-    opacity: 0.8;
-}
-
-.btn-reiniciar {
-    background-color: var(--color-secundario);
-    color: var(--color-fondo);
-}
-
-.btn-reiniciar:hover {
     opacity: 0.8;
 }
 
