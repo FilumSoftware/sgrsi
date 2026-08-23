@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/dao/EquipoDAO.php';
 
-ControlAcceso::exigirSesion('../../../index.php');
+ControlAcceso::exigirRol(['Asistente', 'Coordinador'], '../../../index.php');
 
 $equipoDAO = new EquipoDAO();
 $mensaje   = null;
