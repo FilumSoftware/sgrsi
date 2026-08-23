@@ -6,8 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/main.css">
-    <link rel="stylesheet" href="mesa-de-ayuda.css">
-    <title>Mesa de Ayuda</title>
+    <title>SGRSI - Nuevo ticket</title>
 </head>
 
 <body>
@@ -16,7 +15,7 @@
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
-                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informatica</a></li>
+                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informática</a></li>
                 <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
                 <li class="sidebar-item activo">Mesa de Ayuda</li>
                 <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.html">Solicitudes</a></li>
@@ -41,7 +40,7 @@
             </header>
 
             <section class="form-container">
-                <form action="" method="post">
+                <form id="form-ticket" action="" method="post">
                     <div class="form-grupo">
                         <label for="fecha">Fecha</label>
                         <input type="date" name="fecha" id="fecha" required>
@@ -51,8 +50,8 @@
                         <input type="time" name="hora" id="hora" required>
                     </div>
                     <div class="form-grupo">
-                        <label for="salon">Salon</label>
-                        <select name="salon" id="salon">
+                        <label for="salon">Salón</label>
+                        <select name="salon" id="salon" required>
                             <option value="">Elija una opción</option>
                             <option value="lab-1">Laboratorio 1</option>
                             <option value="lab-2">Laboratorio 2</option>
@@ -66,7 +65,7 @@
                     </div>
                     <div class="form-grupo">
                         <label for="equipo">Equipo</label>
-                        <select name="equipo" id="equipo">
+                        <select name="equipo" id="equipo" required>
                             <option value="">Elija una opción</option>
                             <option value="equipo-1">Equipo 1</option>
                             <option value="equipo-2">Equipo 2</option>

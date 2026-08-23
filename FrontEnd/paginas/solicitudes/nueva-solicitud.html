@@ -6,8 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/main.css">
-    <link rel="stylesheet" href="solicitudes.css">
-    <title>Solicitudes</title>
+    <title>SGRSI - Nueva solicitud</title>
 </head>
 
 <body>
@@ -16,7 +15,7 @@
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item"><a href="../dashboard/dashboard.html">Dashboard</a></li>
-                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informatica</a></li>
+                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.html">Sala de informática</a></li>
                 <li class="sidebar-item"><a href="../inventario/nuevo-equipo.html">Inventario</a></li>
                 <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.html">Mesa de Ayuda</a></li>
                 <li class="sidebar-item activo">Solicitudes</li>
@@ -45,8 +44,7 @@
                     <fieldset>
                         <div class="form-grupo">
                             <label for="fecha">Fecha:</label>
-                            <input type="date" id="fecha" name="fecha">
-                            <p class="error-mensaje" id="error-fecha"></p>
+                            <input type="date" id="fecha" name="fecha" required>
                         </div>
                         <div class="form-grupo">
                             <label for="salon">Salón:</label>
@@ -65,8 +63,7 @@
                         </div>
                         <div class="form-grupo">
                             <label for="motivo">Motivo:</label><br>
-                            <textarea id="motivo" name="motivo" rows="4" cols="50"></textarea>
-                            <p class="error-mensaje" id="error-motivo"></p>
+                            <textarea id="motivo" name="motivo" rows="4" cols="50" required></textarea>
                         </div>
 
                         <input type="submit" value="Enviar solicitud">
@@ -76,7 +73,6 @@
 
         </main>
     </div>
-    <script src="../../js/solicitudes/nueva-solicitud.js"></script>
 </body>
 
 </html>

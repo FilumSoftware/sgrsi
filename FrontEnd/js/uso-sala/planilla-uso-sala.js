@@ -1,38 +1,31 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const formulario = document.getElementById('form-uso-sala');
+const formulario = document.getElementById('form-uso-sala');
+const horaEntrada = document.getElementById('hora-entrada');
+const horaSalida = document.getElementById('hora-salida');
+const errorSalida = document.getElementById('error-hora-salida');
 
-    formulario.addEventListener('submit', function(evento) {
-        let formularioValido = true;
+const botonAgregarPc = document.getElementById('agregar-pc');
+const filasPc = document.querySelectorAll('.fila-pc');
+let pcsVisibles = 1;
 
-        const campos = ['fecha', 'hora-entrada', 'hora-salida', 'turno', 'salon'];
+botonAgregarPc.addEventListener('click', function () {
+    if (pcsVisibles < filasPc.length) {
+        filasPc[pcsVisibles].classList.remove('oculta');
+        pcsVisibles = pcsVisibles + 1;
+    }
 
-        campos.forEach(function(idCampo) {
-            const campo = document.getElementById(idCampo);
-            const errorCampo = document.getElementById('error-' + idCampo);
+    if (pcsVisibles === filasPc.length) {
+        botonAgregarPc.classList.add('oculta');
+    }
+});
 
-            if (campo.value.trim() === '') {
-                errorCampo.textContent = 'Este campo es obligatorio.';
-                errorCampo.style.display = 'block';
-                campo.classList.add('input-error');
-                formularioValido = false;
-            } else {
-                errorCampo.style.display = 'none';
-                campo.classList.remove('input-error');
-            }
-        });
-
-        const horaEntrada = document.getElementById('hora-entrada');
-        const horaSalida = document.getElementById('hora-salida');
-        const errorSalida = document.getElementById('error-hora-salida');
-        if (horaEntrada.value && horaSalida.value && horaSalida.value <= horaEntrada.value) {
-            errorSalida.textContent = 'La hora de salida debe ser posterior a la de entrada.';
-            errorSalida.style.display = 'block';
-            horaSalida.classList.add('input-error');
-            formularioValido = false;
-        }
-
-        if (!formularioValido) {
-            evento.preventDefault();
-        }
-    });
+formulario.addEventListener('submit', function (evento) {
+    if (horaEntrada.value !== '' && horaSalida.value !== '' && horaSalida.value <= horaEntrada.value) {
+        errorSalida.textContent = 'La hora de salida debe ser posterior a la de entrada.';
+        errorSalida.style.display = 'block';
+        horaSalida.classList.add('input-error');
+        evento.preventDefault();
+    } else {
+        errorSalida.style.display = 'none';
+        horaSalida.classList.remove('input-error');
+    }
 });

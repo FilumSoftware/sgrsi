@@ -100,7 +100,7 @@ input:focus {
     width: 100%;
     padding: 13px;
     background-color: var(--color-secundario);
-    color: var(--color-texto);
+    color: var(--color-fondo);
     border: none;
     border-radius: var(--borde-radius);
     font-size: 15px;
@@ -133,18 +133,6 @@ input:focus {
     font-size: 11px;
     color: var(--color-texto-suave);
     margin-top: 20px;
-}
-
-.error-mensaje {
-    color: var(--color-acento);
-    font-size: 12px;
-    margin-top: -12px;
-    margin-bottom: 12px;
-    display: none;
-}
-
-.input-error {
-    border-color: var(--color-acento) !important;
 }
 
 @media (min-width: 576px) {
