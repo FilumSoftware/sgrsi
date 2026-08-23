@@ -20,8 +20,13 @@ function ponerFechaYHoraDeHoy() {
     const horas = dosDigitos(hoy.getHours());
     const minutos = dosDigitos(hoy.getMinutes());
 
-    inputFecha.value = anio + '-' + mes + '-' + dia;
-    inputHora.value = horas + ':' + minutos;
+    if (inputFecha.value === '') {
+        inputFecha.value = anio + '-' + mes + '-' + dia;
+    }
+
+    if (inputHora.value === '') {
+        inputHora.value = horas + ':' + minutos;
+    }
 }
 
 ponerFechaYHoraDeHoy();
