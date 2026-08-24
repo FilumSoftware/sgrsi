@@ -42,12 +42,9 @@ CREATE TABLE salon (
 CREATE TABLE equipo (
     id_equipo     INT UNSIGNED NOT NULL AUTO_INCREMENT,
     nombre_equipo VARCHAR(60)  NOT NULL,
-    categoria     ENUM('PC de escritorio', 'Laptop', 'Proyector',
-                       'Impresora', 'Otro')
-                  NOT NULL DEFAULT 'PC de escritorio',
     descripcion   VARCHAR(500) NULL,
     nombre_salon  VARCHAR(30)  NOT NULL,
-    estado_equipo ENUM('Operativo', 'En reparación', 'Derivado',
+    estado_equipo ENUM('Operativo', 'En reparación',
                        'En trámite de baja', 'De baja')
                   NOT NULL DEFAULT 'Operativo',
 

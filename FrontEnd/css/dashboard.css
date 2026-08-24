@@ -1,4 +1,18 @@
 
+.content .saludo {
+    margin-bottom: 4px;
+}
+
+.saludo-sub {
+    color: var(--color-texto-suave);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.tabla-titulo {
+    font-size: 18px;
+}
+
 .tarjetas {
     display: grid;
     grid-template-columns: 1fr;

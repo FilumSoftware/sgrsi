@@ -81,7 +81,7 @@ function v($texto)
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>

@@ -50,6 +50,11 @@ if (!$puedeAtender && $fila['ci_solicitante'] !== Sesion::ci()) {
     exit;
 }
 
+$modoVer = $_SERVER['REQUEST_METHOD'] !== 'POST'
+    && (!isset($_GET['modo']) || $_GET['modo'] !== 'editar');
+
+$editable = $puedeAtender && !$modoVer;
+
 $errores = [];
 $valores = [
     'salon'       => $fila['nombre_salon'],
@@ -205,7 +210,7 @@ function claseError($errores, $campo)
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>
@@ -270,7 +275,7 @@ function claseError($errores, $campo)
 
                     <div class="form-grupo">
                         <label for="salon">Salón</label>
-                        <select name="salon" id="salon"<?php echo $puedeAtender ? ' onchange="this.form.submit()"' : ' disabled'; ?>>
+                        <select name="salon" id="salon"<?php echo $editable ? ' onchange="this.form.submit()"' : ' disabled'; ?>>
                             <?php foreach ($salones as $salon) { ?>
                                 <option value="<?php echo v($salon['nombre_salon']); ?>"<?php echo $valores['salon'] === $salon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($salon['nombre_salon']); ?></option>
                             <?php } ?>
@@ -279,7 +284,7 @@ function claseError($errores, $campo)
                     </div>
                     <div class="form-grupo">
                         <label for="equipo">Equipo</label>
-                        <select name="equipo" id="equipo"<?php echo $puedeAtender ? '' : ' disabled'; ?>>
+                        <select name="equipo" id="equipo"<?php echo $editable ? '' : ' disabled'; ?>>
                             <?php foreach ($equipos as $equipo) { ?>
                                 <option value="<?php echo v($equipo['id_equipo']); ?>"<?php echo (int) $valores['equipo'] === (int) $equipo['id_equipo'] ? ' selected' : ''; ?>><?php echo v($equipo['nombre_equipo']); ?></option>
                             <?php } ?>
@@ -288,7 +293,7 @@ function claseError($errores, $campo)
                     </div>
                     <div class="form-grupo">
                         <label for="defecto">Tipo de falla</label>
-                        <select name="defecto" id="defecto"<?php echo $puedeAtender ? '' : ' disabled'; ?>>
+                        <select name="defecto" id="defecto"<?php echo $editable ? '' : ' disabled'; ?>>
                             <?php foreach (Dominio::TIPOS_DE_DEFECTO as $tipo) { ?>
                                 <option value="<?php echo v($tipo); ?>"<?php echo $valores['defecto'] === $tipo ? ' selected' : ''; ?>><?php echo v($tipo); ?></option>
                             <?php } ?>
@@ -297,7 +302,7 @@ function claseError($errores, $campo)
                     </div>
                     <div class="form-grupo">
                         <label for="prioridad">Prioridad</label>
-                        <select name="prioridad" id="prioridad"<?php echo $puedeAtender ? '' : ' disabled'; ?>>
+                        <select name="prioridad" id="prioridad"<?php echo $editable ? '' : ' disabled'; ?>>
                             <?php foreach (Dominio::PRIORIDADES as $prioridad) { ?>
                                 <option value="<?php echo v($prioridad); ?>"<?php echo $valores['prioridad'] === $prioridad ? ' selected' : ''; ?>><?php echo v($prioridad); ?></option>
                             <?php } ?>
@@ -306,7 +311,7 @@ function claseError($errores, $campo)
                     </div>
                     <div class="form-grupo">
                         <label for="estado">Estado</label>
-                        <select name="estado" id="estado"<?php echo $puedeAtender ? '' : ' disabled'; ?>>
+                        <select name="estado" id="estado"<?php echo $editable ? '' : ' disabled'; ?>>
                             <?php foreach (Dominio::ESTADOS_TICKET as $estado) { ?>
                                 <option value="<?php echo v($estado); ?>"<?php echo $valores['estado'] === $estado ? ' selected' : ''; ?>><?php echo v($estado); ?></option>
                             <?php } ?>
@@ -315,7 +320,7 @@ function claseError($errores, $campo)
                     </div>
                     <div class="form-grupo">
                         <label for="responsable">Responsable</label>
-                        <select name="responsable" id="responsable"<?php echo $puedeAtender ? '' : ' disabled'; ?>>
+                        <select name="responsable" id="responsable"<?php echo $editable ? '' : ' disabled'; ?>>
                             <option value="">— Seleccionar técnico —</option>
                             <?php foreach ($tecnicos as $tecnico) { ?>
                                 <option value="<?php echo v($tecnico['ci']); ?>"<?php echo $valores['responsable'] === $tecnico['ci'] ? ' selected' : ''; ?>><?php echo v($tecnico['nombre_usuario']); ?></option>
@@ -325,20 +330,22 @@ function claseError($errores, $campo)
                     </div>
                     <div class="form-grupo">
                         <label for="motivo">Motivo</label>
-                        <textarea name="motivo" id="motivo" rows="4"<?php echo $puedeAtender ? '' : ' disabled'; ?>><?php echo v($valores['motivo']); ?></textarea>
+                        <textarea name="motivo" id="motivo" rows="4"<?php echo $editable ? '' : ' disabled'; ?>><?php echo v($valores['motivo']); ?></textarea>
                         <p class="error-mensaje" id="error-motivo"<?php echo claseError($errores, 'motivo'); ?>><?php echo v(isset($errores['motivo']) ? $errores['motivo'] : ''); ?></p>
                     </div>
                     <div class="form-grupo">
                         <label for="diagnostico">Diagnóstico</label>
-                        <textarea name="diagnostico" id="diagnostico" rows="3"<?php echo $puedeAtender ? '' : ' disabled'; ?>><?php echo v($valores['diagnostico']); ?></textarea>
+                        <textarea name="diagnostico" id="diagnostico" rows="3"<?php echo $editable ? '' : ' disabled'; ?>><?php echo v($valores['diagnostico']); ?></textarea>
                     </div>
                     <div class="form-grupo">
                         <label for="solucion">Solución</label>
-                        <textarea name="solucion" id="solucion" rows="3"<?php echo $puedeAtender ? '' : ' disabled'; ?>><?php echo v($valores['solucion']); ?></textarea>
+                        <textarea name="solucion" id="solucion" rows="3"<?php echo $editable ? '' : ' disabled'; ?>><?php echo v($valores['solucion']); ?></textarea>
                     </div>
 
-                    <?php if ($puedeAtender) { ?>
+                    <?php if ($editable) { ?>
                         <button type="submit" id="btn-enviar" name="accion" value="guardar">Guardar cambios</button>
+                    <?php } elseif ($puedeAtender) { ?>
+                        <a class="btn-editar-form" href="detalle-ticket.php?id=<?php echo urlencode($id); ?>&amp;modo=editar">Editar</a>
                     <?php } ?>
 
                 </form>

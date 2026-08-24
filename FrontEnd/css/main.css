@@ -18,6 +18,17 @@
     box-sizing: border-box;
 }
 
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol {
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: var(--fuente-principal);
     font-size: var(--fuente-tamanio);
@@ -42,7 +53,7 @@ h3 {
     font-weight: 500;
 }
 
-.container {
+.layout {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
@@ -197,6 +208,26 @@ tbody tr:hover {
     gap: 8px;
 }
 
+.tabla-enlace {
+    color: var(--color-secundario);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.tabla-enlace:hover,
+.tabla-enlace:focus {
+    color: var(--color-acento);
+}
+
+.fila-clickeable {
+    cursor: pointer;
+}
+
+tbody tr:focus-within {
+    outline: 2px solid var(--color-secundario);
+    outline-offset: -2px;
+}
+
 .btn-editar,
 .btn-eliminar {
     display: inline-block;
@@ -237,6 +268,23 @@ tbody tr:hover {
 
 .btn-eliminar:hover {
     opacity: 0.8;
+}
+
+.btn-editar-form {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-secundario);
+    color: var(--color-fondo);
+    border-radius: var(--borde-radius);
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.btn-editar-form:hover {
+    background-color: var(--color-acento);
 }
 
 .btn-salir {
@@ -372,7 +420,7 @@ button[type="submit"]:hover {
 }
 
 @media (min-width: 576px) {
-    .container {
+    .layout {
         flex-direction: row;
     }
     .sidebar {

@@ -7,13 +7,12 @@ require_once __DIR__ . '/../../../BackEnd/models/Equipo.php';
 
 ControlAcceso::exigirRol(['Asistente', 'Coordinador'], '../../../index.php');
 
-$categoriasValidas = ['PC de escritorio', 'Laptop', 'Proyector', 'Impresora', 'Otro'];
 
 $salonDAO  = new SalonDAO();
 $equipoDAO = new EquipoDAO();
 
 $errores = [];
-$valores = ['nombre' => '', 'salon' => '', 'categoria' => '', 'extras' => ''];
+$valores = ['nombre' => '', 'salon' => '', 'extras' => ''];
 
 try {
     $salones = $salonDAO->obtenerTodos();
@@ -27,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $valores['nombre']    = trim((string) (isset($_POST['nombre']) ? $_POST['nombre'] : ''));
     $valores['salon']     = trim((string) (isset($_POST['salon']) ? $_POST['salon'] : ''));
-    $valores['categoria'] = trim((string) (isset($_POST['categoria']) ? $_POST['categoria'] : ''));
     $valores['extras']    = trim((string) (isset($_POST['extras']) ? $_POST['extras'] : ''));
 
     if ($valores['nombre'] === '') {
@@ -45,15 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores['salon'] = 'Elegí un salón válido de la lista.';
     }
 
-    if ($valores['categoria'] === '' || !in_array($valores['categoria'], $categoriasValidas, true)) {
-        $errores['categoria'] = 'Elegí una categoría válida de la lista.';
-    }
-
     if (empty($errores)) {
         try {
             $equipo = new Equipo(
                 $valores['nombre'],
-                $valores['categoria'],
                 $valores['extras'] !== '' ? $valores['extras'] : null,
                 $valores['salon']
             );
@@ -83,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>
@@ -141,20 +134,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <?php } ?>
                             </select>
                             <p class="error-mensaje" id="error-salon"<?php echo !empty($errores['salon']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars(isset($errores['salon']) ? $errores['salon'] : ''); ?></p>
-                        </div>
-
-                        <div class="form-grupo">
-                            <label for="categoria">Categoría:</label>
-                            <select id="categoria" name="categoria">
-                                <option value="">— Elegí una categoría —</option>
-                                <?php foreach ($categoriasValidas as $categoria) { ?>
-                                    <option value="<?php echo htmlspecialchars($categoria); ?>"
-                                        <?php echo $categoria === $valores['categoria'] ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($categoria); ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                            <p class="error-mensaje" id="error-categoria"<?php echo !empty($errores['categoria']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars(isset($errores['categoria']) ? $errores['categoria'] : ''); ?></p>
                         </div>
 
                         <div class="form-grupo">

@@ -76,7 +76,7 @@ function v($texto)
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>
@@ -143,7 +143,7 @@ function v($texto)
 
                             <?php foreach ($solicitudes as $solicitud) { ?>
                                 <tr>
-                                    <td><?php echo v($solicitud['id_solicitud']); ?></td>
+                                    <td><a class="tabla-enlace" href="detalle-solicitud.php?id=<?php echo urlencode($solicitud['id_solicitud']); ?>"><?php echo v($solicitud['id_solicitud']); ?></a></td>
                                     <td><?php echo v(date('d/m/y', strtotime($solicitud['fecha_hora_alta']))); ?></td>
                                     <td><?php echo v($solicitud['nombre_salon']); ?></td>
                                     <td><?php echo v($solicitud['descripcion']); ?></td>
@@ -152,7 +152,7 @@ function v($texto)
                                     <td><?php echo v($solicitud['nombre_solicitante']); ?></td>
                                     <td><?php echo v(isset($solicitud['nombre_responsable']) ? $solicitud['nombre_responsable'] : '—'); ?></td>
                                     <td class="acciones">
-                                        <a class="btn-editar" href="detalle-solicitud.php?id=<?php echo urlencode($solicitud['id_solicitud']); ?>">
+                                        <a class="btn-editar" href="detalle-solicitud.php?id=<?php echo urlencode($solicitud['id_solicitud']); ?><?php echo ControlAcceso::puedeAtender() ? '&amp;modo=editar' : ''; ?>">
                                             <?php echo ControlAcceso::puedeAtender() ? 'Atender' : 'Ver'; ?>
                                         </a>
 
@@ -173,6 +173,7 @@ function v($texto)
         </main>
     </div>
     <script src="../../js/solicitudes/solicitudes.js"></script>
+    <script src="../../js/fila-clickeable.js"></script>
 </body>
 
 </html>

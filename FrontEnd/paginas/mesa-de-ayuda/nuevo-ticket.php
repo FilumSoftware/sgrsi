@@ -138,7 +138,7 @@ function claseError($errores, $campo)
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>
