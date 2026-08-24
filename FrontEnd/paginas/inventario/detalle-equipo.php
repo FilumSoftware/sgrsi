@@ -7,8 +7,7 @@ require_once __DIR__ . '/../../../BackEnd/models/Equipo.php';
 
 ControlAcceso::exigirRol(['Asistente', 'Coordinador'], '../../../index.php');
 
-$categoriasValidas = ['PC de escritorio', 'Laptop', 'Proyector', 'Impresora', 'Otro'];
-$estadosValidos    = ['Operativo', 'En reparación', 'Derivado', 'En trámite de baja', 'De baja'];
+$estadosValidos = ['Operativo', 'En reparación', 'En trámite de baja', 'De baja'];
 
 $salonDAO  = new SalonDAO();
 $equipoDAO = new EquipoDAO();
@@ -48,7 +47,6 @@ if (!$equipoActual) {
 $valores = [
     'nombre'    => $equipoActual['nombre_equipo'],
     'salon'     => $equipoActual['nombre_salon'],
-    'categoria' => $equipoActual['categoria'],
     'extras'    => isset($equipoActual['descripcion']) ? $equipoActual['descripcion'] : '',
     'estado'    => $equipoActual['estado_equipo'],
 ];
@@ -57,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $valores['nombre']    = trim((string) (isset($_POST['nombre']) ? $_POST['nombre'] : ''));
     $valores['salon']     = trim((string) (isset($_POST['salon']) ? $_POST['salon'] : ''));
-    $valores['categoria'] = trim((string) (isset($_POST['categoria']) ? $_POST['categoria'] : ''));
     $valores['extras']    = trim((string) (isset($_POST['extras']) ? $_POST['extras'] : ''));
     $valores['estado']    = trim((string) (isset($_POST['estado']) ? $_POST['estado'] : ''));
 
@@ -77,10 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores['salon'] = 'Elegí un salón válido de la lista.';
     }
 
-    if ($valores['categoria'] === '' || !in_array($valores['categoria'], $categoriasValidas, true)) {
-        $errores['categoria'] = 'Elegí una categoría válida de la lista.';
-    }
-
     if ($valores['estado'] === '' || !in_array($valores['estado'], $estadosValidos, true)) {
         $errores['estado'] = 'Elegí un estado válido de la lista.';
     }
@@ -89,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $equipo = new Equipo(
                 $valores['nombre'],
-                $valores['categoria'],
                 $valores['extras'] !== '' ? $valores['extras'] : null,
                 $valores['salon'],
                 $valores['estado'],
@@ -186,19 +178,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <?php } ?>
                             </select>
                             <p class="error-mensaje" id="error-salon"<?php echo !empty($errores['salon']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars(isset($errores['salon']) ? $errores['salon'] : ''); ?></p>
-                        </div>
-
-                        <div class="form-grupo">
-                            <label for="categoria">Categoría:</label>
-                            <select id="categoria" name="categoria">
-                                <?php foreach ($categoriasValidas as $categoria) { ?>
-                                    <option value="<?php echo htmlspecialchars($categoria); ?>"
-                                        <?php echo $categoria === $valores['categoria'] ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($categoria); ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                            <p class="error-mensaje" id="error-categoria"<?php echo !empty($errores['categoria']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars(isset($errores['categoria']) ? $errores['categoria'] : ''); ?></p>
                         </div>
 
                         <div class="form-grupo">

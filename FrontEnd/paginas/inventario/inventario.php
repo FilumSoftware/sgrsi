@@ -82,7 +82,6 @@ try {
                             <tr>
                                 <th>ID</th>
                                 <th>Nombre</th>
-                                <th>Categoría</th>
                                 <th>Extras</th>
                                 <th>Salón</th>
                                 <th>Estado</th>
@@ -92,14 +91,13 @@ try {
                         <tbody>
                             <?php if (empty($equipos)) { ?>
                                 <tr>
-                                    <td colspan="7">Todavía no hay equipos registrados.</td>
+                                    <td colspan="6">Todavía no hay equipos registrados.</td>
                                 </tr>
                             <?php } ?>
                             <?php foreach ($equipos as $equipo) { ?>
                                 <tr>
                                     <td><a class="tabla-enlace" href="detalle-equipo.php?id=<?php echo (int) $equipo['id_equipo']; ?>"><?php echo htmlspecialchars($equipo['id_equipo']); ?></a></td>
                                     <td><?php echo htmlspecialchars($equipo['nombre_equipo']); ?></td>
-                                    <td><?php echo htmlspecialchars($equipo['categoria']); ?></td>
                                     <td><?php echo htmlspecialchars(isset($equipo['descripcion']) ? $equipo['descripcion'] : ''); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['nombre_salon']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['estado_equipo']); ?></td>
