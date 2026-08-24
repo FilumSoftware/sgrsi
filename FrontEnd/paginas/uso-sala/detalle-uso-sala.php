@@ -49,6 +49,9 @@ if (!ControlAcceso::puedeAtender() && $fila['ci_solicitante'] !== Sesion::ci()) 
     exit;
 }
 
+$modoVer = $_SERVER['REQUEST_METHOD'] !== 'POST'
+    && (!isset($_GET['modo']) || $_GET['modo'] !== 'editar');
+
 $errores = [];
 $valores = [
     'fecha'      => $fila['fecha'],
@@ -252,7 +255,7 @@ function claseError($errores, $campo)
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>
@@ -297,86 +300,93 @@ function claseError($errores, $campo)
 
                 <form id="form-uso-sala" action="detalle-uso-sala.php" method="post">
                     <input type="hidden" name="id" value="<?php echo v($fila['id_uso']); ?>">
+                    <fieldset<?php echo $modoVer ? ' disabled' : ''; ?>>
 
-                    <div class="form-grupo">
-                        <label for="docente">Docente</label>
-                        <input type="text" id="docente" value="<?php echo v($fila['nombre_docente']); ?>" disabled>
-                    </div>
-                    <div class="form-grupo">
-                        <label for="fecha">Fecha</label>
-                        <input type="date" id="fecha" name="fecha" value="<?php echo v($valores['fecha']); ?>" required>
-                        <p class="error-mensaje" id="error-fecha"<?php echo claseError($errores, 'fecha'); ?>><?php echo v(isset($errores['fecha']) ? $errores['fecha'] : ''); ?></p>
-                    </div>
-                    <div class="form-grupo">
-                        <label for="entrada">Hora entrada</label>
-                        <input type="time" id="entrada" name="entrada" value="<?php echo v($valores['entrada']); ?>" required>
-                        <p class="error-mensaje" id="error-entrada"<?php echo claseError($errores, 'entrada'); ?>><?php echo v(isset($errores['entrada']) ? $errores['entrada'] : ''); ?></p>
-                    </div>
-                    <div class="form-grupo">
-                        <label for="salida">Hora salida</label>
-                        <input type="time" id="salida" name="salida" value="<?php echo v($valores['salida']); ?>" required>
-                        <p class="error-mensaje" id="error-salida"<?php echo claseError($errores, 'salida'); ?>><?php echo v(isset($errores['salida']) ? $errores['salida'] : ''); ?></p>
-                    </div>
-                    <div class="form-grupo">
-                        <label for="asignatura">Asignatura</label>
-                        <input type="text" id="asignatura" name="asignatura" value="<?php echo v($valores['asignatura']); ?>" required>
-                        <p class="error-mensaje" id="error-asignatura"<?php echo claseError($errores, 'asignatura'); ?>><?php echo v(isset($errores['asignatura']) ? $errores['asignatura'] : ''); ?></p>
-                    </div>
-                    <div class="form-grupo">
-                        <label for="grupo">Grupo</label>
-                        <input type="text" id="grupo" name="grupo" value="<?php echo v($valores['grupo']); ?>" placeholder="Ej: 1MI" required>
-                        <p class="error-mensaje" id="error-grupo"<?php echo claseError($errores, 'grupo'); ?>><?php echo v(isset($errores['grupo']) ? $errores['grupo'] : ''); ?></p>
-                    </div>
-                    <div class="form-grupo">
-                        <label for="turno">Turno</label>
-                        <select name="turno" id="turno" required>
-                            <?php foreach (Dominio::TURNOS as $turno) { ?>
-                                <option value="<?php echo v($turno); ?>"<?php echo $valores['turno'] === $turno ? ' selected' : ''; ?>><?php echo v($turno); ?></option>
-                            <?php } ?>
-                        </select>
-                        <p class="error-mensaje" id="error-turno"<?php echo claseError($errores, 'turno'); ?>><?php echo v(isset($errores['turno']) ? $errores['turno'] : ''); ?></p>
-                    </div>
-                    <div class="form-grupo">
-                        <label for="salon">Salón</label>
-                        <select name="salon" id="salon" required onchange="this.form.submit()">
-                            <?php foreach ($salones as $unSalon) { ?>
-                                <option value="<?php echo v($unSalon['nombre_salon']); ?>"<?php echo $valores['salon'] === $unSalon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($unSalon['nombre_salon']); ?></option>
-                            <?php } ?>
-                        </select>
-                        <p class="error-mensaje" id="error-salon"<?php echo claseError($errores, 'salon'); ?>><?php echo v(isset($errores['salon']) ? $errores['salon'] : ''); ?></p>
-                    </div>
+                        <div class="form-grupo">
+                            <label for="docente">Docente</label>
+                            <input type="text" id="docente" value="<?php echo v($fila['nombre_docente']); ?>" disabled>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="fecha">Fecha</label>
+                            <input type="date" id="fecha" name="fecha" value="<?php echo v($valores['fecha']); ?>" required>
+                            <p class="error-mensaje" id="error-fecha"<?php echo claseError($errores, 'fecha'); ?>><?php echo v(isset($errores['fecha']) ? $errores['fecha'] : ''); ?></p>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="entrada">Hora entrada</label>
+                            <input type="time" id="entrada" name="entrada" value="<?php echo v($valores['entrada']); ?>" required>
+                            <p class="error-mensaje" id="error-entrada"<?php echo claseError($errores, 'entrada'); ?>><?php echo v(isset($errores['entrada']) ? $errores['entrada'] : ''); ?></p>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="salida">Hora salida</label>
+                            <input type="time" id="salida" name="salida" value="<?php echo v($valores['salida']); ?>" required>
+                            <p class="error-mensaje" id="error-salida"<?php echo claseError($errores, 'salida'); ?>><?php echo v(isset($errores['salida']) ? $errores['salida'] : ''); ?></p>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="asignatura">Asignatura</label>
+                            <input type="text" id="asignatura" name="asignatura" value="<?php echo v($valores['asignatura']); ?>" required>
+                            <p class="error-mensaje" id="error-asignatura"<?php echo claseError($errores, 'asignatura'); ?>><?php echo v(isset($errores['asignatura']) ? $errores['asignatura'] : ''); ?></p>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="grupo">Grupo</label>
+                            <input type="text" id="grupo" name="grupo" value="<?php echo v($valores['grupo']); ?>" placeholder="Ej: 1MI" required>
+                            <p class="error-mensaje" id="error-grupo"<?php echo claseError($errores, 'grupo'); ?>><?php echo v(isset($errores['grupo']) ? $errores['grupo'] : ''); ?></p>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="turno">Turno</label>
+                            <select name="turno" id="turno" required>
+                                <?php foreach (Dominio::TURNOS as $turno) { ?>
+                                    <option value="<?php echo v($turno); ?>"<?php echo $valores['turno'] === $turno ? ' selected' : ''; ?>><?php echo v($turno); ?></option>
+                                <?php } ?>
+                            </select>
+                            <p class="error-mensaje" id="error-turno"<?php echo claseError($errores, 'turno'); ?>><?php echo v(isset($errores['turno']) ? $errores['turno'] : ''); ?></p>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="salon">Salón</label>
+                            <select name="salon" id="salon" required onchange="this.form.submit()">
+                                <?php foreach ($salones as $unSalon) { ?>
+                                    <option value="<?php echo v($unSalon['nombre_salon']); ?>"<?php echo $valores['salon'] === $unSalon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($unSalon['nombre_salon']); ?></option>
+                                <?php } ?>
+                            </select>
+                            <p class="error-mensaje" id="error-salon"<?php echo claseError($errores, 'salon'); ?>><?php echo v(isset($errores['salon']) ? $errores['salon'] : ''); ?></p>
+                        </div>
 
-                    <div id="lista-pcs">
-                        <h2>Asignación de Equipos</h2>
+                        <div id="lista-pcs">
+                            <h2>Asignación de Equipos</h2>
 
-                        <?php foreach ($equipos as $numeroEquipo => $equipo) { ?>
-                            <?php $numeroFila = $numeroEquipo + 1; ?>
-                            <?php $elegida = trim((string) (isset($pcElegidas[$numeroFila]) ? $pcElegidas[$numeroFila] : '')); ?>
-                            <div class="fila-pc<?php echo ($numeroFila > 1 && $elegida === '') ? ' oculta' : ''; ?>" data-index="<?php echo $numeroFila; ?>">
-                                <div class="campo">
-                                    <label for="pc-<?php echo $numeroFila; ?>">PC</label>
-                                    <select id="pc-<?php echo $numeroFila; ?>" name="pc[<?php echo $numeroFila; ?>]">
-                                        <option value="">-- Seleccioná una PC --</option>
-                                        <?php foreach ($equipos as $opcion) { ?>
-                                            <option value="<?php echo v($opcion['id_equipo']); ?>"<?php echo (int) $elegida === (int) $opcion['id_equipo'] ? ' selected' : ''; ?>><?php echo v($opcion['nombre_equipo']); ?></option>
-                                        <?php } ?>
-                                    </select>
+                            <?php foreach ($equipos as $numeroEquipo => $equipo) { ?>
+                                <?php $numeroFila = $numeroEquipo + 1; ?>
+                                <?php $elegida = trim((string) (isset($pcElegidas[$numeroFila]) ? $pcElegidas[$numeroFila] : '')); ?>
+                                <div class="fila-pc<?php echo ($numeroFila > 1 && $elegida === '') ? ' oculta' : ''; ?>" data-index="<?php echo $numeroFila; ?>">
+                                    <div class="campo">
+                                        <label for="pc-<?php echo $numeroFila; ?>">PC</label>
+                                        <select id="pc-<?php echo $numeroFila; ?>" name="pc[<?php echo $numeroFila; ?>]">
+                                            <option value="">-- Seleccioná una PC --</option>
+                                            <?php foreach ($equipos as $opcion) { ?>
+                                                <option value="<?php echo v($opcion['id_equipo']); ?>"<?php echo (int) $elegida === (int) $opcion['id_equipo'] ? ' selected' : ''; ?>><?php echo v($opcion['nombre_equipo']); ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                    <div class="campo">
+                                        <label for="alumno-<?php echo $numeroFila; ?>">Alumno</label>
+                                        <input type="text" id="alumno-<?php echo $numeroFila; ?>" name="alumno[<?php echo $numeroFila; ?>]" value="<?php echo v(isset($alumnosDados[$numeroFila]) ? $alumnosDados[$numeroFila] : ''); ?>" placeholder="Nombre del alumno">
+                                    </div>
                                 </div>
-                                <div class="campo">
-                                    <label for="alumno-<?php echo $numeroFila; ?>">Alumno</label>
-                                    <input type="text" id="alumno-<?php echo $numeroFila; ?>" name="alumno[<?php echo $numeroFila; ?>]" value="<?php echo v(isset($alumnosDados[$numeroFila]) ? $alumnosDados[$numeroFila] : ''); ?>" placeholder="Nombre del alumno">
-                                </div>
-                            </div>
-                        <?php } ?>
+                            <?php } ?>
 
-                        <?php if (count($equipos) > 1) { ?>
-                            <button type="button" id="agregar-pc">+ Agregar PC</button>
-                        <?php } ?>
+                            <?php if (count($equipos) > 1) { ?>
+                                <button type="button" id="agregar-pc">+ Agregar PC</button>
+                            <?php } ?>
 
-                        <p class="error-mensaje" id="error-pcs"<?php echo claseError($errores, 'pcs'); ?>><?php echo v(isset($errores['pcs']) ? $errores['pcs'] : ''); ?></p>
-                    </div>
+                            <p class="error-mensaje" id="error-pcs"<?php echo claseError($errores, 'pcs'); ?>><?php echo v(isset($errores['pcs']) ? $errores['pcs'] : ''); ?></p>
+                        </div>
 
-                    <button type="submit" id="btn-enviar" name="accion" value="guardar">Guardar cambios</button>
+                    </fieldset>
+
+                    <?php if ($modoVer) { ?>
+                        <a class="btn-editar-form" href="detalle-uso-sala.php?id=<?php echo urlencode($fila['id_uso']); ?>&amp;modo=editar">Editar</a>
+                    <?php } else { ?>
+                        <button type="submit" id="btn-enviar" name="accion" value="guardar">Guardar cambios</button>
+                    <?php } ?>
 
                 </form>
 

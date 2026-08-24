@@ -39,6 +39,9 @@ if (!$fila) {
 
 $esPropia = $ci === Sesion::ci();
 
+$modoVer = $_SERVER['REQUEST_METHOD'] !== 'POST'
+    && (!isset($_GET['modo']) || $_GET['modo'] !== 'editar');
+
 $errores = [];
 $valores = [
     'nombre' => $fila['nombre_usuario'],
@@ -99,7 +102,7 @@ function v($texto)
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>
@@ -145,7 +148,7 @@ function v($texto)
                 <?php } ?>
 
                 <form id="form-detalle-usuario" action="detalle-usuario.php" method="post">
-                    <fieldset>
+                    <fieldset<?php echo $modoVer ? ' disabled' : ''; ?>>
                         <input type="hidden" name="ci" value="<?php echo v($ci); ?>">
 
                         <div class="form-grupo">
@@ -176,7 +179,11 @@ function v($texto)
                             <p class="error-mensaje" id="error-estado"<?php echo !empty($errores['estado']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['estado']) ? $errores['estado'] : ''); ?></p>
                         </div>
 
-                        <button type="submit" id="btn-guardar">Guardar Cambios</button>
+                        <?php if ($modoVer) { ?>
+                            <a class="btn-editar-form" href="detalle-usuario.php?ci=<?php echo urlencode($ci); ?>&amp;modo=editar">Editar</a>
+                        <?php } else { ?>
+                            <button type="submit" id="btn-guardar">Guardar Cambios</button>
+                        <?php } ?>
 
                     </fieldset>
                 </form>

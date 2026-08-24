@@ -48,6 +48,11 @@ if (!$puedeAtender && $fila['ci_solicitante'] !== Sesion::ci()) {
     exit;
 }
 
+$modoVer = $_SERVER['REQUEST_METHOD'] !== 'POST'
+    && (!isset($_GET['modo']) || $_GET['modo'] !== 'editar');
+
+$editable = $puedeAtender && !$modoVer;
+
 $errores = [];
 $valores = [
     'salon'       => $fila['nombre_salon'],
@@ -180,7 +185,7 @@ function claseError($errores, $campo)
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>
@@ -242,7 +247,7 @@ function claseError($errores, $campo)
                         </div>
                         <div class="form-grupo">
                             <label for="estado">Estado:</label>
-                            <select id="estado" name="estado"<?php echo $puedeAtender ? '' : ' disabled'; ?>>
+                            <select id="estado" name="estado"<?php echo $editable ? '' : ' disabled'; ?>>
                                 <?php foreach (Dominio::ESTADOS_SOLICITUD as $estado) { ?>
                                     <option value="<?php echo v($estado); ?>"<?php echo $valores['estado'] === $estado ? ' selected' : ''; ?>><?php echo v($estado); ?></option>
                                 <?php } ?>
@@ -251,7 +256,7 @@ function claseError($errores, $campo)
                         </div>
                         <div class="form-grupo">
                             <label for="prioridad">Prioridad:</label>
-                            <select id="prioridad" name="prioridad"<?php echo $puedeAtender ? '' : ' disabled'; ?>>
+                            <select id="prioridad" name="prioridad"<?php echo $editable ? '' : ' disabled'; ?>>
                                 <?php foreach (Dominio::PRIORIDADES as $prioridad) { ?>
                                     <option value="<?php echo v($prioridad); ?>"<?php echo $valores['prioridad'] === $prioridad ? ' selected' : ''; ?>><?php echo v($prioridad); ?></option>
                                 <?php } ?>
@@ -260,7 +265,7 @@ function claseError($errores, $campo)
                         </div>
                         <div class="form-grupo">
                             <label for="responsable">Responsable:</label>
-                            <select id="responsable" name="responsable"<?php echo $puedeAtender ? '' : ' disabled'; ?>>
+                            <select id="responsable" name="responsable"<?php echo $editable ? '' : ' disabled'; ?>>
                                 <option value="">— Seleccionar técnico —</option>
                                 <?php foreach ($tecnicos as $tecnico) { ?>
                                     <option value="<?php echo v($tecnico['ci']); ?>"<?php echo $valores['responsable'] === $tecnico['ci'] ? ' selected' : ''; ?>><?php echo v($tecnico['nombre_usuario']); ?></option>
@@ -270,7 +275,7 @@ function claseError($errores, $campo)
                         </div>
                         <div class="form-grupo">
                             <label for="salon">Salón:</label>
-                            <select id="salon" name="salon"<?php echo $puedeAtender ? '' : ' disabled'; ?>>
+                            <select id="salon" name="salon"<?php echo $editable ? '' : ' disabled'; ?>>
                                 <?php foreach ($salones as $salon) { ?>
                                     <option value="<?php echo v($salon['nombre_salon']); ?>"<?php echo $valores['salon'] === $salon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($salon['nombre_salon']); ?></option>
                                 <?php } ?>
@@ -279,12 +284,14 @@ function claseError($errores, $campo)
                         </div>
                         <div class="form-grupo">
                             <label for="motivo">Motivo:</label>
-                            <textarea id="motivo" name="motivo" rows="4"<?php echo $puedeAtender ? '' : ' disabled'; ?>><?php echo v($valores['motivo']); ?></textarea>
+                            <textarea id="motivo" name="motivo" rows="4"<?php echo $editable ? '' : ' disabled'; ?>><?php echo v($valores['motivo']); ?></textarea>
                             <p class="error-mensaje" id="error-motivo"<?php echo claseError($errores, 'motivo'); ?>><?php echo v(isset($errores['motivo']) ? $errores['motivo'] : ''); ?></p>
                         </div>
 
-                        <?php if ($puedeAtender) { ?>
+                        <?php if ($editable) { ?>
                             <input type="submit" value="Guardar solicitud">
+                        <?php } elseif ($puedeAtender) { ?>
+                            <a class="btn-editar-form" href="detalle-solicitud.php?id=<?php echo urlencode($id); ?>&amp;modo=editar">Editar</a>
                         <?php } ?>
 
                     </fieldset>

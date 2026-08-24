@@ -35,7 +35,7 @@ try {
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>
@@ -97,14 +97,14 @@ try {
                             <?php } ?>
                             <?php foreach ($equipos as $equipo) { ?>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($equipo['id_equipo']); ?></td>
+                                    <td><a class="tabla-enlace" href="detalle-equipo.php?id=<?php echo (int) $equipo['id_equipo']; ?>"><?php echo htmlspecialchars($equipo['id_equipo']); ?></a></td>
                                     <td><?php echo htmlspecialchars($equipo['nombre_equipo']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['categoria']); ?></td>
                                     <td><?php echo htmlspecialchars(isset($equipo['descripcion']) ? $equipo['descripcion'] : ''); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['nombre_salon']); ?></td>
                                     <td><?php echo htmlspecialchars($equipo['estado_equipo']); ?></td>
                                     <td class="acciones">
-                                        <a class="btn-editar" href="detalle-equipo.php?id=<?php echo (int) $equipo['id_equipo']; ?>">Editar</a>
+                                        <a class="btn-editar" href="detalle-equipo.php?id=<?php echo (int) $equipo['id_equipo']; ?>&amp;modo=editar">Editar</a>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -114,6 +114,7 @@ try {
             </section>
         </main>
     </div>
+    <script src="../../js/fila-clickeable.js"></script>
 </body>
 
 </html>

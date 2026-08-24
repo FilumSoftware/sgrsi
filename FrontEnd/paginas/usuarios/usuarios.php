@@ -77,7 +77,7 @@ function v($texto)
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>
@@ -139,12 +139,12 @@ function v($texto)
                             <?php foreach ($usuarios as $usuario) { ?>
                                 <?php $inactiva = $usuario['estado_cuenta'] === 'Inactiva'; ?>
                                 <tr<?php echo $inactiva ? ' class="fila-desactivada"' : ''; ?>>
-                                    <td><?php echo v($usuario['ci']); ?></td>
+                                    <td><a class="tabla-enlace" href="detalle-usuario.php?ci=<?php echo urlencode($usuario['ci']); ?>"><?php echo v($usuario['ci']); ?></a></td>
                                     <td><?php echo v($usuario['nombre_usuario']); ?></td>
                                     <td><?php echo v($usuario['tipo_de_usuario']); ?></td>
                                     <td><?php echo v($usuario['estado_cuenta']); ?></td>
                                     <td class="acciones">
-                                        <a class="btn-editar" href="detalle-usuario.php?ci=<?php echo urlencode($usuario['ci']); ?>">Editar</a>
+                                        <a class="btn-editar" href="detalle-usuario.php?ci=<?php echo urlencode($usuario['ci']); ?>&amp;modo=editar">Editar</a>
 
                                         <?php if ($usuario['ci'] === Sesion::ci()) { ?>
                                             <span class="sin-accion">Tu cuenta</span>
@@ -168,6 +168,7 @@ function v($texto)
         </main>
     </div>
     <script src="../../js/usuarios/usuarios.js"></script>
+    <script src="../../js/fila-clickeable.js"></script>
 </body>
 
 </html>

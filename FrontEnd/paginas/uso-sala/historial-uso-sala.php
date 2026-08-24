@@ -75,7 +75,7 @@ function v($texto)
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>
@@ -141,7 +141,7 @@ function v($texto)
 
                             <?php foreach ($usos as $uso) { ?>
                                 <tr>
-                                    <td><?php echo v(date('d/m/y', strtotime($uso['fecha']))); ?></td>
+                                    <td><a class="tabla-enlace" href="detalle-uso-sala.php?id=<?php echo urlencode($uso['id_uso']); ?>"><?php echo v(date('d/m/y', strtotime($uso['fecha']))); ?></a></td>
                                     <td><?php echo v(substr($uso['hora_inicio'], 0, 5)); ?> a <?php echo v(substr($uso['hora_fin'], 0, 5)); ?></td>
                                     <td><?php echo v($uso['nombre_docente']); ?></td>
                                     <td><?php echo v($uso['asignatura']); ?></td>
@@ -149,7 +149,7 @@ function v($texto)
                                     <td><?php echo v($uso['turno']); ?></td>
                                     <td><?php echo v($uso['nombre_salon']); ?></td>
                                     <td class="acciones">
-                                        <a class="btn-editar" href="detalle-uso-sala.php?id=<?php echo urlencode($uso['id_uso']); ?>">Editar</a>
+                                        <a class="btn-editar" href="detalle-uso-sala.php?id=<?php echo urlencode($uso['id_uso']); ?>&amp;modo=editar">Editar</a>
 
                                         <?php if (Sesion::esCoordinador()) { ?>
                                             <form action="historial-uso-sala.php" method="post" class="form-en-linea">
@@ -168,6 +168,7 @@ function v($texto)
         </main>
     </div>
     <script src="../../js/uso-sala/historial-uso-sala.js"></script>
+    <script src="../../js/fila-clickeable.js"></script>
 </body>
 
 </html>

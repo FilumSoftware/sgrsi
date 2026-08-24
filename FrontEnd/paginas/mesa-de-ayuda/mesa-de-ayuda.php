@@ -76,7 +76,7 @@ function v($texto)
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>
@@ -143,7 +143,7 @@ function v($texto)
                             <?php foreach ($tickets as $ticket) { ?>
                                 <?php $alta = strtotime($ticket['fecha_hora_alta']); ?>
                                 <tr>
-                                    <td><?php echo v($ticket['id_ticket']); ?></td>
+                                    <td><a class="tabla-enlace" href="detalle-ticket.php?id=<?php echo urlencode($ticket['id_ticket']); ?>"><?php echo v($ticket['id_ticket']); ?></a></td>
                                     <td><?php echo v(date('d/m/y', $alta)); ?></td>
                                     <td><?php echo v(date('H:i', $alta)); ?></td>
                                     <td><?php echo v($ticket['nombre_salon']); ?></td>
@@ -151,7 +151,7 @@ function v($texto)
                                     <td><?php echo v($ticket['tipo_de_defecto']); ?></td>
                                     <td><span class="badge <?php echo v(Dominio::claseDelBadge($ticket['estado_ticket'])); ?>"><?php echo v($ticket['estado_ticket']); ?></span></td>
                                     <td class="acciones">
-                                        <a class="btn-editar" href="detalle-ticket.php?id=<?php echo urlencode($ticket['id_ticket']); ?>">
+                                        <a class="btn-editar" href="detalle-ticket.php?id=<?php echo urlencode($ticket['id_ticket']); ?><?php echo ControlAcceso::puedeAtender() ? '&amp;modo=editar' : ''; ?>">
                                             <?php echo ControlAcceso::puedeAtender() ? 'Atender' : 'Ver'; ?>
                                         </a>
 
@@ -172,6 +172,7 @@ function v($texto)
         </main>
     </div>
     <script src="../../js/mesa-de-ayuda/mesa-de-ayuda.js"></script>
+    <script src="../../js/fila-clickeable.js"></script>
 </body>
 
 </html>

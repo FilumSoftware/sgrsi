@@ -56,7 +56,7 @@ function v($texto)
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
         <nav class="sidebar">
             <ul>
                 <li class="sidebar-item activo">Dashboard</li>
@@ -137,7 +137,7 @@ function v($texto)
 
                                 <?php foreach ($tickets as $ticket) { ?>
                                     <tr>
-                                        <td><?php echo v($ticket['id_ticket']); ?></td>
+                                        <td><a class="tabla-enlace" href="../mesa-de-ayuda/detalle-ticket.php?id=<?php echo urlencode($ticket['id_ticket']); ?>"><?php echo v($ticket['id_ticket']); ?></a></td>
                                         <td><?php echo v($ticket['nombre_solicitante']); ?></td>
                                         <td><?php echo v($ticket['nombre_equipo']); ?></td>
                                         <td><?php echo v($ticket['tipo_de_defecto']); ?></td>
@@ -154,6 +154,7 @@ function v($texto)
         </main>
 
     </div>
+    <script src="../../js/fila-clickeable.js"></script>
 </body>
 
 </html>

@@ -22,6 +22,9 @@ if ($idEquipo <= 0) {
 
 $errores = [];
 
+$modoVer = $_SERVER['REQUEST_METHOD'] !== 'POST'
+    && (!isset($_GET['modo']) || $_GET['modo'] !== 'editar');
+
 try {
     $salones = $salonDAO->obtenerTodos();
 } catch (Exception $e) {
@@ -118,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <div class="container">
+    <div class="layout">
 
         <nav class="sidebar">
             <ul>
@@ -160,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php } ?>
 
                 <form id="form-detalle-equipo" action="detalle-equipo.php?id=<?php echo (int) $idEquipo; ?>" method="post">
-                    <fieldset>
+                    <fieldset<?php echo $modoVer ? ' disabled' : ''; ?>>
                         <div class="form-grupo">
                             <label for="id-equipo">ID Equipo (No editable):</label>
                             <input type="text" id="id-equipo" name="id-equipo" value="<?php echo (int) $idEquipo; ?>" readonly>
@@ -216,7 +219,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <p class="error-mensaje" id="error-estado"<?php echo !empty($errores['estado']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars(isset($errores['estado']) ? $errores['estado'] : ''); ?></p>
                         </div>
 
-                        <button type="submit" id="btn-guardar">Guardar Cambios</button>
+                        <?php if ($modoVer) { ?>
+                            <a class="btn-editar-form" href="detalle-equipo.php?id=<?php echo (int) $idEquipo; ?>&amp;modo=editar">Editar</a>
+                        <?php } else { ?>
+                            <button type="submit" id="btn-guardar">Guardar Cambios</button>
+                        <?php } ?>
 
                     </fieldset>
                 </form>
