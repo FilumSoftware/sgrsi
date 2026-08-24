@@ -52,11 +52,7 @@ INSERT INTO equipo (id_equipo, nombre_equipo, categoria, descripcion, nombre_sal
 (10, 'Lab3-05', 'PC de escritorio', 'Monitor, teclado, mouse y auriculares', 'Laboratorio 3', 'Operativo'),
 (11, 'Tal1-01', 'PC de escritorio', 'Monitor y teclado',                     'Taller 1',      'Operativo'),
 (12, 'Tal1-02', 'PC de escritorio', 'Monitor y teclado',                     'Taller 1',      'Operativo'),
-(13, 'Tal1-03', 'PC de escritorio', 'Monitor y teclado. Teclado trabado',    'Taller 1',      'Operativo'),
-(14, 'Proyector Epson X41',   'Proyector',  'Cable HDMI y control remoto',   'Laboratorio 3', 'Operativo'),
-(15, 'Notebook Lenovo V15',   'Laptop',     'Cargador y funda',              'Depósito',      'Operativo'),
-(16, 'Notebook Dell Vostro',  'Laptop',     'Cargador. Bisagra rota',        'Depósito',      'Derivado'),
-(17, 'Impresora HP LaserJet', 'Impresora',  'Sin tóner. Fuera de servicio',  'Depósito',      'En trámite de baja');
+(13, 'Tal1-03', 'PC de escritorio', 'Monitor y teclado. Teclado trabado',    'Taller 1',      'Operativo');
 
 
 -- tickets --------------------------------------------------------------
@@ -86,10 +82,10 @@ INSERT INTO ticket (id_ticket, fecha_hora_alta, ci_solicitante, id_equipo, tipo_
     'Se sustituyó la fuente por una de repuesto del depósito.',
     '2026-07-22 16:40:00'),
 
-(5, '2026-08-05 11:10:00', '48219073', 16, 'Otros',
-    'La bisagra de la pantalla está rota y la tapa no sostiene la posición.',
+(5, '2026-08-05 11:10:00', '48219073',  2, 'Otros',
+    'El botón de encendido del gabinete quedó hundido y hay que forzarlo para arrancar.',
     'Normal', 'En proceso', '44905381',
-    'Rotura mecánica de la bisagra izquierda. Requiere repuesto externo.',
+    'Botonera frontal del gabinete rota. Requiere repuesto externo.',
     NULL, NULL),
 
 (6, '2026-08-14 14:00:00', '51730864',  6, 'Software',
