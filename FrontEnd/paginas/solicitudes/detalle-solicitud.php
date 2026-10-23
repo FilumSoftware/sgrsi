@@ -223,12 +223,13 @@ function claseError($errores, $campo)
                 <?php if (!empty($errores['general'])) { ?>
                     <p class="error-mensaje" style="display: block;"><?php echo v($errores['general']); ?></p>
                 <?php } ?>
+                <p id="resultado-guardado" class="error-mensaje" role="status" aria-live="polite"></p>
 
                 <?php if (!$puedeAtender) { ?>
                     <p class="error-mensaje" style="display: block;">Esta solicitud es tuya, pero solo la puede modificar un técnico.</p>
                 <?php } ?>
 
-                <form id="form-detalle-solicitud" action="detalle-solicitud.php" method="post">
+                <form id="form-detalle-solicitud" action="detalle-solicitud.php" method="post" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
                     <fieldset>
                         <legend>Solicitud n.º <?php echo v($fila['id_solicitud']); ?></legend>
 
@@ -272,7 +273,7 @@ function claseError($errores, $campo)
                         </div>
                         <div class="form-grupo">
                             <label for="salon">Salón:</label>
-                            <select id="salon" name="salon"<?php echo $editable ? '' : ' disabled'; ?>>
+                            <select id="salon" name="salon" required<?php echo $editable ? '' : ' disabled'; ?>>
                                 <?php foreach ($salones as $salon) { ?>
                                     <option value="<?php echo v($salon['nombre_salon']); ?>"<?php echo $valores['salon'] === $salon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($salon['nombre_salon']); ?></option>
                                 <?php } ?>
@@ -286,7 +287,7 @@ function claseError($errores, $campo)
                         </div>
 
                         <?php if ($editable) { ?>
-                            <input type="submit" value="Guardar solicitud">
+                            <input type="submit" id="btn-guardar" value="Guardar solicitud">
                         <?php } elseif ($puedeAtender) { ?>
                             <a class="btn-editar-form" href="detalle-solicitud.php?id=<?php echo urlencode($id); ?>&amp;modo=editar">Editar</a>
                         <?php } ?>
