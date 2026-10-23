@@ -152,8 +152,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php if (!empty($errores['general'])) { ?>
                     <p class="error-mensaje" style="display: block;"><?php echo htmlspecialchars($errores['general']); ?></p>
                 <?php } ?>
+                <p id="resultado-guardado" class="error-mensaje" role="status" aria-live="polite"></p>
 
-                <form id="form-detalle-equipo" action="detalle-equipo.php?id=<?php echo (int) $idEquipo; ?>" method="post">
+                <form id="form-detalle-equipo" action="detalle-equipo.php?id=<?php echo (int) $idEquipo; ?>" method="post" data-csrf="<?php echo htmlspecialchars(Sesion::tokenApi(), ENT_QUOTES, 'UTF-8'); ?>">
                     <fieldset<?php echo $modoVer ? ' disabled' : ''; ?>>
                         <div class="form-grupo">
                             <label for="id-equipo">ID Equipo (No editable):</label>
@@ -162,13 +163,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div class="form-grupo">
                             <label for="nombre">Nombre del equipo:</label>
-                            <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($valores['nombre']); ?>" required>
+                            <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($valores['nombre']); ?>" maxlength="100" required>
                             <p class="error-mensaje" id="error-nombre"<?php echo !empty($errores['nombre']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars(isset($errores['nombre']) ? $errores['nombre'] : ''); ?></p>
                         </div>
 
                         <div class="form-grupo">
                             <label for="salon">Salón:</label>
-                            <select id="salon" name="salon">
+                            <select id="salon" name="salon" required>
                                 <?php foreach ($salones as $salon) { ?>
                                     <option value="<?php echo htmlspecialchars($salon['nombre_salon']); ?>"
                                         <?php echo $salon['nombre_salon'] === $valores['salon'] ? 'selected' : ''; ?>>
