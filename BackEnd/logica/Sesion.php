@@ -73,4 +73,21 @@ class Sesion
     {
         return self::rol() === 'Asistente' || self::rol() === 'Coordinador';
     }
+
+    public static function tokenCancelarTicket()
+    {
+        self::iniciar();
+        if (empty($_SESSION['csrf_cancelar_ticket'])) {
+            $_SESSION['csrf_cancelar_ticket'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf_cancelar_ticket'];
+    }
+
+    public static function verificarTokenCancelarTicket($token)
+    {
+        self::iniciar();
+        return isset($_SESSION['csrf_cancelar_ticket'])
+            && is_string($token)
+            && hash_equals($_SESSION['csrf_cancelar_ticket'], $token);
+    }
 }

@@ -1,11 +1,12 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
-require_once __DIR__ . '/../../../BackEnd/dao/UsoSalaDAO.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorUsoSala.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
-$usoSalaDAO = new UsoSalaDAO();
+$gestor = new GestorUsoSala();
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -17,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = trim((string) (isset($_POST['id']) ? $_POST['id'] : ''));
 
     try {
-        $usoSalaDAO->eliminar($id);
+        ResultadoGestion::valor($gestor->eliminar($id));
         header('Location: historial-uso-sala.php?aviso=eliminado');
         exit;
     } catch (Exception $e) {
@@ -46,9 +47,9 @@ if (isset($avisos[$aviso])) {
 
 try {
     if (ControlAcceso::puedeAtender()) {
-        $usos = $usoSalaDAO->obtenerTodos();
+        $usos = ResultadoGestion::valor($gestor->obtenerTodos());
     } else {
-        $usos = $usoSalaDAO->obtenerPorSolicitante(Sesion::ci());
+        $usos = ResultadoGestion::valor($gestor->obtenerPorSolicitante(Sesion::ci()));
     }
 } catch (Exception $e) {
     error_log('SGRSI historial-uso-sala.php listar: ' . $e->getMessage());

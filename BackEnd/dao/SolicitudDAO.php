@@ -119,4 +119,19 @@ class SolicitudDAO
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function solicitudesPorMes()
+    {
+        $stmt = $this->pdo->query(
+            "SELECT DATE_FORMAT(fecha_hora_alta, '%Y-%m') AS periodo,
+                    COUNT(*) AS cantidad
+               FROM solicitud
+              WHERE fecha_hora_alta >= DATE_FORMAT(
+                    DATE_SUB(CURDATE(), INTERVAL 5 MONTH), '%Y-%m-01')
+              GROUP BY DATE_FORMAT(fecha_hora_alta, '%Y-%m')
+              ORDER BY periodo"
+        );
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

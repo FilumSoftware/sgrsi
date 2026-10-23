@@ -150,11 +150,45 @@ function v($texto)
                     </div>
                 </section>
 
+                <section class="metricas-extendidas" aria-labelledby="titulo-metricas">
+                    <div class="metricas-encabezado">
+                        <h2 id="titulo-metricas" class="tabla-titulo">Métricas para decidir</h2>
+                        <button type="button" id="actualizar-metricas" class="btn-editar">Actualizar métricas</button>
+                    </div>
+                    <p id="estado-metricas" role="status" aria-live="polite">Cargando métricas…</p>
+
+                    <div class="metricas-grid">
+                        <div class="tabla-contenedor">
+                            <h3 class="tabla-titulo">Equipos más fallados</h3>
+                            <p class="metrica-nota">Tickets registrados, excluidos los cancelados.</p>
+                            <div class="tabla-wrapper">
+                                <table class="tabla">
+                                    <thead><tr><th>Equipo</th><th>Salón</th><th>Fallas</th></tr></thead>
+                                    <tbody id="equipos-mas-fallados"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tabla-contenedor">
+                            <h3 class="tabla-titulo">Solicitudes por mes</h3>
+                            <p class="metrica-nota">Últimos seis meses, incluido el actual.</p>
+                            <div class="tabla-wrapper">
+                                <table class="tabla">
+                                    <thead><tr><th>Mes</th><th>Solicitudes</th></tr></thead>
+                                    <tbody id="solicitudes-por-mes"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="metrica-promedio">Tiempo medio de resolución: <strong id="promedio-resolucion">—</strong></p>
+                    <p class="metrica-nota">Se calcula con tickets resueltos y fecha de cierre; no incluye cancelados.</p>
+                </section>
+
             </div>
         </main>
 
     </div>
     <script src="../../js/fila-clickeable.js"></script>
+    <script src="../../js/dashboard/dashboard.js"></script>
 </body>
 
 </html>

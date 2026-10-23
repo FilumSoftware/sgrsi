@@ -1,0 +1,50 @@
+<?php
+
+require_once __DIR__ . '/ResultadoGestion.php';
+require_once __DIR__ . '/../dao/EquipoDAO.php';
+require_once __DIR__ . '/../dao/SalonDAO.php';
+
+class GestorInventario
+{
+    public function obtenerTodos()
+    {
+        return ResultadoGestion::ejecutar('inventario listar', function () { return (new EquipoDAO())->obtenerTodos(); });
+    }
+
+    public function obtenerPorId($id)
+    {
+        if (!ResultadoGestion::idValido($id)) return ResultadoGestion::fallo(400, 'Equipo inválido.');
+        return ResultadoGestion::ejecutar('inventario consultar', function () use ($id) { return (new EquipoDAO())->obtenerPorId($id); });
+    }
+
+    public function obtenerSalones()
+    {
+        return ResultadoGestion::ejecutar('inventario salones', function () { return (new SalonDAO())->obtenerTodos(); });
+    }
+
+    public function insertar(Equipo $equipo)
+    {
+        $error = $this->validar($equipo);
+        if ($error) return $error;
+        return ResultadoGestion::ejecutar('inventario crear', function () use ($equipo) { return (new EquipoDAO())->insertar($equipo); });
+    }
+
+    public function actualizar(Equipo $equipo)
+    {
+        $error = $this->validar($equipo);
+        if ($error) return $error;
+        if (!ResultadoGestion::idValido($equipo->getIdEquipo())) return ResultadoGestion::fallo(400, 'Equipo inválido.');
+        return ResultadoGestion::ejecutar('inventario actualizar', function () use ($equipo) { return (new EquipoDAO())->actualizar($equipo); });
+    }
+
+    private function validar(Equipo $equipo)
+    {
+        if (trim((string) $equipo->getNombreEquipo()) === '' || strlen($equipo->getNombreEquipo()) > 100) return ResultadoGestion::fallo(400, 'Nombre de equipo inválido.');
+        if (!in_array($equipo->getEstadoEquipo(), ['Operativo', 'En reparación', 'En trámite de baja', 'De baja'], true)) return ResultadoGestion::fallo(400, 'Estado de equipo inválido.');
+        if (trim((string) $equipo->getNombreSalon()) === '') return ResultadoGestion::fallo(400, 'Salón inválido.');
+        $salon = ResultadoGestion::ejecutar('inventario validar salón', function () use ($equipo) { return (new SalonDAO())->obtenerPorNombre($equipo->getNombreSalon()); });
+        if (!$salon['ok']) return $salon;
+        if (!$salon['datos']) return ResultadoGestion::fallo(400, 'Salón inválido.');
+        return null;
+    }
+}

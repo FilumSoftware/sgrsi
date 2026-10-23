@@ -1,19 +1,16 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorTickets.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
-require_once __DIR__ . '/../../../BackEnd/dao/TicketDAO.php';
-require_once __DIR__ . '/../../../BackEnd/dao/SalonDAO.php';
-require_once __DIR__ . '/../../../BackEnd/dao/EquipoDAO.php';
 require_once __DIR__ . '/../../../BackEnd/models/Ticket.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
+$gestor = new GestorTickets();
+
 $motivoMinimo = 10;
 
-$ticketDAO = new TicketDAO();
-$salonDAO  = new SalonDAO();
-$equipoDAO = new EquipoDAO();
 
 $errores = [];
 $valores = [
@@ -27,7 +24,7 @@ $valores = [
 ];
 
 try {
-    $salones = $salonDAO->obtenerTodos();
+    $salones = ResultadoGestion::valor($gestor->obtenerSalones());
 } catch (Exception $e) {
     error_log('SGRSI nuevo-ticket.php salones: ' . $e->getMessage());
     $salones = [];
@@ -44,7 +41,7 @@ $equipos = [];
 
 if ($valores['salon'] !== '') {
     try {
-        $equipos = $equipoDAO->obtenerPorSalon($valores['salon']);
+        $equipos = ResultadoGestion::valor($gestor->obtenerEquiposPorSalon($valores['salon']));
     } catch (Exception $e) {
         error_log('SGRSI nuevo-ticket.php equipos: ' . $e->getMessage());
         $errores['general'] = 'No se pudo cargar la lista de equipos. Intentá de nuevo en unos minutos.';
@@ -104,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['accion']) ? $_POST['
                 $valores['prioridad']
             );
 
-            $ticketDAO->insertar($ticket);
+            ResultadoGestion::valor($gestor->insertar($ticket));
 
             header('Location: mesa-de-ayuda.php?aviso=creado');
             exit;

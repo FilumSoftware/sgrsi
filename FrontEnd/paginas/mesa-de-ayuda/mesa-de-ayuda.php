@@ -1,12 +1,13 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorTickets.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
-require_once __DIR__ . '/../../../BackEnd/dao/TicketDAO.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
-$ticketDAO = new TicketDAO();
+$gestor = new GestorTickets();
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -18,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = trim((string) (isset($_POST['id']) ? $_POST['id'] : ''));
 
     try {
-        $ticketDAO->eliminar($id);
+        ResultadoGestion::valor($gestor->eliminar($id));
         header('Location: mesa-de-ayuda.php?aviso=eliminado');
         exit;
     } catch (Exception $e) {
@@ -47,9 +48,9 @@ if (isset($avisos[$aviso])) {
 
 try {
     if (ControlAcceso::puedeAtender()) {
-        $tickets = $ticketDAO->obtenerTodos();
+        $tickets = ResultadoGestion::valor($gestor->obtenerTodos());
     } else {
-        $tickets = $ticketDAO->obtenerPorSolicitante(Sesion::ci());
+        $tickets = ResultadoGestion::valor($gestor->obtenerPorSolicitante(Sesion::ci()));
     }
 } catch (Exception $e) {
     error_log('SGRSI mesa-de-ayuda.php listar: ' . $e->getMessage());
@@ -151,8 +152,8 @@ function v($texto)
                                     <td><?php echo v($ticket['tipo_de_defecto']); ?></td>
                                     <td><span class="badge <?php echo v(Dominio::claseDelBadge($ticket['estado_ticket'])); ?>"><?php echo v($ticket['estado_ticket']); ?></span></td>
                                     <td class="acciones">
-                                        <a class="btn-editar" href="detalle-ticket.php?id=<?php echo urlencode($ticket['id_ticket']); ?><?php echo ControlAcceso::puedeAtender() ? '&amp;modo=editar' : ''; ?>">
-                                            <?php echo ControlAcceso::puedeAtender() ? 'Atender' : 'Ver'; ?>
+                                        <a class="btn-editar" href="detalle-ticket.php?id=<?php echo urlencode($ticket['id_ticket']); ?><?php echo ControlAcceso::puedeAtender() && $ticket['estado_ticket'] !== 'Cancelado' ? '&amp;modo=editar' : ''; ?>">
+                                            <?php echo ControlAcceso::puedeAtender() && $ticket['estado_ticket'] !== 'Cancelado' ? 'Atender' : 'Ver'; ?>
                                         </a>
 
                                         <?php if (Sesion::esCoordinador()) { ?>

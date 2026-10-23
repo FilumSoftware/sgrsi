@@ -84,7 +84,7 @@ class TicketDAO
     public function actualizar(Ticket $ticket)
     {
         $stmt = $this->pdo->prepare(
-            'UPDATE ticket
+            "UPDATE ticket
                 SET id_equipo = :equipo,
                     tipo_de_defecto = :defecto,
                     descripcion = :descripcion,
@@ -94,10 +94,11 @@ class TicketDAO
                     diagnostico = :diagnostico,
                     solucion = :solucion,
                     fecha_hora_cierre = :cierre
-              WHERE id_ticket = :id'
+              WHERE id_ticket = :id
+                AND estado_ticket <> 'Cancelado'"
         );
 
-        return $stmt->execute([
+        $stmt->execute([
             ':equipo'      => $ticket->getIdEquipo(),
             ':defecto'     => $ticket->getTipoDeDefecto(),
             ':descripcion' => $ticket->getDescripcion(),
@@ -109,6 +110,8 @@ class TicketDAO
             ':cierre'      => $ticket->getFechaHoraCierre(),
             ':id'          => $ticket->getIdTicket()
         ]);
+
+        return $stmt->rowCount() === 1;
     }
 
     public function eliminar($idTicket)
@@ -116,6 +119,22 @@ class TicketDAO
         $stmt = $this->pdo->prepare('DELETE FROM ticket WHERE id_ticket = :id');
 
         return $stmt->execute([':id' => $idTicket]);
+    }
+
+    public function cancelarPendiente($idTicket, $ciSolicitante)
+    {
+        $stmt = $this->pdo->prepare(
+            "UPDATE ticket
+                SET estado_ticket = 'Cancelado',
+                    fecha_hora_cierre = GREATEST(NOW(), fecha_hora_alta)
+              WHERE id_ticket = :id
+                AND ci_solicitante = :ci
+                AND estado_ticket = 'Pendiente'
+                AND ci_responsable IS NULL"
+        );
+        $stmt->execute([':id' => $idTicket, ':ci' => $ciSolicitante]);
+
+        return $stmt->rowCount() === 1;
     }
 
     public function contarPorEstado()
@@ -127,5 +146,36 @@ class TicketDAO
         );
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function equiposMasFallados()
+    {
+        $stmt = $this->pdo->query(
+            "SELECT e.id_equipo, e.nombre_equipo, e.nombre_salon,
+                    COUNT(*) AS total_fallas
+               FROM ticket t
+               JOIN equipo e ON e.id_equipo = t.id_equipo
+              WHERE t.estado_ticket <> 'Cancelado'
+              GROUP BY e.id_equipo, e.nombre_equipo, e.nombre_salon
+              ORDER BY total_fallas DESC, e.nombre_equipo
+              LIMIT 5"
+        );
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function tiempoPromedioResolucion()
+    {
+        $stmt = $this->pdo->query(
+            "SELECT ROUND(AVG(TIMESTAMPDIFF(MINUTE, fecha_hora_alta, fecha_hora_cierre)) / 60, 1)
+                    AS promedio_horas
+               FROM ticket
+              WHERE estado_ticket = 'Resuelto'
+                AND fecha_hora_cierre IS NOT NULL"
+        );
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $fila && $fila['promedio_horas'] !== null
+            ? (float) $fila['promedio_horas'] : null;
     }
 }

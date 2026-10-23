@@ -1,11 +1,12 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
-require_once __DIR__ . '/../../../BackEnd/dao/UsuarioDAO.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorUsuarios.php';
 
 ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
 
-$usuarioDAO = new UsuarioDAO();
+$gestor = new GestorUsuarios();
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -23,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $usuarioDAO->cambiarEstado($ci, $estado);
+        ResultadoGestion::valor($gestor->cambiarEstado($ci, $estado));
         header('Location: usuarios.php?aviso=' . ($estado === 'Activa' ? 'activada' : 'desactivada'));
         exit;
     } catch (Exception $e) {
@@ -52,7 +53,7 @@ if (isset($avisos[$clave])) {
 }
 
 try {
-    $usuarios = $usuarioDAO->obtenerTodos();
+    $usuarios = ResultadoGestion::valor($gestor->obtenerTodos());
 } catch (Exception $e) {
     error_log('SGRSI usuarios.php obtenerTodos: ' . $e->getMessage());
     $usuarios = [];

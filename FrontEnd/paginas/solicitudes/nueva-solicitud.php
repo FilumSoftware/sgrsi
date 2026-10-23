@@ -1,17 +1,16 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorSolicitudes.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
-require_once __DIR__ . '/../../../BackEnd/dao/SolicitudDAO.php';
-require_once __DIR__ . '/../../../BackEnd/dao/SalonDAO.php';
 require_once __DIR__ . '/../../../BackEnd/models/Solicitud.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
+$gestor = new GestorSolicitudes();
+
 $motivoMinimo = 10;
 
-$solicitudDAO = new SolicitudDAO();
-$salonDAO     = new SalonDAO();
 
 $errores = [];
 $valores = [
@@ -22,7 +21,7 @@ $valores = [
 ];
 
 try {
-    $salones = $salonDAO->obtenerTodos();
+    $salones = ResultadoGestion::valor($gestor->obtenerSalones());
 } catch (Exception $e) {
     error_log('SGRSI nueva-solicitud.php salones: ' . $e->getMessage());
     $salones = [];
@@ -67,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $valores['prioridad']
             );
 
-            $solicitudDAO->insertar($solicitud);
+            ResultadoGestion::valor($gestor->insertar($solicitud));
 
             header('Location: solicitudes.php?aviso=creada');
             exit;

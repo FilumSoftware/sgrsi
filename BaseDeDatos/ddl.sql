@@ -71,7 +71,7 @@ CREATE TABLE ticket (
     descripcion       VARCHAR(500) NULL,
     prioridad         ENUM('Urgente', 'Prioritario', 'Normal')
                       NOT NULL DEFAULT 'Normal',
-    estado_ticket     ENUM('Pendiente', 'En proceso', 'Resuelto')
+    estado_ticket     ENUM('Pendiente', 'En proceso', 'Resuelto', 'Cancelado')
                       NOT NULL DEFAULT 'Pendiente',
     ci_responsable    CHAR(8)      NULL,
     diagnostico       VARCHAR(500) NULL,

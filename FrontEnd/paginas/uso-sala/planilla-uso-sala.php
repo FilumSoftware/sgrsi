@@ -1,16 +1,13 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorUsoSala.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
-require_once __DIR__ . '/../../../BackEnd/dao/UsoSalaDAO.php';
-require_once __DIR__ . '/../../../BackEnd/dao/SalonDAO.php';
-require_once __DIR__ . '/../../../BackEnd/dao/EquipoDAO.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
-$usoSalaDAO = new UsoSalaDAO();
-$salonDAO   = new SalonDAO();
-$equipoDAO  = new EquipoDAO();
+$gestor = new GestorUsoSala();
+
 
 $errores = [];
 $valores = [
@@ -24,7 +21,7 @@ $valores = [
 ];
 
 try {
-    $salones = $salonDAO->obtenerTodos();
+    $salones = ResultadoGestion::valor($gestor->obtenerSalones());
 } catch (Exception $e) {
     error_log('SGRSI planilla-uso-sala.php salones: ' . $e->getMessage());
     $salones = [];
@@ -41,7 +38,7 @@ $equipos = [];
 
 if ($valores['salon'] !== '') {
     try {
-        $equipos = $equipoDAO->obtenerPorSalon($valores['salon']);
+        $equipos = ResultadoGestion::valor($gestor->obtenerEquiposPorSalon($valores['salon']));
     } catch (Exception $e) {
         error_log('SGRSI planilla-uso-sala.php equipos: ' . $e->getMessage());
         $errores['general'] = 'No se pudo cargar la lista de equipos. Intentá de nuevo en unos minutos.';
@@ -97,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['accion']) ? $_POST['
 
     if (empty($errores['fecha']) && empty($errores['entrada']) && empty($errores['salida']) && empty($errores['salon'])) {
         try {
-            if ($usoSalaDAO->existeSolapamiento($valores['salon'], $valores['fecha'], $valores['entrada'] . ':00', $valores['salida'] . ':00')) {
+            if (ResultadoGestion::valor($gestor->existeSolapamiento($valores['salon'], $valores['fecha'], $valores['entrada'] . ':00', $valores['salida'] . ':00'))) {
                 $errores['salon'] = 'La sala ya está ocupada en ese horario.';
             }
         } catch (Exception $e) {
@@ -155,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['accion']) ? $_POST['
                 $valores['turno']
             );
 
-            $usoSalaDAO->insertar($uso, $detalles);
+            ResultadoGestion::valor($gestor->insertar($uso, $detalles));
 
             header('Location: historial-uso-sala.php?aviso=creado');
             exit;
