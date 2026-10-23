@@ -1,33 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
-require_once __DIR__ . '/../../../BackEnd/logica/GestorTickets.php';
-require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
-
-$gestor = new GestorTickets();
-
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    if (!Sesion::esCoordinador()) {
-        header('Location: mesa-de-ayuda.php?aviso=permiso');
-        exit;
-    }
-
-    $id = trim((string) (isset($_POST['id']) ? $_POST['id'] : ''));
-
-    try {
-        ResultadoGestion::valor($gestor->eliminar($id));
-        header('Location: mesa-de-ayuda.php?aviso=eliminado');
-        exit;
-    } catch (Exception $e) {
-        error_log('SGRSI mesa-de-ayuda.php eliminar: ' . $e->getMessage());
-        header('Location: mesa-de-ayuda.php?aviso=error');
-        exit;
-    }
-}
 
 $avisos = [
     'creado'    => ['exito', 'El ticket se registró correctamente.'],
@@ -44,18 +19,6 @@ $aviso   = isset($_GET['aviso']) ? $_GET['aviso'] : '';
 
 if (isset($avisos[$aviso])) {
     $mensaje = ['tipo' => $avisos[$aviso][0], 'texto' => $avisos[$aviso][1]];
-}
-
-try {
-    if (ControlAcceso::puedeAtender()) {
-        $tickets = ResultadoGestion::valor($gestor->obtenerTodos());
-    } else {
-        $tickets = ResultadoGestion::valor($gestor->obtenerPorSolicitante(Sesion::ci()));
-    }
-} catch (Exception $e) {
-    error_log('SGRSI mesa-de-ayuda.php listar: ' . $e->getMessage());
-    $tickets = [];
-    $mensaje = ['tipo' => 'error', 'texto' => 'No se pudo cargar el historial de tickets. Intentá de nuevo en unos minutos.'];
 }
 
 function v($texto)
@@ -114,11 +77,7 @@ function v($texto)
 
             <section class="content">
 
-                <?php if ($mensaje) { ?>
-                    <p class="error-mensaje <?php echo $mensaje['tipo'] === 'exito' ? 'mensaje-exito' : ''; ?>" style="display: block;">
-                        <?php echo v($mensaje['texto']); ?>
-                    </p>
-                <?php } ?>
+                <p id="resultado-tickets" class="error-mensaje <?php echo $mensaje && $mensaje['tipo'] === 'exito' ? 'mensaje-exito' : ''; ?>" role="status" aria-live="polite"<?php echo $mensaje ? ' style="display: block;"' : ''; ?>><?php echo $mensaje ? v($mensaje['texto']) : ''; ?></p>
 
                 <div class="tabla-wrapper">
                     <table>
@@ -134,37 +93,8 @@ function v($texto)
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php if (empty($tickets)) { ?>
-                                <tr>
-                                    <td colspan="8">Todavía no hay tickets registrados.</td>
-                                </tr>
-                            <?php } ?>
-
-                            <?php foreach ($tickets as $ticket) { ?>
-                                <?php $alta = strtotime($ticket['fecha_hora_alta']); ?>
-                                <tr>
-                                    <td><a class="tabla-enlace" href="detalle-ticket.php?id=<?php echo urlencode($ticket['id_ticket']); ?>"><?php echo v($ticket['id_ticket']); ?></a></td>
-                                    <td><?php echo v(date('d/m/y', $alta)); ?></td>
-                                    <td><?php echo v(date('H:i', $alta)); ?></td>
-                                    <td><?php echo v($ticket['nombre_salon']); ?></td>
-                                    <td><?php echo v($ticket['nombre_equipo']); ?></td>
-                                    <td><?php echo v($ticket['tipo_de_defecto']); ?></td>
-                                    <td><span class="badge <?php echo v(Dominio::claseDelBadge($ticket['estado_ticket'])); ?>"><?php echo v($ticket['estado_ticket']); ?></span></td>
-                                    <td class="acciones">
-                                        <a class="btn-editar" href="detalle-ticket.php?id=<?php echo urlencode($ticket['id_ticket']); ?><?php echo ControlAcceso::puedeAtender() && $ticket['estado_ticket'] !== 'Cancelado' ? '&amp;modo=editar' : ''; ?>">
-                                            <?php echo ControlAcceso::puedeAtender() && $ticket['estado_ticket'] !== 'Cancelado' ? 'Atender' : 'Ver'; ?>
-                                        </a>
-
-                                        <?php if (Sesion::esCoordinador()) { ?>
-                                            <form action="mesa-de-ayuda.php" method="post" class="form-en-linea">
-                                                <input type="hidden" name="id" value="<?php echo v($ticket['id_ticket']); ?>">
-                                                <button type="submit" class="btn-eliminar" data-confirmar="1">Eliminar</button>
-                                            </form>
-                                        <?php } ?>
-                                    </td>
-                                </tr>
-                            <?php } ?>
+                        <tbody id="lista-tickets" data-csrf="<?php echo v(Sesion::tokenApi()); ?>" data-coordinador="<?php echo Sesion::esCoordinador() ? '1' : '0'; ?>" data-atender="<?php echo ControlAcceso::puedeAtender() ? '1' : '0'; ?>">
+                            <tr><td colspan="8">Cargando tickets...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -173,7 +103,6 @@ function v($texto)
         </main>
     </div>
     <script src="../../js/mesa-de-ayuda/mesa-de-ayuda.js"></script>
-    <script src="../../js/fila-clickeable.js"></script>
 </body>
 
 </html>
