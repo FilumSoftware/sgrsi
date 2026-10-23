@@ -257,12 +257,13 @@ function claseError($errores, $campo)
                 <?php if (!empty($errores['general'])) { ?>
                     <p class="error-mensaje" style="display: block;"><?php echo v($errores['general']); ?></p>
                 <?php } ?>
+                <p id="resultado-guardado" class="error-mensaje" role="status" aria-live="polite"></p>
 
                 <?php if (!$puedeAtender) { ?>
                     <p class="error-mensaje" style="display: block;">Este ticket es tuyo, pero solo lo puede modificar un técnico.</p>
                 <?php } ?>
 
-                <form id="form-detalle-ticket" action="detalle-ticket.php" method="post">
+                <form id="form-detalle-ticket" action="detalle-ticket.php" method="post" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
                     <input type="hidden" name="id" value="<?php echo v($fila['id_ticket']); ?>">
 
                     <div class="form-grupo">
@@ -280,7 +281,7 @@ function claseError($errores, $campo)
 
                     <div class="form-grupo">
                         <label for="salon">Salón</label>
-                        <select name="salon" id="salon"<?php echo $editable ? ' onchange="this.form.submit()"' : ' disabled'; ?>>
+                        <select name="salon" id="salon" required<?php echo $editable ? '' : ' disabled'; ?>>
                             <?php foreach ($salones as $salon) { ?>
                                 <option value="<?php echo v($salon['nombre_salon']); ?>"<?php echo $valores['salon'] === $salon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($salon['nombre_salon']); ?></option>
                             <?php } ?>
@@ -289,7 +290,7 @@ function claseError($errores, $campo)
                     </div>
                     <div class="form-grupo">
                         <label for="equipo">Equipo</label>
-                        <select name="equipo" id="equipo"<?php echo $editable ? '' : ' disabled'; ?>>
+                        <select name="equipo" id="equipo" required<?php echo $editable ? '' : ' disabled'; ?>>
                             <?php foreach ($equipos as $equipo) { ?>
                                 <option value="<?php echo v($equipo['id_equipo']); ?>"<?php echo (int) $valores['equipo'] === (int) $equipo['id_equipo'] ? ' selected' : ''; ?>><?php echo v($equipo['nombre_equipo']); ?></option>
                             <?php } ?>

@@ -28,6 +28,13 @@ try {
     Api::exigirToken();
 
     if ($metodo === 'DELETE') {
+        if (Api::parametro('accion') === 'eliminar') {
+            Api::exigirRol(['Coordinador']);
+            $actual = $gestor->obtenerPorId($id);
+            if (!$actual['ok']) Api::resultado($actual);
+            if (!$actual['datos']) Api::responder(404, 'error', 'No existe ese ticket.');
+            Api::resultado($gestor->eliminar($id), 'Ticket eliminado.');
+        }
         Api::resultado($gestor->cancelar($id, Sesion::ci()));
     }
 
