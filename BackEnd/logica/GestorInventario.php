@@ -37,6 +37,18 @@ class GestorInventario
         return ResultadoGestion::ejecutar('inventario actualizar', function () use ($equipo) { return (new EquipoDAO())->actualizar($equipo); });
     }
 
+    public function darDeBaja($id)
+    {
+        if (!ResultadoGestion::idValido($id)) return ResultadoGestion::fallo(400, 'Equipo inválido.');
+        return ResultadoGestion::ejecutar('inventario dar de baja', function () use ($id) {
+            $dao = new EquipoDAO();
+            $fila = $dao->obtenerPorId($id);
+            if (!$fila) return false;
+            $equipo = new Equipo($fila['nombre_equipo'], $fila['descripcion'], $fila['nombre_salon'], 'De baja', $id);
+            return $dao->actualizar($equipo);
+        });
+    }
+
     private function validar(Equipo $equipo)
     {
         if (trim((string) $equipo->getNombreEquipo()) === '' || strlen($equipo->getNombreEquipo()) > 100) return ResultadoGestion::fallo(400, 'Nombre de equipo inválido.');

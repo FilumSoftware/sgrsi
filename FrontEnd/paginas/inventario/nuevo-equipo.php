@@ -108,22 +108,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </header>
             <section class="form-container">
+                <p>Registrá computadoras de escritorio de los laboratorios.</p>
 
                 <?php if (!empty($errores['general'])) { ?>
                     <p class="error-mensaje" style="display: block;"><?php echo htmlspecialchars($errores['general']); ?></p>
                 <?php } ?>
+                <p id="resultado-equipo" class="error-mensaje" role="status" aria-live="polite"></p>
 
-                <form id="form-equipo" method="POST" action="nuevo-equipo.php">
+                <form id="form-equipo" method="POST" action="nuevo-equipo.php" data-csrf="<?php echo htmlspecialchars(Sesion::tokenApi(), ENT_QUOTES, 'UTF-8'); ?>">
                     <fieldset>
                         <div class="form-grupo">
                             <label for="nombre">Nombre del equipo:</label>
-                            <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($valores['nombre']); ?>" required>
+                            <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($valores['nombre']); ?>" maxlength="100" required>
                             <p class="error-mensaje" id="error-nombre"<?php echo !empty($errores['nombre']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars(isset($errores['nombre']) ? $errores['nombre'] : ''); ?></p>
                         </div>
 
                         <div class="form-grupo">
                             <label for="salon">Salón:</label>
-                            <select id="salon" name="salon">
+                            <select id="salon" name="salon" required>
                                 <option value="">— Elegí un salón —</option>
                                 <?php foreach ($salones as $salon) { ?>
                                     <option value="<?php echo htmlspecialchars($salon['nombre_salon']); ?>"
@@ -140,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="text" id="extras" name="extras" value="<?php echo htmlspecialchars($valores['extras']); ?>"><br><br>
                         </div>
 
-                        <input type="submit" value="Registrar equipo">
+                        <input type="submit" id="btn-registrar" value="Registrar equipo">
                     </fieldset>
                 </form>
             </section>

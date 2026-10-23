@@ -1,11 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
-require_once __DIR__ . '/../../../BackEnd/logica/GestorInventario.php';
 
 ControlAcceso::exigirRol(['Asistente', 'Coordinador'], '../../../index.php');
-
-$gestor = new GestorInventario();
 
 $mensaje   = null;
 
@@ -13,14 +10,6 @@ if (isset($_GET['ok']) && $_GET['ok'] === '2') {
     $mensaje = ['tipo' => 'exito', 'texto' => 'Equipo actualizado correctamente.'];
 } elseif (isset($_GET['ok'])) {
     $mensaje = ['tipo' => 'exito', 'texto' => 'Equipo registrado correctamente.'];
-}
-
-try {
-    $equipos = ResultadoGestion::valor($gestor->obtenerTodos());
-} catch (Exception $e) {
-    error_log('SGRSI inventario.php: ' . $e->getMessage());
-    $mensaje = ['tipo' => 'error', 'texto' => 'No se pudo cargar el listado de equipos. Intentá de nuevo en unos minutos.'];
-    $equipos = [];
 }
 
 ?>
@@ -71,11 +60,7 @@ try {
 
             <section class="content">
 
-                <?php if ($mensaje) { ?>
-                    <p class="error-mensaje <?php echo $mensaje['tipo'] === 'exito' ? 'mensaje-exito' : ''; ?>" style="display: block;">
-                        <?php echo htmlspecialchars($mensaje['texto']); ?>
-                    </p>
-                <?php } ?>
+                <p id="resultado-inventario" class="error-mensaje <?php echo $mensaje && $mensaje['tipo'] === 'exito' ? 'mensaje-exito' : ''; ?>" role="status" aria-live="polite"<?php echo $mensaje ? ' style="display: block;"' : ''; ?>><?php echo $mensaje ? htmlspecialchars($mensaje['texto'], ENT_QUOTES, 'UTF-8') : ''; ?></p>
 
                 <div class="tabla-wrapper">
                     <table>
@@ -89,31 +74,15 @@ try {
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php if (empty($equipos)) { ?>
-                                <tr>
-                                    <td colspan="6">Todavía no hay equipos registrados.</td>
-                                </tr>
-                            <?php } ?>
-                            <?php foreach ($equipos as $equipo) { ?>
-                                <tr>
-                                    <td><a class="tabla-enlace" href="detalle-equipo.php?id=<?php echo (int) $equipo['id_equipo']; ?>"><?php echo htmlspecialchars($equipo['id_equipo']); ?></a></td>
-                                    <td><?php echo htmlspecialchars($equipo['nombre_equipo']); ?></td>
-                                    <td><?php echo htmlspecialchars(isset($equipo['descripcion']) ? $equipo['descripcion'] : ''); ?></td>
-                                    <td><?php echo htmlspecialchars($equipo['nombre_salon']); ?></td>
-                                    <td><?php echo htmlspecialchars($equipo['estado_equipo']); ?></td>
-                                    <td class="acciones">
-                                        <a class="btn-editar" href="detalle-equipo.php?id=<?php echo (int) $equipo['id_equipo']; ?>&amp;modo=editar">Editar</a>
-                                    </td>
-                                </tr>
-                            <?php } ?>
+                        <tbody id="lista-equipos" data-csrf="<?php echo htmlspecialchars(Sesion::tokenApi(), ENT_QUOTES, 'UTF-8'); ?>">
+                            <tr><td colspan="6">Cargando equipos...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </section>
         </main>
     </div>
-    <script src="../../js/fila-clickeable.js"></script>
+    <script src="../../js/inventario/inventario.js"></script>
 </body>
 
 </html>

@@ -76,18 +76,28 @@ class Sesion
 
     public static function tokenCancelarTicket()
     {
+        return self::tokenApi();
+    }
+
+    public static function tokenApi()
+    {
         self::iniciar();
-        if (empty($_SESSION['csrf_cancelar_ticket'])) {
-            $_SESSION['csrf_cancelar_ticket'] = bin2hex(random_bytes(32));
+        if (empty($_SESSION['csrf_api'])) {
+            $_SESSION['csrf_api'] = bin2hex(random_bytes(32));
         }
-        return $_SESSION['csrf_cancelar_ticket'];
+        return $_SESSION['csrf_api'];
     }
 
     public static function verificarTokenCancelarTicket($token)
     {
+        return self::verificarTokenApi($token);
+    }
+
+    public static function verificarTokenApi($token)
+    {
         self::iniciar();
-        return isset($_SESSION['csrf_cancelar_ticket'])
+        return isset($_SESSION['csrf_api'])
             && is_string($token)
-            && hash_equals($_SESSION['csrf_cancelar_ticket'], $token);
+            && hash_equals($_SESSION['csrf_api'], $token);
     }
 }
