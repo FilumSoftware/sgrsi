@@ -166,3 +166,11 @@ INSERT INTO detalle_uso (id_uso, id_equipo, nombre_alumno) VALUES
 (3,  2, 'Matías Cabrera'),
 (3,  3, 'Agustina Rossi'),
 (3,  4, 'Bruno Silveira');
+
+INSERT INTO prestamo (id_prestamo, id_equipo, ci_solicitante, ci_entrega,
+                      fecha_hora_prestamo, fecha_devolucion_prevista,
+                      fecha_hora_devolucion, ci_recepcion, observaciones) VALUES
+(1, 1, '48219073', '39482156', '2026-10-01 09:00:00', '2026-10-08',
+ '2026-10-07 15:30:00', '39482156', 'Devuelto en buen estado'),
+(2, 6, '51730864', '44905381', '2026-10-20 14:00:00', '2026-11-05',
+ NULL, NULL, 'Uso temporal para una exposición');

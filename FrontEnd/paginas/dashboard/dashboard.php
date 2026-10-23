@@ -63,6 +63,7 @@ function v($texto)
                 <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php">Sala de informática</a></li>
                 <?php if (ControlAcceso::puedeAtender()) { ?>
                     <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
+                    <li class="sidebar-item"><a href="../prestamos/prestamos.php">Préstamos</a></li>
                 <?php } ?>
                 <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php">Mesa de Ayuda</a></li>
                 <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php">Solicitudes</a></li>

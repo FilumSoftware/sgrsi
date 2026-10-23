@@ -61,6 +61,7 @@ try {
                     <ul>
                         <li class="topbar-item"><a href="nuevo-equipo.php">Registro de equipos</a></li>
                         <li class="topbar-item activo">Equipos</li>
+                        <li class="topbar-item"><a href="../prestamos/prestamos.php">Préstamos</a></li>
                     </ul>
                 </nav>
                 <div class="topbar-logo">

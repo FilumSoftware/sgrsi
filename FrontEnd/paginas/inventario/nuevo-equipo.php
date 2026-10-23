@@ -100,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <ul>
                         <li class="topbar-item activo">Registro de equipos</li>
                         <li class="topbar-item"><a href="inventario.php">Equipos</a></li>
+                        <li class="topbar-item"><a href="../prestamos/prestamos.php">Préstamos</a></li>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
