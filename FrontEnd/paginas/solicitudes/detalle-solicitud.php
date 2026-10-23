@@ -1,19 +1,16 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorSolicitudes.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
-require_once __DIR__ . '/../../../BackEnd/dao/SolicitudDAO.php';
-require_once __DIR__ . '/../../../BackEnd/dao/SalonDAO.php';
-require_once __DIR__ . '/../../../BackEnd/dao/UsuarioDAO.php';
 require_once __DIR__ . '/../../../BackEnd/models/Solicitud.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
+$gestor = new GestorSolicitudes();
+
 $motivoMinimo = 10;
 
-$solicitudDAO = new SolicitudDAO();
-$salonDAO     = new SalonDAO();
-$usuarioDAO   = new UsuarioDAO();
 
 $id = '';
 
@@ -29,7 +26,7 @@ if ($id === '') {
 }
 
 try {
-    $fila = $solicitudDAO->obtenerPorId($id);
+    $fila = ResultadoGestion::valor($gestor->obtenerPorId($id));
 } catch (Exception $e) {
     error_log('SGRSI detalle-solicitud.php obtenerPorId: ' . $e->getMessage());
     header('Location: solicitudes.php?aviso=error');
@@ -75,8 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 try {
-    $salones  = $salonDAO->obtenerTodos();
-    $tecnicos = $usuarioDAO->obtenerTecnicos();
+    $salones  = ResultadoGestion::valor($gestor->obtenerSalones());
+    $tecnicos = ResultadoGestion::valor($gestor->obtenerTecnicos());
 } catch (Exception $e) {
     error_log('SGRSI detalle-solicitud.php listas: ' . $e->getMessage());
     $salones  = [];
@@ -149,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $fila['id_solicitud']
             );
 
-            $solicitudDAO->actualizar($solicitud);
+            ResultadoGestion::valor($gestor->actualizar($solicitud));
 
             header('Location: solicitudes.php?aviso=guardada');
             exit;

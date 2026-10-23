@@ -1,15 +1,16 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
-require_once __DIR__ . '/../../../BackEnd/dao/UsuarioDAO.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorUsuarios.php';
 require_once __DIR__ . '/../../../BackEnd/models/Usuario.php';
 
 ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
 
+$gestor = new GestorUsuarios();
+
 $rolesValidos = ['Solicitante', 'Asistente', 'Coordinador'];
 $largoMinimoClave = 8;
 
-$usuarioDAO = new UsuarioDAO();
 
 $errores = [];
 $valores = ['ci' => '', 'nombre' => '', 'rol' => 'Solicitante'];
@@ -47,11 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errores)) {
         try {
-            if ($usuarioDAO->obtenerPorCi($valores['ci'])) {
+            if (ResultadoGestion::valor($gestor->obtenerPorCi($valores['ci']))) {
                 $errores['ci'] = 'Ya hay una cuenta registrada con esa cédula.';
             } else {
                 $usuario = new Usuario($valores['ci'], $valores['nombre'], $valores['rol'], 'Activa');
-                $usuarioDAO->insertar($usuario, $clave);
+                ResultadoGestion::valor($gestor->insertar($usuario, $clave));
 
                 header('Location: usuarios.php?aviso=creada');
                 exit;

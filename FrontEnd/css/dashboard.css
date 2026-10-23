@@ -83,3 +83,38 @@
         grid-template-columns: repeat(4, 1fr);
     }
 }
+
+.metricas-extendidas {
+    margin-top: 30px;
+}
+
+.metricas-encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.metricas-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 16px;
+}
+
+.metrica-nota {
+    color: var(--color-texto-suave);
+    font-size: 13px;
+}
+
+.metrica-promedio {
+    margin-top: 20px;
+    font-size: 17px;
+}
+
+@media (min-width: 1024px) {
+    .metricas-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

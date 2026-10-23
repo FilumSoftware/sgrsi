@@ -1,11 +1,12 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
-require_once __DIR__ . '/../../../BackEnd/dao/EquipoDAO.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorInventario.php';
 
 ControlAcceso::exigirRol(['Asistente', 'Coordinador'], '../../../index.php');
 
-$equipoDAO = new EquipoDAO();
+$gestor = new GestorInventario();
+
 $mensaje   = null;
 
 if (isset($_GET['ok']) && $_GET['ok'] === '2') {
@@ -15,7 +16,7 @@ if (isset($_GET['ok']) && $_GET['ok'] === '2') {
 }
 
 try {
-    $equipos = $equipoDAO->obtenerTodos();
+    $equipos = ResultadoGestion::valor($gestor->obtenerTodos());
 } catch (Exception $e) {
     error_log('SGRSI inventario.php: ' . $e->getMessage());
     $mensaje = ['tipo' => 'error', 'texto' => 'No se pudo cargar el listado de equipos. Intentá de nuevo en unos minutos.'];

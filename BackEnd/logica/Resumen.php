@@ -65,6 +65,35 @@ class Resumen
         return $ultimos;
     }
 
+    public function metricasExtendidas()
+    {
+        $porMes = [];
+        foreach ($this->solicitudDAO->solicitudesPorMes() as $fila) {
+            $porMes[$fila['periodo']] = (int) $fila['cantidad'];
+        }
+
+        $meses = [];
+        $mesActual = new DateTimeImmutable('first day of this month');
+        for ($i = 5; $i >= 0; $i--) {
+            $periodo = $mesActual->modify('-' . $i . ' months')->format('Y-m');
+            $meses[] = ['periodo' => $periodo,
+                        'cantidad' => isset($porMes[$periodo]) ? $porMes[$periodo] : 0];
+        }
+
+        $equipos = [];
+        foreach ($this->ticketDAO->equiposMasFallados() as $fila) {
+            $fila['id_equipo'] = (int) $fila['id_equipo'];
+            $fila['total_fallas'] = (int) $fila['total_fallas'];
+            $equipos[] = $fila;
+        }
+
+        return [
+            'equipos_mas_fallados' => $equipos,
+            'tiempo_promedio_resolucion_horas' => $this->ticketDAO->tiempoPromedioResolucion(),
+            'solicitudes_por_mes' => $meses,
+        ];
+    }
+
     private function sumar($filas, $columna, $estados)
     {
         $total = 0;

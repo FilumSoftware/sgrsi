@@ -1,15 +1,16 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
-require_once __DIR__ . '/../../../BackEnd/dao/UsuarioDAO.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorUsuarios.php';
 require_once __DIR__ . '/../../../BackEnd/models/Usuario.php';
 
 ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
 
+$gestor = new GestorUsuarios();
+
 $rolesValidos = ['Solicitante', 'Asistente', 'Coordinador'];
 $estadosValidos = ['Activa', 'Inactiva'];
 
-$usuarioDAO = new UsuarioDAO();
 
 $ci = '';
 
@@ -25,7 +26,7 @@ if ($ci === '') {
 }
 
 try {
-    $fila = $usuarioDAO->obtenerPorCi($ci);
+    $fila = ResultadoGestion::valor($gestor->obtenerPorCi($ci));
 } catch (Exception $e) {
     error_log('SGRSI detalle-usuario.php obtenerPorCi: ' . $e->getMessage());
     header('Location: usuarios.php?aviso=error');
@@ -73,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errores)) {
         try {
             $usuario = new Usuario($ci, $valores['nombre'], $valores['rol'], $valores['estado']);
-            $usuarioDAO->actualizar($usuario);
+            ResultadoGestion::valor($gestor->actualizar($usuario));
 
             header('Location: usuarios.php?aviso=guardada');
             exit;

@@ -1,21 +1,20 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
-require_once __DIR__ . '/../../../BackEnd/dao/EquipoDAO.php';
-require_once __DIR__ . '/../../../BackEnd/dao/SalonDAO.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorInventario.php';
 require_once __DIR__ . '/../../../BackEnd/models/Equipo.php';
 
 ControlAcceso::exigirRol(['Asistente', 'Coordinador'], '../../../index.php');
 
+$gestor = new GestorInventario();
 
-$salonDAO  = new SalonDAO();
-$equipoDAO = new EquipoDAO();
+
 
 $errores = [];
 $valores = ['nombre' => '', 'salon' => '', 'extras' => ''];
 
 try {
-    $salones = $salonDAO->obtenerTodos();
+    $salones = ResultadoGestion::valor($gestor->obtenerSalones());
 } catch (Exception $e) {
     error_log('SGRSI nuevo-equipo.php: ' . $e->getMessage());
     $salones = [];
@@ -51,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $valores['salon']
             );
 
-            $equipoDAO->insertar($equipo);
+            ResultadoGestion::valor($gestor->insertar($equipo));
 
             header('Location: inventario.php?ok=1');
             exit;

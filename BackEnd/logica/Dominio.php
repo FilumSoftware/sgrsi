@@ -2,7 +2,7 @@
 
 class Dominio
 {
-    const ESTADOS_TICKET    = ['Pendiente', 'En proceso', 'Resuelto'];
+    const ESTADOS_TICKET    = ['Pendiente', 'En proceso', 'Resuelto', 'Cancelado'];
     const ESTADOS_SOLICITUD = ['Pendiente', 'En proceso', 'Resuelta'];
     const PRIORIDADES       = ['Urgente', 'Prioritario', 'Normal'];
     const TURNOS            = ['Matutino', 'Vespertino', 'Nocturno'];
@@ -36,6 +36,10 @@ class Dominio
 
     public static function claseDelBadge($estado)
     {
+        if ($estado === 'Cancelado') {
+            return 'bg-secondary';
+        }
+
         if ($estado === 'Resuelto' || $estado === 'Resuelta') {
             return 'bg-success';
         }

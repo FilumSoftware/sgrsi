@@ -1,21 +1,16 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorTickets.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
-require_once __DIR__ . '/../../../BackEnd/dao/TicketDAO.php';
-require_once __DIR__ . '/../../../BackEnd/dao/SalonDAO.php';
-require_once __DIR__ . '/../../../BackEnd/dao/EquipoDAO.php';
-require_once __DIR__ . '/../../../BackEnd/dao/UsuarioDAO.php';
 require_once __DIR__ . '/../../../BackEnd/models/Ticket.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
+$gestor = new GestorTickets();
+
 $motivoMinimo = 10;
 
-$ticketDAO  = new TicketDAO();
-$salonDAO   = new SalonDAO();
-$equipoDAO  = new EquipoDAO();
-$usuarioDAO = new UsuarioDAO();
 
 $id = '';
 
@@ -31,7 +26,7 @@ if ($id === '') {
 }
 
 try {
-    $fila = $ticketDAO->obtenerPorId($id);
+    $fila = ResultadoGestion::valor($gestor->obtenerPorId($id));
 } catch (Exception $e) {
     error_log('SGRSI detalle-ticket.php obtenerPorId: ' . $e->getMessage());
     header('Location: mesa-de-ayuda.php?aviso=error');
@@ -53,7 +48,10 @@ if (!$puedeAtender && $fila['ci_solicitante'] !== Sesion::ci()) {
 $modoVer = $_SERVER['REQUEST_METHOD'] !== 'POST'
     && (!isset($_GET['modo']) || $_GET['modo'] !== 'editar');
 
-$editable = $puedeAtender && !$modoVer;
+$editable = $puedeAtender && !$modoVer && $fila['estado_ticket'] !== 'Cancelado';
+$puedeCancelar = $fila['ci_solicitante'] === Sesion::ci()
+    && $fila['estado_ticket'] === 'Pendiente'
+    && empty($fila['ci_responsable']);
 
 $errores = [];
 $valores = [
@@ -81,9 +79,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 try {
-    $salones = $salonDAO->obtenerTodos();
-    $equipos = $valores['salon'] !== '' ? $equipoDAO->obtenerPorSalon($valores['salon']) : [];
-    $tecnicos = $usuarioDAO->obtenerTecnicos();
+    $salones = ResultadoGestion::valor($gestor->obtenerSalones());
+    $equipos = $valores['salon'] !== '' ? ResultadoGestion::valor($gestor->obtenerEquiposPorSalon($valores['salon'])) : [];
+    $tecnicos = ResultadoGestion::valor($gestor->obtenerTecnicos());
 } catch (Exception $e) {
     error_log('SGRSI detalle-ticket.php listas: ' . $e->getMessage());
     $salones  = [];
@@ -93,6 +91,10 @@ try {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['accion']) ? $_POST['accion'] : '') === 'guardar') {
+
+    if ($fila['estado_ticket'] === 'Cancelado') {
+        $errores['estado'] = 'Un ticket cancelado no puede modificarse.';
+    }
 
     $nombresSalon = [];
 
@@ -122,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['accion']) ? $_POST['
         $errores['prioridad'] = 'Elegí una prioridad válida de la lista.';
     }
 
-    if (!Dominio::esEstadoTicket($valores['estado'])) {
+    if (!Dominio::esEstadoTicket($valores['estado']) || $valores['estado'] === 'Cancelado') {
         $errores['estado'] = 'Elegí un estado válido de la lista.';
     }
 
@@ -174,13 +176,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['accion']) ? $_POST['
                 $fila['id_ticket']
             );
 
-            $ticketDAO->actualizar($ticket);
-
-            header('Location: mesa-de-ayuda.php?aviso=guardado');
-            exit;
+            if (ResultadoGestion::valor($gestor->actualizar($ticket))) {
+                header('Location: mesa-de-ayuda.php?aviso=guardado');
+                exit;
+            }
+            $errores['general'] = 'El ticket cambió mientras lo editabas. Volvé a abrirlo antes de guardar.';
         } catch (Exception $e) {
             error_log('SGRSI detalle-ticket.php actualizar: ' . $e->getMessage());
-            $errores['general'] = 'No se pudieron guardar los cambios. Intentá de nuevo en unos minutos.';
+            $errores['general'] = $e->getCode() === 409
+                ? 'El ticket cambió mientras lo editabas. Volvé a abrirlo antes de guardar.'
+                : 'No se pudieron guardar los cambios. Intentá de nuevo en unos minutos.';
         }
     }
 }
@@ -313,6 +318,7 @@ function claseError($errores, $campo)
                         <label for="estado">Estado</label>
                         <select name="estado" id="estado"<?php echo $editable ? '' : ' disabled'; ?>>
                             <?php foreach (Dominio::ESTADOS_TICKET as $estado) { ?>
+                                <?php if ($estado === 'Cancelado' && $fila['estado_ticket'] !== 'Cancelado') { continue; } ?>
                                 <option value="<?php echo v($estado); ?>"<?php echo $valores['estado'] === $estado ? ' selected' : ''; ?>><?php echo v($estado); ?></option>
                             <?php } ?>
                         </select>
@@ -344,11 +350,18 @@ function claseError($errores, $campo)
 
                     <?php if ($editable) { ?>
                         <button type="submit" id="btn-enviar" name="accion" value="guardar">Guardar cambios</button>
-                    <?php } elseif ($puedeAtender) { ?>
+                    <?php } elseif ($puedeAtender && $fila['estado_ticket'] !== 'Cancelado') { ?>
                         <a class="btn-editar-form" href="detalle-ticket.php?id=<?php echo urlencode($id); ?>&amp;modo=editar">Editar</a>
                     <?php } ?>
 
                 </form>
+
+                <?php if ($puedeCancelar) { ?>
+                    <div class="form-grupo">
+                        <button type="button" id="btn-cancelar-ticket" class="btn-eliminar" data-id="<?php echo v($fila['id_ticket']); ?>" data-csrf="<?php echo v(Sesion::tokenCancelarTicket()); ?>">Cancelar este ticket</button>
+                        <p id="resultado-cancelacion" class="error-mensaje" role="status" aria-live="polite"></p>
+                    </div>
+                <?php } ?>
             </section>
         </main>
     </div>

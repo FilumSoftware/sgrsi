@@ -1,16 +1,15 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
-require_once __DIR__ . '/../../../BackEnd/dao/EquipoDAO.php';
-require_once __DIR__ . '/../../../BackEnd/dao/SalonDAO.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorInventario.php';
 require_once __DIR__ . '/../../../BackEnd/models/Equipo.php';
 
 ControlAcceso::exigirRol(['Asistente', 'Coordinador'], '../../../index.php');
 
+$gestor = new GestorInventario();
+
 $estadosValidos = ['Operativo', 'En reparación', 'En trámite de baja', 'De baja'];
 
-$salonDAO  = new SalonDAO();
-$equipoDAO = new EquipoDAO();
 
 $idEquipo = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
@@ -25,7 +24,7 @@ $modoVer = $_SERVER['REQUEST_METHOD'] !== 'POST'
     && (!isset($_GET['modo']) || $_GET['modo'] !== 'editar');
 
 try {
-    $salones = $salonDAO->obtenerTodos();
+    $salones = ResultadoGestion::valor($gestor->obtenerSalones());
 } catch (Exception $e) {
     error_log('SGRSI detalle-equipo.php: ' . $e->getMessage());
     $salones = [];
@@ -33,7 +32,7 @@ try {
 }
 
 try {
-    $equipoActual = $equipoDAO->obtenerPorId($idEquipo);
+    $equipoActual = ResultadoGestion::valor($gestor->obtenerPorId($idEquipo));
 } catch (Exception $e) {
     error_log('SGRSI detalle-equipo.php: ' . $e->getMessage());
     $equipoActual = false;
@@ -88,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $idEquipo
             );
 
-            $equipoDAO->actualizar($equipo);
+            ResultadoGestion::valor($gestor->actualizar($equipo));
 
             header('Location: inventario.php?ok=2');
             exit;

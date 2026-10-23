@@ -1,12 +1,13 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorSolicitudes.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
-require_once __DIR__ . '/../../../BackEnd/dao/SolicitudDAO.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
-$solicitudDAO = new SolicitudDAO();
+$gestor = new GestorSolicitudes();
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -18,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = trim((string) (isset($_POST['id']) ? $_POST['id'] : ''));
 
     try {
-        $solicitudDAO->eliminar($id);
+        ResultadoGestion::valor($gestor->eliminar($id));
         header('Location: solicitudes.php?aviso=eliminada');
         exit;
     } catch (Exception $e) {
@@ -47,9 +48,9 @@ if (isset($avisos[$aviso])) {
 
 try {
     if (ControlAcceso::puedeAtender()) {
-        $solicitudes = $solicitudDAO->obtenerTodos();
+        $solicitudes = ResultadoGestion::valor($gestor->obtenerTodos());
     } else {
-        $solicitudes = $solicitudDAO->obtenerPorSolicitante(Sesion::ci());
+        $solicitudes = ResultadoGestion::valor($gestor->obtenerPorSolicitante(Sesion::ci()));
     }
 } catch (Exception $e) {
     error_log('SGRSI solicitudes.php listar: ' . $e->getMessage());
