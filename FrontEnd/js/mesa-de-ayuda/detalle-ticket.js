@@ -3,6 +3,8 @@ const inputMotivo = document.getElementById('motivo');
 const salon = document.getElementById('salon');
 const equipo = document.getElementById('equipo');
 const resultadoGuardado = document.getElementById('resultado-guardado');
+const idTicket = formulario.elements.namedItem('id').value;
+let formularioModificado = false;
 
 const MOTIVO_MINIMO = 10;
 
@@ -20,6 +22,50 @@ function mostrarResultadoDetalle(mensaje, exito) {
     resultadoGuardado.classList.toggle('mensaje-exito', exito);
     resultadoGuardado.style.display = 'block';
 }
+
+formulario.addEventListener('input', function () { formularioModificado = true; });
+formulario.addEventListener('change', function () { formularioModificado = true; });
+
+fetch('../../../BackEnd/api/tickets.php?id=' + encodeURIComponent(idTicket), {
+    credentials: 'same-origin',
+    headers: { 'Accept': 'application/json' }
+})
+    .then(leerRespuestaDetalle)
+    .then(function (datos) {
+        if (formularioModificado) return;
+        const ticket = datos.data;
+        document.getElementById('fecha').value = ticket.fecha_hora_alta.slice(0, 10);
+        document.getElementById('hora').value = ticket.fecha_hora_alta.slice(11, 16);
+        document.getElementById('solicitante').value = ticket.nombre_solicitante;
+        salon.value = ticket.nombre_salon;
+        if (!Array.from(equipo.options).some(function (opcion) { return opcion.value === String(ticket.id_equipo); })) {
+            equipo.add(new Option(ticket.nombre_equipo, ticket.id_equipo));
+        }
+        equipo.value = ticket.id_equipo;
+        document.getElementById('defecto').value = ticket.tipo_de_defecto;
+        document.getElementById('prioridad').value = ticket.prioridad;
+        const estado = document.getElementById('estado');
+        if (ticket.estado_ticket === 'Cancelado' && !Array.from(estado.options).some(function (opcion) { return opcion.value === 'Cancelado'; })) {
+            estado.add(new Option('Cancelado', 'Cancelado'));
+        }
+        estado.value = ticket.estado_ticket;
+        document.getElementById('responsable').value = ticket.ci_responsable || '';
+        inputMotivo.value = ticket.descripcion;
+        document.getElementById('diagnostico').value = ticket.diagnostico || '';
+        document.getElementById('solucion').value = ticket.solucion || '';
+        const cancelar = document.getElementById('btn-cancelar-ticket');
+        if (cancelar && (ticket.estado_ticket !== 'Pendiente' || ticket.ci_responsable)) cancelar.remove();
+        if (ticket.estado_ticket === 'Cancelado') {
+            formulario.querySelectorAll('input:not([type="hidden"]), select, textarea, button').forEach(function (control) {
+                control.disabled = true;
+            });
+            const editar = formulario.querySelector('.btn-editar-form');
+            if (editar) editar.remove();
+        }
+    })
+    .catch(function (error) {
+        mostrarResultadoDetalle(error.message, false);
+    });
 
 if (!inputMotivo.disabled) {
     salon.addEventListener('change', function () {
@@ -56,7 +102,7 @@ if (!inputMotivo.disabled) {
 
         const boton = document.getElementById('btn-enviar');
         boton.disabled = true;
-        fetch('../../../BackEnd/api/tickets.php?id=' + encodeURIComponent(formulario.elements.namedItem('id').value), {
+        fetch('../../../BackEnd/api/tickets.php?id=' + encodeURIComponent(idTicket), {
             method: 'PUT',
             credentials: 'same-origin',
             headers: {
