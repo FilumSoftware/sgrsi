@@ -84,8 +84,9 @@ function v($texto)
                 <?php if (!empty($errores['general'])) { ?>
                     <p class="error-mensaje" style="display: block;"><?php echo v($errores['general']); ?></p>
                 <?php } ?>
+                <p id="resultado-usuario" class="error-mensaje" role="status" aria-live="polite"></p>
 
-                <form id="form-usuario" action="nuevo-usuario.php" method="post">
+                <form id="form-usuario" action="nuevo-usuario.php" method="post" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
                     <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                     <fieldset>
                         <div class="form-grupo">

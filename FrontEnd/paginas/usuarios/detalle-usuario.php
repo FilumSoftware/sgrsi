@@ -126,8 +126,9 @@ function v($texto)
                 <?php if ($esPropia) { ?>
                     <p class="error-mensaje" style="display: block;">Es tu propia cuenta: solo podés cambiar el nombre.</p>
                 <?php } ?>
+                <p id="resultado-guardado" class="error-mensaje" role="status" aria-live="polite"></p>
 
-                <form id="form-detalle-usuario" action="detalle-usuario.php" method="post">
+                <form id="form-detalle-usuario" action="detalle-usuario.php" method="post" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
                     <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                     <fieldset<?php echo $modoVer ? ' disabled' : ''; ?>>
                         <input type="hidden" name="ci" value="<?php echo v($ci); ?>">
