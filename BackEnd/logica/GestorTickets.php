@@ -83,7 +83,11 @@ class GestorTickets
         $error = $this->validar($ticket);
         if ($error) return $error;
         if ($ticket->getEstadoTicket() !== 'Pendiente') return ResultadoGestion::fallo(400, 'Un ticket nuevo debe quedar pendiente.');
-        return ResultadoGestion::ejecutar('tickets crear', function () use ($ticket) { return (new TicketDAO())->insertar($ticket); });
+        $resultado = ResultadoGestion::ejecutar('tickets crear', function () use ($ticket) { return (new TicketDAO())->insertar($ticket); });
+        if (!$resultado['ok']) return $resultado;
+        if ($resultado['datos'] === null) return ResultadoGestion::fallo(400, 'Equipo inválido.');
+        if ($resultado['datos'] === false) return ResultadoGestion::fallo(409, 'Ya hay un ticket abierto para esa PC.');
+        return $resultado;
     }
 
     public function actualizar(Ticket $ticket)

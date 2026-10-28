@@ -63,22 +63,48 @@ class TicketDAO
 
     public function insertar(Ticket $ticket)
     {
-        $stmt = $this->pdo->prepare(
-            'INSERT INTO ticket (fecha_hora_alta, ci_solicitante, id_equipo, tipo_de_defecto,
-                                 descripcion, prioridad, estado_ticket)
-             VALUES (:alta, :solicitante, :equipo, :defecto, :descripcion, :prioridad, :estado)'
-        );
-        $stmt->execute([
-            ':alta'        => $ticket->getFechaHoraAlta(),
-            ':solicitante' => $ticket->getCiSolicitante(),
-            ':equipo'      => $ticket->getIdEquipo(),
-            ':defecto'     => $ticket->getTipoDeDefecto(),
-            ':descripcion' => $ticket->getDescripcion(),
-            ':prioridad'   => $ticket->getPrioridad(),
-            ':estado'      => $ticket->getEstadoTicket()
-        ]);
+        $this->pdo->beginTransaction();
+        try {
+            // El bloqueo del equipo serializa altas simultáneas para la misma PC.
+            $equipo = $this->pdo->prepare('SELECT id_equipo FROM equipo WHERE id_equipo = :id FOR UPDATE');
+            $equipo->execute([':id' => $ticket->getIdEquipo()]);
+            if ($equipo->fetchColumn() === false) {
+                $this->pdo->rollBack();
+                return null;
+            }
 
-        return $this->pdo->lastInsertId();
+            $abierto = $this->pdo->prepare(
+                "SELECT id_ticket FROM ticket
+                  WHERE id_equipo = :equipo AND estado_ticket IN ('Pendiente', 'En proceso')
+                  LIMIT 1"
+            );
+            $abierto->execute([':equipo' => $ticket->getIdEquipo()]);
+            if ($abierto->fetchColumn() !== false) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $stmt = $this->pdo->prepare(
+                'INSERT INTO ticket (fecha_hora_alta, ci_solicitante, id_equipo, tipo_de_defecto,
+                                     descripcion, prioridad, estado_ticket)
+                 VALUES (:alta, :solicitante, :equipo, :defecto, :descripcion, :prioridad, :estado)'
+            );
+            $stmt->execute([
+                ':alta'        => $ticket->getFechaHoraAlta(),
+                ':solicitante' => $ticket->getCiSolicitante(),
+                ':equipo'      => $ticket->getIdEquipo(),
+                ':defecto'     => $ticket->getTipoDeDefecto(),
+                ':descripcion' => $ticket->getDescripcion(),
+                ':prioridad'   => $ticket->getPrioridad(),
+                ':estado'      => $ticket->getEstadoTicket()
+            ]);
+            $id = $this->pdo->lastInsertId();
+            $this->pdo->commit();
+            return $id;
+        } catch (Throwable $e) {
+            if ($this->pdo->inTransaction()) $this->pdo->rollBack();
+            throw $e;
+        }
     }
 
     public function actualizar(Ticket $ticket)
