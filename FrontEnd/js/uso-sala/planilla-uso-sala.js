@@ -8,6 +8,7 @@ const resultadoUsoSala = document.getElementById('resultado-uso-sala');
 const idRegistro = formulario.elements.namedItem('id');
 let botonAgregarPc = document.getElementById('agregar-pc');
 let cargaSalon = 0;
+let formularioModificado = false;
 
 function leerRespuestaUsoSala(respuesta) {
     return respuesta.json().then(function (datos) {
@@ -113,6 +114,58 @@ salon.addEventListener('change', function () {
             mostrarResultadoUsoSala(error.message, false);
         });
 });
+
+if (idRegistro) {
+    formulario.addEventListener('input', function () { formularioModificado = true; });
+    formulario.addEventListener('change', function () { formularioModificado = true; });
+
+    fetch('../../../BackEnd/api/uso-sala.php?id=' + encodeURIComponent(idRegistro.value), {
+        credentials: 'same-origin',
+        headers: { 'Accept': 'application/json' }
+    })
+        .then(leerRespuestaUsoSala)
+        .then(function (datos) {
+            if (formularioModificado) return null;
+            const uso = datos.data;
+            return fetch('../../../BackEnd/api/catalogos.php?tipo=equipos&salon=' + encodeURIComponent(uso.nombre_salon), {
+                credentials: 'same-origin'
+            })
+                .then(leerRespuestaUsoSala)
+                .then(function (catalogo) { return { uso: uso, equipos: catalogo.data }; });
+        })
+        .then(function (carga) {
+            if (!carga || formularioModificado) return;
+            const uso = carga.uso;
+            document.getElementById('docente').value = uso.nombre_docente;
+            document.getElementById('fecha').value = uso.fecha;
+            horaEntrada.value = uso.hora_inicio.slice(0, 5);
+            horaSalida.value = uso.hora_fin.slice(0, 5);
+            document.getElementById('asignatura').value = uso.asignatura;
+            document.getElementById('grupo').value = uso.grupo;
+            document.getElementById('turno').value = uso.turno;
+            salon.value = uso.nombre_salon;
+
+            const equipos = carga.equipos.slice();
+            uso.equipos.forEach(function (asignado) {
+                if (!equipos.some(function (equipo) { return String(equipo.id_equipo) === String(asignado.id_equipo); })) {
+                    equipos.push(asignado);
+                }
+            });
+            mostrarEquipos(equipos);
+            const filas = listaPcs.querySelectorAll('.fila-pc');
+            uso.equipos.forEach(function (asignado, indice) {
+                const fila = filas[indice];
+                if (!fila) return;
+                fila.classList.remove('oculta');
+                fila.querySelector('select').value = asignado.id_equipo;
+                fila.querySelector('input').value = asignado.nombre_alumno || '';
+            });
+            actualizarBotonAgregar();
+        })
+        .catch(function (error) {
+            mostrarResultadoUsoSala(error.message, false);
+        });
+}
 
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
