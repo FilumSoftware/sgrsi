@@ -125,8 +125,9 @@ function claseError($errores, $campo)
                 <?php if (!empty($errores['general'])) { ?>
                     <p class="error-mensaje" style="display: block;"><?php echo v($errores['general']); ?></p>
                 <?php } ?>
+                <p id="resultado-uso-sala" class="error-mensaje" role="status" aria-live="polite"></p>
 
-                <form id="form-uso-sala" action="planilla-uso-sala.php" method="post">
+                <form id="form-uso-sala" action="planilla-uso-sala.php" method="post" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
                     <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                     <div class="form-grupo">
                         <label for="fecha">Fecha</label>
@@ -169,7 +170,7 @@ function claseError($errores, $campo)
                     </div>
                     <div class="form-grupo">
                         <label for="salon">Salón</label>
-                        <select name="salon" id="salon" required onchange="this.form.submit()">
+                        <select name="salon" id="salon" required>
                             <option value="">Elija una opción</option>
                             <?php foreach ($salones as $salon) { ?>
                                 <option value="<?php echo v($salon['nombre_salon']); ?>"<?php echo $valores['salon'] === $salon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($salon['nombre_salon']); ?></option>

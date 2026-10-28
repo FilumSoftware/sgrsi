@@ -6,18 +6,32 @@ require_once __DIR__ . '/../dao/TicketDAO.php';
 require_once __DIR__ . '/../dao/SalonDAO.php';
 require_once __DIR__ . '/../dao/EquipoDAO.php';
 require_once __DIR__ . '/../dao/UsuarioDAO.php';
+require_once __DIR__ . '/../dao/TipoIncidenciaDAO.php';
 
 class GestorTickets
 {
     public function obtenerTodos()
     {
-        return ResultadoGestion::ejecutar('tickets listar', function () { return (new TicketDAO())->obtenerTodos(); });
+        return ResultadoGestion::ejecutar('tickets listar', function () {
+            return $this->agregarPlazos((new TicketDAO())->obtenerTodos());
+        });
     }
 
     public function obtenerPorSolicitante($ci)
     {
         if (!ResultadoGestion::ciValida($ci)) return ResultadoGestion::fallo(400, 'Cédula inválida.');
-        return ResultadoGestion::ejecutar('tickets listar por solicitante', function () use ($ci) { return (new TicketDAO())->obtenerPorSolicitante($ci); });
+        return ResultadoGestion::ejecutar('tickets listar por solicitante', function () use ($ci) {
+            return $this->agregarPlazos((new TicketDAO())->obtenerPorSolicitante($ci));
+        });
+    }
+
+    private function agregarPlazos($filas)
+    {
+        foreach ($filas as &$fila) {
+            $fila['fuera_de_plazo'] = Dominio::ticketFueraDePlazo($fila);
+        }
+        unset($fila);
+        return $filas;
     }
 
     public function obtenerPorId($id)
@@ -66,7 +80,7 @@ class GestorTickets
                 $cierre = $fila['fecha_hora_cierre'] ?? null;
                 if ($cierre === null) $cierre = date('Y-m-d H:i:s', max(time(), strtotime($fila['fecha_hora_alta'])));
             }
-            return $this->actualizar(new Ticket(
+            $ticket = new Ticket(
                 $fila['fecha_hora_alta'], $fila['ci_solicitante'], (int) $equipo,
                 ResultadoGestion::campo($datos, 'defecto'), ResultadoGestion::campo($datos, 'motivo'),
                 ResultadoGestion::campo($datos, 'prioridad'), $estado,
@@ -74,7 +88,9 @@ class GestorTickets
                 ResultadoGestion::campo($datos, 'diagnostico') ?: null,
                 ResultadoGestion::campo($datos, 'solucion') ?: null,
                 $cierre, $fila['id_ticket']
-            ));
+            );
+            $ticket->setDetalleDefecto(ResultadoGestion::campo($datos, 'detalle-defecto'));
+            return $this->actualizar($ticket);
         });
     }
 
@@ -83,7 +99,11 @@ class GestorTickets
         $error = $this->validar($ticket);
         if ($error) return $error;
         if ($ticket->getEstadoTicket() !== 'Pendiente') return ResultadoGestion::fallo(400, 'Un ticket nuevo debe quedar pendiente.');
-        return ResultadoGestion::ejecutar('tickets crear', function () use ($ticket) { return (new TicketDAO())->insertar($ticket); });
+        $resultado = ResultadoGestion::ejecutar('tickets crear', function () use ($ticket) { return (new TicketDAO())->insertar($ticket); });
+        if (!$resultado['ok']) return $resultado;
+        if ($resultado['datos'] === null) return ResultadoGestion::fallo(400, 'Equipo inválido.');
+        if ($resultado['datos'] === false) return ResultadoGestion::fallo(409, 'Ya hay un ticket abierto para esa PC.');
+        return $resultado;
     }
 
     public function actualizar(Ticket $ticket)
@@ -121,17 +141,28 @@ class GestorTickets
     private function validar(Ticket $ticket)
     {
         if (!ResultadoGestion::ciValida($ticket->getCiSolicitante()) || !ResultadoGestion::idValido($ticket->getIdEquipo())) return ResultadoGestion::fallo(400, 'Solicitante o equipo inválido.');
-        if (!Dominio::esTipoDeDefecto($ticket->getTipoDeDefecto()) || !Dominio::esPrioridad($ticket->getPrioridad()) || !Dominio::esEstadoTicket($ticket->getEstadoTicket())) return ResultadoGestion::fallo(400, 'Tipo, prioridad o estado inválido.');
+        if (!Dominio::esPrioridad($ticket->getPrioridad()) || !Dominio::esEstadoTicket($ticket->getEstadoTicket())) return ResultadoGestion::fallo(400, 'Prioridad o estado inválido.');
+        $detalleDefecto = $ticket->getDetalleDefecto();
+        if ($ticket->getTipoDeDefecto() === 'Otros' && ($detalleDefecto === null || mb_strlen($detalleDefecto) < 3 || mb_strlen($detalleDefecto) > 120)) return ResultadoGestion::fallo(400, 'Describí la falla en Otros (3 a 120 caracteres).');
+        if ($ticket->getTipoDeDefecto() !== 'Otros' && $detalleDefecto !== null) return ResultadoGestion::fallo(400, 'El detalle de la falla solo corresponde a Otros.');
         if (strlen(trim((string) $ticket->getDescripcion())) < 10) return ResultadoGestion::fallo(400, 'La descripción debe tener al menos 10 caracteres.');
         if ($ticket->getEstadoTicket() === 'Resuelto' && !ResultadoGestion::ciValida($ticket->getCiResponsable())) return ResultadoGestion::fallo(400, 'Un ticket resuelto requiere responsable.');
         $referencias = ResultadoGestion::ejecutar('tickets validar referencias', function () use ($ticket) {
             $equipo = (new EquipoDAO())->obtenerPorId($ticket->getIdEquipo());
             $responsable = $ticket->getCiResponsable() === null ? null : (new UsuarioDAO())->obtenerPorCi($ticket->getCiResponsable());
-            return [$equipo, $responsable];
+            $tipo = (new TipoIncidenciaDAO())->obtenerPorNombre($ticket->getTipoDeDefecto());
+            $anterior = $tipo && $tipo['estado'] === 'Inactivo' && $ticket->getIdTicket()
+                ? (new TicketDAO())->obtenerPorId($ticket->getIdTicket()) : null;
+            return [$equipo, $responsable, $tipo, $anterior];
         });
         if (!$referencias['ok']) return $referencias;
         if (!$referencias['datos'][0]) return ResultadoGestion::fallo(400, 'Equipo inválido.');
         if ($ticket->getCiResponsable() !== null && (!$referencias['datos'][1] || !in_array($referencias['datos'][1]['tipo_de_usuario'], ['Asistente', 'Coordinador'], true))) return ResultadoGestion::fallo(400, 'Responsable inválido.');
+        $tipo = $referencias['datos'][2];
+        $anterior = $referencias['datos'][3];
+        if (!$tipo || ($tipo['estado'] !== 'Activo' && (!$anterior || $anterior['tipo_de_defecto'] !== $tipo['nombre']))) {
+            return ResultadoGestion::fallo(400, 'Elegí un tipo de incidencia activo.');
+        }
         return null;
     }
 }

@@ -14,7 +14,8 @@ class TicketDAO
 
     private function consultaBase()
     {
-        return 'SELECT t.id_ticket, t.fecha_hora_alta, t.tipo_de_defecto, t.descripcion,
+        return 'SELECT t.id_ticket, t.fecha_hora_alta, t.tipo_de_defecto, t.detalle_defecto, t.descripcion,
+                       TIMESTAMPDIFF(SECOND, t.fecha_hora_alta, NOW()) AS segundos_desde_alta,
                        t.prioridad, t.estado_ticket, t.diagnostico, t.solucion,
                        t.fecha_hora_cierre, t.ci_solicitante, t.ci_responsable,
                        e.id_equipo, e.nombre_equipo, e.nombre_salon,
@@ -63,22 +64,49 @@ class TicketDAO
 
     public function insertar(Ticket $ticket)
     {
-        $stmt = $this->pdo->prepare(
-            'INSERT INTO ticket (fecha_hora_alta, ci_solicitante, id_equipo, tipo_de_defecto,
-                                 descripcion, prioridad, estado_ticket)
-             VALUES (:alta, :solicitante, :equipo, :defecto, :descripcion, :prioridad, :estado)'
-        );
-        $stmt->execute([
-            ':alta'        => $ticket->getFechaHoraAlta(),
-            ':solicitante' => $ticket->getCiSolicitante(),
-            ':equipo'      => $ticket->getIdEquipo(),
-            ':defecto'     => $ticket->getTipoDeDefecto(),
-            ':descripcion' => $ticket->getDescripcion(),
-            ':prioridad'   => $ticket->getPrioridad(),
-            ':estado'      => $ticket->getEstadoTicket()
-        ]);
+        $this->pdo->beginTransaction();
+        try {
+            // El bloqueo del equipo serializa altas simultáneas para la misma PC.
+            $equipo = $this->pdo->prepare('SELECT id_equipo FROM equipo WHERE id_equipo = :id FOR UPDATE');
+            $equipo->execute([':id' => $ticket->getIdEquipo()]);
+            if ($equipo->fetchColumn() === false) {
+                $this->pdo->rollBack();
+                return null;
+            }
 
-        return $this->pdo->lastInsertId();
+            $abierto = $this->pdo->prepare(
+                "SELECT id_ticket FROM ticket
+                  WHERE id_equipo = :equipo AND estado_ticket IN ('Pendiente', 'En proceso')
+                  LIMIT 1"
+            );
+            $abierto->execute([':equipo' => $ticket->getIdEquipo()]);
+            if ($abierto->fetchColumn() !== false) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $stmt = $this->pdo->prepare(
+                'INSERT INTO ticket (fecha_hora_alta, ci_solicitante, id_equipo, tipo_de_defecto,
+                                     detalle_defecto, descripcion, prioridad, estado_ticket)
+                 VALUES (:alta, :solicitante, :equipo, :defecto, :detalle, :descripcion, :prioridad, :estado)'
+            );
+            $stmt->execute([
+                ':alta'        => $ticket->getFechaHoraAlta(),
+                ':solicitante' => $ticket->getCiSolicitante(),
+                ':equipo'      => $ticket->getIdEquipo(),
+                ':defecto'     => $ticket->getTipoDeDefecto(),
+                ':detalle'     => $ticket->getDetalleDefecto(),
+                ':descripcion' => $ticket->getDescripcion(),
+                ':prioridad'   => $ticket->getPrioridad(),
+                ':estado'      => $ticket->getEstadoTicket()
+            ]);
+            $id = $this->pdo->lastInsertId();
+            $this->pdo->commit();
+            return $id;
+        } catch (Throwable $e) {
+            if ($this->pdo->inTransaction()) $this->pdo->rollBack();
+            throw $e;
+        }
     }
 
     public function actualizar(Ticket $ticket)
@@ -87,6 +115,7 @@ class TicketDAO
             "UPDATE ticket
                 SET id_equipo = :equipo,
                     tipo_de_defecto = :defecto,
+                    detalle_defecto = :detalle,
                     descripcion = :descripcion,
                     prioridad = :prioridad,
                     estado_ticket = :estado,
@@ -101,6 +130,7 @@ class TicketDAO
         $stmt->execute([
             ':equipo'      => $ticket->getIdEquipo(),
             ':defecto'     => $ticket->getTipoDeDefecto(),
+            ':detalle'     => $ticket->getDetalleDefecto(),
             ':descripcion' => $ticket->getDescripcion(),
             ':prioridad'   => $ticket->getPrioridad(),
             ':estado'      => $ticket->getEstadoTicket(),

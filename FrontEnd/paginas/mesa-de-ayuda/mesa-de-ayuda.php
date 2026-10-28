@@ -67,6 +67,9 @@ function v($texto)
                     <ul>
                         <li class="topbar-item"><a href="nuevo-ticket.php">Nuevo ticket</a></li>
                         <li class="topbar-item activo">Historial de tickets</li>
+                        <?php if (ControlAcceso::puedeAtender()) { ?>
+                            <li class="topbar-item"><a href="tipos-incidencia.php">Tipos de incidencia</a></li>
+                        <?php } ?>
                     </ul>
                 </nav>
                 <div class="topbar-logo">

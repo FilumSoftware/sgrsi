@@ -223,6 +223,21 @@ tbody tr:hover {
     cursor: pointer;
 }
 
+.fila-ticket-vencido td {
+    background-color: #fff1ee;
+}
+
+.fila-ticket-vencido:hover td {
+    background-color: #ffe4de;
+}
+
+.aviso-plazo-vencido {
+    display: block;
+    margin-top: 4px;
+    color: #9b2616;
+    font-weight: 700;
+}
+
 tbody tr:focus-within {
     outline: 2px solid var(--color-secundario);
     outline-offset: -2px;

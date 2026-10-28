@@ -50,6 +50,9 @@ function v($texto)
                     <ul>
                         <li class="topbar-item activo">Nuevo ticket</li>
                         <li class="topbar-item"><a href="mesa-de-ayuda.php">Historial de tickets</a></li>
+                        <?php if (ControlAcceso::puedeAtender()) { ?>
+                            <li class="topbar-item"><a href="tipos-incidencia.php">Tipos de incidencia</a></li>
+                        <?php } ?>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
@@ -95,11 +98,12 @@ function v($texto)
                         <label for="defecto">Tipo de falla</label>
                         <select name="defecto" id="defecto" required>
                             <option value="">Elija una opción</option>
-                            <?php foreach (Dominio::TIPOS_DE_DEFECTO as $tipo) { ?>
-                                <option value="<?php echo v($tipo); ?>"><?php echo v($tipo); ?></option>
-                            <?php } ?>
                         </select>
                         <p class="error-mensaje" id="error-defecto"></p>
+                    </div>
+                    <div class="form-grupo oculta" id="grupo-detalle-defecto">
+                        <label for="detalle-defecto">Describí la falla</label>
+                        <input type="text" name="detalle-defecto" id="detalle-defecto" maxlength="120" minlength="3">
                     </div>
                     <div class="form-grupo">
                         <label for="prioridad">Prioridad</label>

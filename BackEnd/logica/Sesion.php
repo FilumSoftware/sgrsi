@@ -2,6 +2,8 @@
 
 class Sesion
 {
+    private const LIMITE_INACTIVIDAD = 600;
+
     public static function iniciar()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -17,6 +19,7 @@ class Sesion
         $_SESSION['ci']     = $usuario['ci'];
         $_SESSION['nombre'] = $usuario['nombre_usuario'];
         $_SESSION['rol']    = $usuario['tipo_de_usuario'];
+        $_SESSION['ultima_actividad'] = time();
     }
 
     public static function cerrar()
@@ -39,29 +42,29 @@ class Sesion
     public static function hayUsuario()
     {
         self::iniciar();
-
-        return isset($_SESSION['ci']);
+        if (!isset($_SESSION['ci'])) return false;
+        $ultimaActividad = $_SESSION['ultima_actividad'] ?? null;
+        if (!is_int($ultimaActividad) || time() - $ultimaActividad >= self::LIMITE_INACTIVIDAD) {
+            self::cerrar();
+            return false;
+        }
+        $_SESSION['ultima_actividad'] = time();
+        return true;
     }
 
     public static function ci()
     {
-        self::iniciar();
-
-        return isset($_SESSION['ci']) ? $_SESSION['ci'] : null;
+        return self::hayUsuario() ? $_SESSION['ci'] : null;
     }
 
     public static function nombre()
     {
-        self::iniciar();
-
-        return isset($_SESSION['nombre']) ? $_SESSION['nombre'] : null;
+        return self::hayUsuario() ? $_SESSION['nombre'] : null;
     }
 
     public static function rol()
     {
-        self::iniciar();
-
-        return isset($_SESSION['rol']) ? $_SESSION['rol'] : null;
+        return self::hayUsuario() ? $_SESSION['rol'] : null;
     }
 
     public static function esCoordinador()

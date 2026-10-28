@@ -57,6 +57,16 @@ CREATE TABLE equipo (
 CREATE INDEX idx_equipo_estado ON equipo (estado_equipo);
 
 
+-- tipos de incidencia --------------------------------------------------
+
+CREATE TABLE tipo_incidencia (
+    nombre VARCHAR(80) NOT NULL,
+    estado ENUM('Activo', 'Inactivo') NOT NULL DEFAULT 'Activo',
+
+    CONSTRAINT pk_tipo_incidencia PRIMARY KEY (nombre)
+) ENGINE = InnoDB;
+
+
 -- ticket ---------------------------------------------------------------
 -- No guarda el salón: lo determina el equipo, y duplicarlo rompería 3FN.
 
@@ -65,9 +75,8 @@ CREATE TABLE ticket (
     fecha_hora_alta   DATETIME     NOT NULL,
     ci_solicitante    CHAR(8)      NOT NULL,
     id_equipo         INT UNSIGNED NOT NULL,
-    tipo_de_defecto   ENUM('No enciende', 'Sin imagen', 'Sin red',
-                           'Sin audio', 'Periférico dañado', 'Software',
-                           'Otros') NOT NULL,
+    tipo_de_defecto   VARCHAR(80)  NOT NULL,
+    detalle_defecto   VARCHAR(120) NULL,
     descripcion       VARCHAR(500) NULL,
     prioridad         ENUM('Urgente', 'Prioritario', 'Normal')
                       NOT NULL DEFAULT 'Normal',
@@ -89,6 +98,9 @@ CREATE TABLE ticket (
         ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT fk_ticket_equipo      FOREIGN KEY (id_equipo)
         REFERENCES equipo (id_equipo)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_ticket_tipo        FOREIGN KEY (tipo_de_defecto)
+        REFERENCES tipo_incidencia (nombre)
         ON UPDATE CASCADE ON DELETE RESTRICT,
 
     CONSTRAINT ck_ticket_cierre CHECK (

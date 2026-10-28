@@ -105,6 +105,7 @@ function v($texto)
                         <?php echo v($mensaje['texto']); ?>
                     </p>
                 <?php } ?>
+                <p id="resultado-usuarios" class="error-mensaje" role="status" aria-live="polite"></p>
 
                 <div class="tabla-wrapper">
                     <table>
@@ -117,7 +118,7 @@ function v($texto)
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="lista-usuarios" data-csrf="<?php echo v(Sesion::tokenApi()); ?>" data-ci="<?php echo v(Sesion::ci()); ?>">
                             <?php if (empty($usuarios)) { ?>
                                 <tr>
                                     <td colspan="5">No hay usuarios registrados.</td>
@@ -157,7 +158,6 @@ function v($texto)
         </main>
     </div>
     <script src="../../js/usuarios/usuarios.js"></script>
-    <script src="../../js/fila-clickeable.js"></script>
 </body>
 
 </html>

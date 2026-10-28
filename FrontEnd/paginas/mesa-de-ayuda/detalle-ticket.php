@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/GestorTickets.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorTiposIncidencia.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
@@ -54,6 +55,7 @@ $valores = [
     'salon'       => $fila['nombre_salon'],
     'equipo'      => $fila['id_equipo'],
     'defecto'     => $fila['tipo_de_defecto'],
+    'detalle-defecto' => $fila['detalle_defecto'] ?? '',
     'prioridad'   => $fila['prioridad'],
     'estado'      => $fila['estado_ticket'],
     'responsable' => isset($fila['ci_responsable']) ? $fila['ci_responsable'] : '',
@@ -72,11 +74,13 @@ try {
     $salones = ResultadoGestion::valor($gestor->obtenerSalones());
     $equipos = $valores['salon'] !== '' ? ResultadoGestion::valor($gestor->obtenerEquiposPorSalon($valores['salon'])) : [];
     $tecnicos = ResultadoGestion::valor($gestor->obtenerTecnicos());
+    $tipos = ResultadoGestion::valor((new GestorTiposIncidencia())->obtenerTodos());
 } catch (Exception $e) {
     error_log('SGRSI detalle-ticket.php listas: ' . $e->getMessage());
     $salones  = [];
     $equipos  = [];
     $tecnicos = [];
+    $tipos = [];
     $errores['general'] = 'No se pudieron cargar las listas. Intentá de nuevo en unos minutos.';
 }
 
@@ -145,6 +149,9 @@ function claseError($errores, $campo)
                         <li class="topbar-item"><a href="mesa-de-ayuda.php">Historial de tickets</a></li>
                         <li class="topbar-item"><a href="nuevo-ticket.php">Nuevo ticket</a></li>
                         <li class="topbar-item activo">Detalle de ticket</li>
+                        <?php if (ControlAcceso::puedeAtender()) { ?>
+                            <li class="topbar-item"><a href="tipos-incidencia.php">Tipos de incidencia</a></li>
+                        <?php } ?>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
@@ -203,11 +210,15 @@ function claseError($errores, $campo)
                     <div class="form-grupo">
                         <label for="defecto">Tipo de falla</label>
                         <select name="defecto" id="defecto"<?php echo $editable ? '' : ' disabled'; ?>>
-                            <?php foreach (Dominio::TIPOS_DE_DEFECTO as $tipo) { ?>
-                                <option value="<?php echo v($tipo); ?>"<?php echo $valores['defecto'] === $tipo ? ' selected' : ''; ?>><?php echo v($tipo); ?></option>
+                            <?php foreach ($tipos as $tipo) { ?>
+                                <option value="<?php echo v($tipo['nombre']); ?>"<?php echo $valores['defecto'] === $tipo['nombre'] ? ' selected' : ''; ?><?php echo $tipo['estado'] === 'Inactivo' && $valores['defecto'] !== $tipo['nombre'] ? ' disabled' : ''; ?>><?php echo v($tipo['nombre']); ?></option>
                             <?php } ?>
                         </select>
                         <p class="error-mensaje" id="error-defecto"<?php echo claseError($errores, 'defecto'); ?>><?php echo v(isset($errores['defecto']) ? $errores['defecto'] : ''); ?></p>
+                    </div>
+                    <div class="form-grupo<?php echo $valores['defecto'] === 'Otros' ? '' : ' oculta'; ?>" id="grupo-detalle-defecto">
+                        <label for="detalle-defecto">Describí la falla</label>
+                        <input type="text" name="detalle-defecto" id="detalle-defecto" value="<?php echo v($valores['detalle-defecto']); ?>" minlength="3" maxlength="120"<?php echo $editable ? '' : ' disabled'; ?><?php echo $valores['defecto'] === 'Otros' ? ' required' : ''; ?>>
                     </div>
                     <div class="form-grupo">
                         <label for="prioridad">Prioridad</label>

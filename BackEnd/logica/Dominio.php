@@ -6,8 +6,14 @@ class Dominio
     const ESTADOS_SOLICITUD = ['Pendiente', 'En proceso', 'Resuelta'];
     const PRIORIDADES       = ['Urgente', 'Prioritario', 'Normal'];
     const TURNOS            = ['Matutino', 'Vespertino', 'Nocturno'];
-    const TIPOS_DE_DEFECTO  = ['No enciende', 'Sin imagen', 'Sin red', 'Sin audio',
-                               'Periférico dañado', 'Software', 'Otros'];
+    const PLAZOS_TICKET_HORAS = ['Urgente' => 4, 'Prioritario' => 24, 'Normal' => 72];
+
+    public static function ticketFueraDePlazo($ticket)
+    {
+        if (in_array($ticket['estado_ticket'], ['Resuelto', 'Cancelado'], true)) return false;
+        $horas = self::PLAZOS_TICKET_HORAS[$ticket['prioridad']] ?? null;
+        return $horas !== null && (int) $ticket['segundos_desde_alta'] > $horas * 3600;
+    }
 
     public static function esEstadoTicket($valor)
     {
@@ -27,11 +33,6 @@ class Dominio
     public static function esTurno($valor)
     {
         return in_array($valor, self::TURNOS, true);
-    }
-
-    public static function esTipoDeDefecto($valor)
-    {
-        return in_array($valor, self::TIPOS_DE_DEFECTO, true);
     }
 
     public static function claseDelBadge($estado)

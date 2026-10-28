@@ -39,6 +39,7 @@ function agregarCelda(fila, contenido) {
 function crearFilaTicket(ticket) {
     const fila = document.createElement('tr');
     fila.classList.add('fila-clickeable');
+    if (ticket.fuera_de_plazo) fila.classList.add('fila-ticket-vencido');
     const url = 'detalle-ticket.php?id=' + encodeURIComponent(ticket.id_ticket);
     const enlace = document.createElement('a');
     enlace.className = 'tabla-enlace';
@@ -52,7 +53,8 @@ function crearFilaTicket(ticket) {
     agregarCelda(fila, (partes[1] || '').slice(0, 5));
     agregarCelda(fila, ticket.nombre_salon);
     agregarCelda(fila, ticket.nombre_equipo);
-    agregarCelda(fila, ticket.tipo_de_defecto);
+    agregarCelda(fila, ticket.tipo_de_defecto === 'Otros' && ticket.detalle_defecto
+        ? 'Otros: ' + ticket.detalle_defecto : ticket.tipo_de_defecto);
 
     const estado = document.createElement('span');
     estado.className = 'badge';
@@ -63,7 +65,13 @@ function crearFilaTicket(ticket) {
         estado.classList.add('text-dark');
     }
     estado.textContent = ticket.estado_ticket;
-    agregarCelda(fila, estado);
+    const celdaEstado = agregarCelda(fila, estado);
+    if (ticket.fuera_de_plazo) {
+        const avisoPlazo = document.createElement('span');
+        avisoPlazo.className = 'aviso-plazo-vencido';
+        avisoPlazo.textContent = 'Fuera de plazo';
+        celdaEstado.append(avisoPlazo);
+    }
 
     const acciones = agregarCelda(fila, '');
     acciones.className = 'acciones';
@@ -107,7 +115,7 @@ listaTickets.addEventListener('click', function (evento) {
     if (boton) {
         if (!window.confirm('¿Eliminar este ticket? No se puede deshacer.')) return;
         boton.disabled = true;
-        fetch('../../../BackEnd/api/tickets.php?id=' + encodeURIComponent(boton.dataset.id) + '&accion=eliminar', {
+        fetch('../../../BackEnd/api/tickets.php?id=' + encodeURIComponent(boton.dataset.id), {
             method: 'DELETE',
             credentials: 'same-origin',
             headers: {

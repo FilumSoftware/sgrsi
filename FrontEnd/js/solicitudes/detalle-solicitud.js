@@ -1,6 +1,8 @@
 const formulario = document.getElementById('form-detalle-solicitud');
 const inputMotivo = document.getElementById('motivo');
 const resultadoGuardado = document.getElementById('resultado-guardado');
+const idSolicitud = formulario.elements.namedItem('id').value;
+let formularioModificado = false;
 
 const MOTIVO_MINIMO = 10;
 
@@ -18,6 +20,29 @@ function mostrarResultadoDetalle(mensaje, exito) {
     resultadoGuardado.classList.toggle('mensaje-exito', exito);
     resultadoGuardado.style.display = 'block';
 }
+
+formulario.addEventListener('input', function () { formularioModificado = true; });
+formulario.addEventListener('change', function () { formularioModificado = true; });
+
+fetch('../../../BackEnd/api/solicitudes.php?id=' + encodeURIComponent(idSolicitud), {
+    credentials: 'same-origin',
+    headers: { 'Accept': 'application/json' }
+})
+    .then(leerRespuestaDetalle)
+    .then(function (datos) {
+        if (formularioModificado) return;
+        const solicitud = datos.data;
+        document.getElementById('solicitante').value = solicitud.nombre_solicitante;
+        document.getElementById('fecha').value = solicitud.fecha_hora_alta.slice(0, 10);
+        document.getElementById('estado').value = solicitud.estado_solicitud;
+        document.getElementById('prioridad').value = solicitud.prioridad;
+        document.getElementById('responsable').value = solicitud.ci_responsable || '';
+        document.getElementById('salon').value = solicitud.nombre_salon;
+        inputMotivo.value = solicitud.descripcion;
+    })
+    .catch(function (error) {
+        mostrarResultadoDetalle(error.message, false);
+    });
 
 if (!inputMotivo.disabled) {
     document.getElementById('responsable').addEventListener('change', function (evento) {
@@ -40,7 +65,7 @@ if (!inputMotivo.disabled) {
 
         const boton = document.getElementById('btn-guardar');
         boton.disabled = true;
-        fetch('../../../BackEnd/api/solicitudes.php?id=' + encodeURIComponent(formulario.elements.namedItem('id').value), {
+        fetch('../../../BackEnd/api/solicitudes.php?id=' + encodeURIComponent(idSolicitud), {
             method: 'PUT',
             credentials: 'same-origin',
             headers: {
