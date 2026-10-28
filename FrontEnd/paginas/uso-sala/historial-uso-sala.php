@@ -9,23 +9,12 @@ $gestor = new GestorUsoSala();
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    if (!Sesion::esCoordinador()) {
-        header('Location: historial-uso-sala.php?aviso=permiso');
-        exit;
-    }
-
-    $id = trim((string) (isset($_POST['id']) ? $_POST['id'] : ''));
-
-    try {
-        ResultadoGestion::valor($gestor->eliminar($id));
-        header('Location: historial-uso-sala.php?aviso=eliminado');
-        exit;
-    } catch (Exception $e) {
-        error_log('SGRSI historial-uso-sala.php eliminar: ' . $e->getMessage());
-        header('Location: historial-uso-sala.php?aviso=error');
-        exit;
-    }
+    $resultado = Sesion::verificarTokenApi($_POST['csrf'] ?? '')
+        ? $gestor->eliminarDesdeFormulario(ResultadoGestion::campo($_POST, 'id'), Sesion::esCoordinador())
+        : ResultadoGestion::fallo(403, 'La sesión de esta página venció. Volvé a abrirla.');
+    $aviso = $resultado['ok'] ? 'eliminado' : ($resultado['codigo'] === 403 ? 'permiso' : 'error');
+    header('Location: historial-uso-sala.php?aviso=' . $aviso);
+    exit;
 }
 
 $avisos = [
@@ -154,6 +143,7 @@ function v($texto)
 
                                         <?php if (Sesion::esCoordinador()) { ?>
                                             <form action="historial-uso-sala.php" method="post" class="form-en-linea">
+                                                <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                                                 <input type="hidden" name="id" value="<?php echo v($uso['id_uso']); ?>">
                                                 <button type="submit" class="btn-eliminar" data-confirmar="1">Eliminar</button>
                                             </form>

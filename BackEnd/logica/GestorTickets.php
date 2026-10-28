@@ -42,6 +42,42 @@ class GestorTickets
         return ResultadoGestion::ejecutar('tickets técnicos', function () { return (new UsuarioDAO())->obtenerTecnicos(); });
     }
 
+    public function actualizarDesdeFormulario($id, $datos, $puedeAtender)
+    {
+        if (!$puedeAtender) return ResultadoGestion::fallo(403, 'No tenés permiso para modificar tickets.');
+        return ResultadoGestion::procesar('tickets formulario de edición', function () use ($id, $datos) {
+            $actual = $this->obtenerPorId($id);
+            if (!$actual['ok']) return $actual;
+            if (!$actual['datos']) return ResultadoGestion::fallo(404, 'No existe ese ticket.');
+            $fila = $actual['datos'];
+            if ($fila['estado_ticket'] === 'Cancelado') return ResultadoGestion::fallo(409, 'Un ticket cancelado no puede modificarse.');
+            $estado = ResultadoGestion::campo($datos, 'estado');
+            if ($estado === 'Cancelado') return ResultadoGestion::fallo(400, 'Usá la cancelación para ese estado.');
+            $salon = ResultadoGestion::campo($datos, 'salon');
+            $equipo = ResultadoGestion::campo($datos, 'equipo');
+            $equipos = $this->obtenerEquiposPorSalon($salon);
+            if (!$equipos['ok']) return $equipos;
+            $ids = array_map(function ($item) { return (int) $item['id_equipo']; }, $equipos['datos']);
+            if (!ResultadoGestion::idValido($equipo) || !in_array((int) $equipo, $ids, true)) {
+                return ResultadoGestion::fallo(400, 'Elegí un equipo del salón seleccionado.');
+            }
+            $cierre = null;
+            if ($estado === 'Resuelto') {
+                $cierre = $fila['fecha_hora_cierre'] ?? null;
+                if ($cierre === null) $cierre = date('Y-m-d H:i:s', max(time(), strtotime($fila['fecha_hora_alta'])));
+            }
+            return $this->actualizar(new Ticket(
+                $fila['fecha_hora_alta'], $fila['ci_solicitante'], (int) $equipo,
+                ResultadoGestion::campo($datos, 'defecto'), ResultadoGestion::campo($datos, 'motivo'),
+                ResultadoGestion::campo($datos, 'prioridad'), $estado,
+                ResultadoGestion::campo($datos, 'responsable') ?: null,
+                ResultadoGestion::campo($datos, 'diagnostico') ?: null,
+                ResultadoGestion::campo($datos, 'solucion') ?: null,
+                $cierre, $fila['id_ticket']
+            ));
+        });
+    }
+
     public function insertar(Ticket $ticket)
     {
         $error = $this->validar($ticket);

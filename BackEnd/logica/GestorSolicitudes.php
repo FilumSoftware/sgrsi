@@ -35,6 +35,31 @@ class GestorSolicitudes
         return ResultadoGestion::ejecutar('solicitudes técnicos', function () { return (new UsuarioDAO())->obtenerTecnicos(); });
     }
 
+    public function actualizarDesdeFormulario($id, $datos, $puedeAtender)
+    {
+        if (!$puedeAtender) return ResultadoGestion::fallo(403, 'No tenés permiso para modificar solicitudes.');
+        return ResultadoGestion::procesar('solicitudes formulario de edición', function () use ($id, $datos) {
+            $actual = $this->obtenerPorId($id);
+            if (!$actual['ok']) return $actual;
+            if (!$actual['datos']) return ResultadoGestion::fallo(404, 'No existe esa solicitud.');
+            $fila = $actual['datos'];
+            $estado = ResultadoGestion::campo($datos, 'estado');
+            $cierre = null;
+            if ($estado === 'Resuelta') {
+                $cierre = $fila['fecha_hora_cierre'] ?? null;
+                if ($cierre === null) {
+                    $cierre = date('Y-m-d H:i:s', max(time(), strtotime($fila['fecha_hora_alta'])));
+                }
+            }
+            return $this->actualizar(new Solicitud(
+                $fila['fecha_hora_alta'], $fila['ci_solicitante'],
+                ResultadoGestion::campo($datos, 'salon'), ResultadoGestion::campo($datos, 'motivo'),
+                ResultadoGestion::campo($datos, 'prioridad'), $estado,
+                ResultadoGestion::campo($datos, 'responsable') ?: null, $cierre, $fila['id_solicitud']
+            ));
+        });
+    }
+
     public function insertar(Solicitud $solicitud)
     {
         $error = $this->validar($solicitud);

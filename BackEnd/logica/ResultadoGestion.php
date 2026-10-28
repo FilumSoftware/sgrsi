@@ -22,6 +22,22 @@ class ResultadoGestion
         }
     }
 
+    public static function procesar($operacion, $accion)
+    {
+        try {
+            return $accion();
+        } catch (Throwable $e) {
+            error_log('SGRSI ' . $operacion . ': ' . $e->getMessage());
+            return self::fallo(500, 'No se pudo completar la operación. Intentá de nuevo en unos minutos.');
+        }
+    }
+
+    public static function campo($datos, $clave)
+    {
+        return isset($datos[$clave]) && is_scalar($datos[$clave])
+            ? trim((string) $datos[$clave]) : '';
+    }
+
     public static function valor($resultado)
     {
         if (!$resultado['ok']) {

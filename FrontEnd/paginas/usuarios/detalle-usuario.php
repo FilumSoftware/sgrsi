@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/GestorUsuarios.php';
-require_once __DIR__ . '/../../../BackEnd/models/Usuario.php';
 
 ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
 
@@ -51,38 +50,18 @@ $valores = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $valores['nombre'] = trim((string) (isset($_POST['nombre']) ? $_POST['nombre'] : ''));
-
-    $valores['rol']    = $esPropia ? $fila['tipo_de_usuario'] : trim((string) (isset($_POST['tipo-usuario']) ? $_POST['tipo-usuario'] : ''));
-    $valores['estado'] = $esPropia ? $fila['estado_cuenta']   : trim((string) (isset($_POST['estado']) ? $_POST['estado'] : ''));
-
-    if ($valores['nombre'] === '') {
-        $errores['nombre'] = 'El nombre es obligatorio.';
-    } elseif (strlen($valores['nombre']) > 60) {
-        $errores['nombre'] = 'El nombre no puede superar los 60 caracteres.';
+    $valores['nombre'] = ResultadoGestion::campo($_POST, 'nombre');
+    $valores['rol'] = $esPropia ? $fila['tipo_de_usuario'] : ResultadoGestion::campo($_POST, 'tipo-usuario');
+    $valores['estado'] = $esPropia ? $fila['estado_cuenta'] : ResultadoGestion::campo($_POST, 'estado');
+    $resultado = Sesion::verificarTokenApi($_POST['csrf'] ?? '')
+        ? $gestor->actualizarDesdeFormulario($ci, $_POST, Sesion::ci())
+        : ResultadoGestion::fallo(403, 'La sesión de esta página venció. Volvé a abrirla.');
+    if ($resultado['ok']) {
+        header('Location: usuarios.php?aviso=guardada');
+        exit;
     }
-
-    if (!in_array($valores['rol'], $rolesValidos, true)) {
-        $errores['rol'] = 'Elegí un rol válido de la lista.';
-    }
-
-    if (!in_array($valores['estado'], $estadosValidos, true)) {
-        $errores['estado'] = 'Elegí un estado válido de la lista.';
-    }
-
-    if (empty($errores)) {
-        try {
-            $usuario = new Usuario($ci, $valores['nombre'], $valores['rol'], $valores['estado']);
-            ResultadoGestion::valor($gestor->actualizar($usuario));
-
-            header('Location: usuarios.php?aviso=guardada');
-            exit;
-        } catch (Exception $e) {
-            error_log('SGRSI detalle-usuario.php actualizar: ' . $e->getMessage());
-            $errores['general'] = 'No se pudieron guardar los cambios. Intentá de nuevo en unos minutos.';
-        }
-    }
+    http_response_code($resultado['codigo']);
+    $errores['general'] = $resultado['mensaje'];
 }
 
 function v($texto)
@@ -149,6 +128,7 @@ function v($texto)
                 <?php } ?>
 
                 <form id="form-detalle-usuario" action="detalle-usuario.php" method="post">
+                    <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                     <fieldset<?php echo $modoVer ? ' disabled' : ''; ?>>
                         <input type="hidden" name="ci" value="<?php echo v($ci); ?>">
 

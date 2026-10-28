@@ -2,66 +2,30 @@
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/GestorUsuarios.php';
-require_once __DIR__ . '/../../../BackEnd/models/Usuario.php';
 
 ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
 
 $gestor = new GestorUsuarios();
 
 $rolesValidos = ['Solicitante', 'Asistente', 'Coordinador'];
-$largoMinimoClave = 8;
 
 
 $errores = [];
 $valores = ['ci' => '', 'nombre' => '', 'rol' => 'Solicitante'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $valores['ci']     = trim((string) (isset($_POST['ci']) ? $_POST['ci'] : ''));
-    $valores['nombre'] = trim((string) (isset($_POST['nombre']) ? $_POST['nombre'] : ''));
-    $valores['rol']    = trim((string) (isset($_POST['tipo-usuario']) ? $_POST['tipo-usuario'] : ''));
-
-    $clave         = (string) (isset($_POST['password']) ? $_POST['password'] : '');
-    $claveRepetida = (string) (isset($_POST['confirmar-password']) ? $_POST['confirmar-password'] : '');
-
-    if (preg_match('/^[0-9]{8}$/', $valores['ci']) !== 1) {
-        $errores['ci'] = 'La cédula son ocho dígitos, sin puntos ni guiones.';
+    $valores['ci'] = ResultadoGestion::campo($_POST, 'ci');
+    $valores['nombre'] = ResultadoGestion::campo($_POST, 'nombre');
+    $valores['rol'] = ResultadoGestion::campo($_POST, 'tipo-usuario');
+    $resultado = Sesion::verificarTokenApi($_POST['csrf'] ?? '')
+        ? $gestor->crearDesdeFormulario($_POST)
+        : ResultadoGestion::fallo(403, 'La sesión de esta página venció. Volvé a abrirla.');
+    if ($resultado['ok']) {
+        header('Location: usuarios.php?aviso=creada');
+        exit;
     }
-
-    if ($valores['nombre'] === '') {
-        $errores['nombre'] = 'El nombre es obligatorio.';
-    } elseif (strlen($valores['nombre']) > 60) {
-        $errores['nombre'] = 'El nombre no puede superar los 60 caracteres.';
-    }
-
-    if (!in_array($valores['rol'], $rolesValidos, true)) {
-        $errores['rol'] = 'Elegí un rol válido de la lista.';
-    }
-
-    if (strlen($clave) < $largoMinimoClave) {
-        $errores['password'] = 'La contraseña necesita al menos ' . $largoMinimoClave . ' caracteres.';
-    }
-
-    if ($clave !== $claveRepetida) {
-        $errores['confirmar'] = 'Las contraseñas no coinciden.';
-    }
-
-    if (empty($errores)) {
-        try {
-            if (ResultadoGestion::valor($gestor->obtenerPorCi($valores['ci']))) {
-                $errores['ci'] = 'Ya hay una cuenta registrada con esa cédula.';
-            } else {
-                $usuario = new Usuario($valores['ci'], $valores['nombre'], $valores['rol'], 'Activa');
-                ResultadoGestion::valor($gestor->insertar($usuario, $clave));
-
-                header('Location: usuarios.php?aviso=creada');
-                exit;
-            }
-        } catch (Exception $e) {
-            error_log('SGRSI nuevo-usuario.php insertar: ' . $e->getMessage());
-            $errores['general'] = 'No se pudo crear el usuario. Intentá de nuevo en unos minutos.';
-        }
-    }
+    http_response_code($resultado['codigo']);
+    $errores['general'] = $resultado['mensaje'];
 }
 
 function v($texto)
@@ -122,6 +86,7 @@ function v($texto)
                 <?php } ?>
 
                 <form id="form-usuario" action="nuevo-usuario.php" method="post">
+                    <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                     <fieldset>
                         <div class="form-grupo">
                             <label for="ci">Cédula:</label>

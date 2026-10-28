@@ -30,7 +30,7 @@ try {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($valores as $campo => $valorActual) {
-        $valores[$campo] = trim((string) (isset($_POST[$campo]) ? $_POST[$campo] : ''));
+        $valores[$campo] = ResultadoGestion::campo($_POST, $campo);
     }
 }
 
@@ -45,122 +45,19 @@ if ($valores['salon'] !== '') {
     }
 }
 
-$pcEnviadas     = isset($_POST['pc']) && is_array($_POST['pc']) ? $_POST['pc'] : [];
+$pcEnviadas = isset($_POST['pc']) && is_array($_POST['pc']) ? $_POST['pc'] : [];
 $alumnoEnviados = isset($_POST['alumno']) && is_array($_POST['alumno']) ? $_POST['alumno'] : [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['accion']) ? $_POST['accion'] : '') === 'crear') {
-
-    if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $valores['fecha']) !== 1) {
-        $errores['fecha'] = 'Indicá una fecha válida.';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ResultadoGestion::campo($_POST, 'accion') === 'crear') {
+    $resultado = Sesion::verificarTokenApi($_POST['csrf'] ?? '')
+        ? $gestor->crearDesdeFormulario($_POST, Sesion::ci())
+        : ResultadoGestion::fallo(403, 'La sesión de esta página venció. Volvé a abrirla.');
+    if ($resultado['ok']) {
+        header('Location: historial-uso-sala.php?aviso=creado');
+        exit;
     }
-
-    if (preg_match('/^[0-9]{2}:[0-9]{2}$/', $valores['entrada']) !== 1) {
-        $errores['entrada'] = 'Indicá una hora de entrada válida.';
-    }
-
-    if (preg_match('/^[0-9]{2}:[0-9]{2}$/', $valores['salida']) !== 1) {
-        $errores['salida'] = 'Indicá una hora de salida válida.';
-    }
-
-    if (empty($errores['entrada']) && empty($errores['salida']) && $valores['salida'] <= $valores['entrada']) {
-        $errores['salida'] = 'La hora de salida debe ser posterior a la de entrada.';
-    }
-
-    if ($valores['asignatura'] === '') {
-        $errores['asignatura'] = 'La asignatura es obligatoria.';
-    } elseif (strlen($valores['asignatura']) > 60) {
-        $errores['asignatura'] = 'La asignatura no puede superar los 60 caracteres.';
-    }
-
-    if ($valores['grupo'] === '') {
-        $errores['grupo'] = 'El grupo es obligatorio.';
-    } elseif (strlen($valores['grupo']) > 10) {
-        $errores['grupo'] = 'El grupo no puede superar los 10 caracteres.';
-    }
-
-    if (!Dominio::esTurno($valores['turno'])) {
-        $errores['turno'] = 'Elegí un turno de la lista.';
-    }
-
-    $nombresSalon = [];
-
-    foreach ($salones as $unSalon) {
-        $nombresSalon[] = $unSalon['nombre_salon'];
-    }
-
-    if (!in_array($valores['salon'], $nombresSalon, true)) {
-        $errores['salon'] = 'Elegí un salón válido de la lista.';
-    }
-
-    if (empty($errores['fecha']) && empty($errores['entrada']) && empty($errores['salida']) && empty($errores['salon'])) {
-        try {
-            if (ResultadoGestion::valor($gestor->existeSolapamiento($valores['salon'], $valores['fecha'], $valores['entrada'] . ':00', $valores['salida'] . ':00'))) {
-                $errores['salon'] = 'La sala ya está ocupada en ese horario.';
-            }
-        } catch (Exception $e) {
-            error_log('SGRSI planilla-uso-sala.php solapamiento: ' . $e->getMessage());
-            $errores['general'] = 'No se pudo verificar la disponibilidad de la sala. Intentá de nuevo en unos minutos.';
-        }
-    }
-
-    $idsDelSalon = [];
-
-    foreach ($equipos as $unEquipo) {
-        $idsDelSalon[] = (int) $unEquipo['id_equipo'];
-    }
-    $detalles    = [];
-    $yaUsados    = [];
-
-    foreach ($pcEnviadas as $indice => $idEquipo) {
-        $idEquipo = trim((string) $idEquipo);
-
-        if ($idEquipo === '') {
-            continue;
-        }
-
-        if (!in_array((int) $idEquipo, $idsDelSalon, true)) {
-            $errores['pcs'] = 'Alguna de las PC elegidas no pertenece al salón seleccionado.';
-            continue;
-        }
-
-        if (in_array((int) $idEquipo, $yaUsados, true)) {
-            $errores['pcs'] = 'No se puede asignar la misma PC dos veces.';
-            continue;
-        }
-
-        $yaUsados[] = (int) $idEquipo;
-
-        $alumno = trim((string) (isset($alumnoEnviados[$indice]) ? $alumnoEnviados[$indice] : ''));
-
-        $detalles[] = new DetalleUso((int) $idEquipo, $alumno !== '' ? $alumno : null);
-    }
-
-    if (empty($detalles) && empty($errores['pcs'])) {
-        $errores['pcs'] = 'Asigná al menos una PC.';
-    }
-
-    if (empty($errores)) {
-        try {
-            $uso = new UsoSala(
-                $valores['fecha'],
-                $valores['entrada'] . ':00',
-                $valores['salida'] . ':00',
-                $valores['salon'],
-                Sesion::ci(),
-                $valores['asignatura'],
-                $valores['grupo'],
-                $valores['turno']
-            );
-
-            ResultadoGestion::valor($gestor->insertar($uso, $detalles));
-
-            header('Location: historial-uso-sala.php?aviso=creado');
-            exit;
-        } catch (Exception $e) {
-            error_log('SGRSI planilla-uso-sala.php insertar: ' . $e->getMessage());
-            $errores['general'] = 'No se pudo registrar el uso de la sala. Intentá de nuevo en unos minutos.';
-        }
-    }
+    http_response_code($resultado['codigo']);
+    $errores['general'] = $resultado['mensaje'];
 }
 
 function v($texto)
@@ -230,6 +127,7 @@ function claseError($errores, $campo)
                 <?php } ?>
 
                 <form id="form-uso-sala" action="planilla-uso-sala.php" method="post">
+                    <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                     <div class="form-grupo">
                         <label for="fecha">Fecha</label>
                         <input type="date" id="fecha" name="fecha" value="<?php echo v($valores['fecha']); ?>" required>
@@ -287,7 +185,7 @@ function claseError($errores, $campo)
 
                         <?php foreach ($equipos as $numero => $equipo) { ?>
                             <?php $fila = $numero + 1; ?>
-                            <?php $elegida = trim((string) (isset($pcEnviadas[$fila]) ? $pcEnviadas[$fila] : '')); ?>
+                            <?php $elegida = ResultadoGestion::campo($pcEnviadas, $fila); ?>
                             <div class="fila-pc<?php echo ($fila > 1 && $elegida === '') ? ' oculta' : ''; ?>" data-index="<?php echo $fila; ?>">
                                 <div class="campo">
                                     <label for="pc-<?php echo $fila; ?>">PC</label>
@@ -300,7 +198,7 @@ function claseError($errores, $campo)
                                 </div>
                                 <div class="campo">
                                     <label for="alumno-<?php echo $fila; ?>">Alumno</label>
-                                    <input type="text" id="alumno-<?php echo $fila; ?>" name="alumno[<?php echo $fila; ?>]" value="<?php echo v(isset($alumnoEnviados[$fila]) ? $alumnoEnviados[$fila] : ''); ?>" placeholder="Nombre del alumno">
+                                    <input type="text" id="alumno-<?php echo $fila; ?>" name="alumno[<?php echo $fila; ?>]" value="<?php echo v(ResultadoGestion::campo($alumnoEnviados, $fila)); ?>" placeholder="Nombre del alumno">
                                 </div>
                             </div>
                         <?php } ?>

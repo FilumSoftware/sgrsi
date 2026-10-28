@@ -22,6 +22,28 @@ class GestorInventario
         return ResultadoGestion::ejecutar('inventario salones', function () { return (new SalonDAO())->obtenerTodos(); });
     }
 
+    public function crearDesdeFormulario($datos)
+    {
+        return ResultadoGestion::procesar('inventario formulario de alta', function () use ($datos) {
+            $nombre = ResultadoGestion::campo($datos, 'nombre');
+            $salon = ResultadoGestion::campo($datos, 'salon');
+            $extras = ResultadoGestion::campo($datos, 'extras');
+            return $this->insertar(new Equipo($nombre, $extras !== '' ? $extras : null, $salon));
+        });
+    }
+
+    public function actualizarDesdeFormulario($id, $datos)
+    {
+        if (!ResultadoGestion::idValido($id)) return ResultadoGestion::fallo(400, 'Equipo inválido.');
+        return ResultadoGestion::procesar('inventario formulario de edición', function () use ($id, $datos) {
+            $nombre = ResultadoGestion::campo($datos, 'nombre');
+            $salon = ResultadoGestion::campo($datos, 'salon');
+            $extras = ResultadoGestion::campo($datos, 'extras');
+            $estado = ResultadoGestion::campo($datos, 'estado');
+            return $this->actualizar(new Equipo($nombre, $extras !== '' ? $extras : null, $salon, $estado, $id));
+        });
+    }
+
     public function insertar(Equipo $equipo)
     {
         $error = $this->validar($equipo);
