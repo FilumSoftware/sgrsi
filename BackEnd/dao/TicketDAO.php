@@ -15,6 +15,7 @@ class TicketDAO
     private function consultaBase()
     {
         return 'SELECT t.id_ticket, t.fecha_hora_alta, t.tipo_de_defecto, t.descripcion,
+                       TIMESTAMPDIFF(SECOND, t.fecha_hora_alta, NOW()) AS segundos_desde_alta,
                        t.prioridad, t.estado_ticket, t.diagnostico, t.solucion,
                        t.fecha_hora_cierre, t.ci_solicitante, t.ci_responsable,
                        e.id_equipo, e.nombre_equipo, e.nombre_salon,

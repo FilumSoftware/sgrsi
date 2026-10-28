@@ -39,6 +39,7 @@ function agregarCelda(fila, contenido) {
 function crearFilaTicket(ticket) {
     const fila = document.createElement('tr');
     fila.classList.add('fila-clickeable');
+    if (ticket.fuera_de_plazo) fila.classList.add('fila-ticket-vencido');
     const url = 'detalle-ticket.php?id=' + encodeURIComponent(ticket.id_ticket);
     const enlace = document.createElement('a');
     enlace.className = 'tabla-enlace';
@@ -63,7 +64,13 @@ function crearFilaTicket(ticket) {
         estado.classList.add('text-dark');
     }
     estado.textContent = ticket.estado_ticket;
-    agregarCelda(fila, estado);
+    const celdaEstado = agregarCelda(fila, estado);
+    if (ticket.fuera_de_plazo) {
+        const avisoPlazo = document.createElement('span');
+        avisoPlazo.className = 'aviso-plazo-vencido';
+        avisoPlazo.textContent = 'Fuera de plazo';
+        celdaEstado.append(avisoPlazo);
+    }
 
     const acciones = agregarCelda(fila, '');
     acciones.className = 'acciones';

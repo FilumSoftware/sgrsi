@@ -11,13 +11,26 @@ class GestorTickets
 {
     public function obtenerTodos()
     {
-        return ResultadoGestion::ejecutar('tickets listar', function () { return (new TicketDAO())->obtenerTodos(); });
+        return ResultadoGestion::ejecutar('tickets listar', function () {
+            return $this->agregarPlazos((new TicketDAO())->obtenerTodos());
+        });
     }
 
     public function obtenerPorSolicitante($ci)
     {
         if (!ResultadoGestion::ciValida($ci)) return ResultadoGestion::fallo(400, 'Cédula inválida.');
-        return ResultadoGestion::ejecutar('tickets listar por solicitante', function () use ($ci) { return (new TicketDAO())->obtenerPorSolicitante($ci); });
+        return ResultadoGestion::ejecutar('tickets listar por solicitante', function () use ($ci) {
+            return $this->agregarPlazos((new TicketDAO())->obtenerPorSolicitante($ci));
+        });
+    }
+
+    private function agregarPlazos($filas)
+    {
+        foreach ($filas as &$fila) {
+            $fila['fuera_de_plazo'] = Dominio::ticketFueraDePlazo($fila);
+        }
+        unset($fila);
+        return $filas;
     }
 
     public function obtenerPorId($id)
