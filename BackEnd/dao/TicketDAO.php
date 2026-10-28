@@ -14,7 +14,7 @@ class TicketDAO
 
     private function consultaBase()
     {
-        return 'SELECT t.id_ticket, t.fecha_hora_alta, t.tipo_de_defecto, t.descripcion,
+        return 'SELECT t.id_ticket, t.fecha_hora_alta, t.tipo_de_defecto, t.detalle_defecto, t.descripcion,
                        TIMESTAMPDIFF(SECOND, t.fecha_hora_alta, NOW()) AS segundos_desde_alta,
                        t.prioridad, t.estado_ticket, t.diagnostico, t.solucion,
                        t.fecha_hora_cierre, t.ci_solicitante, t.ci_responsable,
@@ -87,14 +87,15 @@ class TicketDAO
 
             $stmt = $this->pdo->prepare(
                 'INSERT INTO ticket (fecha_hora_alta, ci_solicitante, id_equipo, tipo_de_defecto,
-                                     descripcion, prioridad, estado_ticket)
-                 VALUES (:alta, :solicitante, :equipo, :defecto, :descripcion, :prioridad, :estado)'
+                                     detalle_defecto, descripcion, prioridad, estado_ticket)
+                 VALUES (:alta, :solicitante, :equipo, :defecto, :detalle, :descripcion, :prioridad, :estado)'
             );
             $stmt->execute([
                 ':alta'        => $ticket->getFechaHoraAlta(),
                 ':solicitante' => $ticket->getCiSolicitante(),
                 ':equipo'      => $ticket->getIdEquipo(),
                 ':defecto'     => $ticket->getTipoDeDefecto(),
+                ':detalle'     => $ticket->getDetalleDefecto(),
                 ':descripcion' => $ticket->getDescripcion(),
                 ':prioridad'   => $ticket->getPrioridad(),
                 ':estado'      => $ticket->getEstadoTicket()
@@ -114,6 +115,7 @@ class TicketDAO
             "UPDATE ticket
                 SET id_equipo = :equipo,
                     tipo_de_defecto = :defecto,
+                    detalle_defecto = :detalle,
                     descripcion = :descripcion,
                     prioridad = :prioridad,
                     estado_ticket = :estado,
@@ -128,6 +130,7 @@ class TicketDAO
         $stmt->execute([
             ':equipo'      => $ticket->getIdEquipo(),
             ':defecto'     => $ticket->getTipoDeDefecto(),
+            ':detalle'     => $ticket->getDetalleDefecto(),
             ':descripcion' => $ticket->getDescripcion(),
             ':prioridad'   => $ticket->getPrioridad(),
             ':estado'      => $ticket->getEstadoTicket(),

@@ -53,7 +53,8 @@ function crearFilaTicket(ticket) {
     agregarCelda(fila, (partes[1] || '').slice(0, 5));
     agregarCelda(fila, ticket.nombre_salon);
     agregarCelda(fila, ticket.nombre_equipo);
-    agregarCelda(fila, ticket.tipo_de_defecto);
+    agregarCelda(fila, ticket.tipo_de_defecto === 'Otros' && ticket.detalle_defecto
+        ? 'Otros: ' + ticket.detalle_defecto : ticket.tipo_de_defecto);
 
     const estado = document.createElement('span');
     estado.className = 'badge';

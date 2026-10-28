@@ -79,7 +79,7 @@ class GestorTickets
                 $cierre = $fila['fecha_hora_cierre'] ?? null;
                 if ($cierre === null) $cierre = date('Y-m-d H:i:s', max(time(), strtotime($fila['fecha_hora_alta'])));
             }
-            return $this->actualizar(new Ticket(
+            $ticket = new Ticket(
                 $fila['fecha_hora_alta'], $fila['ci_solicitante'], (int) $equipo,
                 ResultadoGestion::campo($datos, 'defecto'), ResultadoGestion::campo($datos, 'motivo'),
                 ResultadoGestion::campo($datos, 'prioridad'), $estado,
@@ -87,7 +87,9 @@ class GestorTickets
                 ResultadoGestion::campo($datos, 'diagnostico') ?: null,
                 ResultadoGestion::campo($datos, 'solucion') ?: null,
                 $cierre, $fila['id_ticket']
-            ));
+            );
+            $ticket->setDetalleDefecto(ResultadoGestion::campo($datos, 'detalle-defecto'));
+            return $this->actualizar($ticket);
         });
     }
 
@@ -139,6 +141,9 @@ class GestorTickets
     {
         if (!ResultadoGestion::ciValida($ticket->getCiSolicitante()) || !ResultadoGestion::idValido($ticket->getIdEquipo())) return ResultadoGestion::fallo(400, 'Solicitante o equipo inválido.');
         if (!Dominio::esTipoDeDefecto($ticket->getTipoDeDefecto()) || !Dominio::esPrioridad($ticket->getPrioridad()) || !Dominio::esEstadoTicket($ticket->getEstadoTicket())) return ResultadoGestion::fallo(400, 'Tipo, prioridad o estado inválido.');
+        $detalleDefecto = $ticket->getDetalleDefecto();
+        if ($ticket->getTipoDeDefecto() === 'Otros' && ($detalleDefecto === null || mb_strlen($detalleDefecto) < 3 || mb_strlen($detalleDefecto) > 120)) return ResultadoGestion::fallo(400, 'Describí la falla en Otros (3 a 120 caracteres).');
+        if ($ticket->getTipoDeDefecto() !== 'Otros' && $detalleDefecto !== null) return ResultadoGestion::fallo(400, 'El detalle de la falla solo corresponde a Otros.');
         if (strlen(trim((string) $ticket->getDescripcion())) < 10) return ResultadoGestion::fallo(400, 'La descripción debe tener al menos 10 caracteres.');
         if ($ticket->getEstadoTicket() === 'Resuelto' && !ResultadoGestion::ciValida($ticket->getCiResponsable())) return ResultadoGestion::fallo(400, 'Un ticket resuelto requiere responsable.');
         $referencias = ResultadoGestion::ejecutar('tickets validar referencias', function () use ($ticket) {

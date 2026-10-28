@@ -54,6 +54,7 @@ $valores = [
     'salon'       => $fila['nombre_salon'],
     'equipo'      => $fila['id_equipo'],
     'defecto'     => $fila['tipo_de_defecto'],
+    'detalle-defecto' => $fila['detalle_defecto'] ?? '',
     'prioridad'   => $fila['prioridad'],
     'estado'      => $fila['estado_ticket'],
     'responsable' => isset($fila['ci_responsable']) ? $fila['ci_responsable'] : '',
@@ -208,6 +209,10 @@ function claseError($errores, $campo)
                             <?php } ?>
                         </select>
                         <p class="error-mensaje" id="error-defecto"<?php echo claseError($errores, 'defecto'); ?>><?php echo v(isset($errores['defecto']) ? $errores['defecto'] : ''); ?></p>
+                    </div>
+                    <div class="form-grupo<?php echo $valores['defecto'] === 'Otros' ? '' : ' oculta'; ?>" id="grupo-detalle-defecto">
+                        <label for="detalle-defecto">Describí la falla</label>
+                        <input type="text" name="detalle-defecto" id="detalle-defecto" value="<?php echo v($valores['detalle-defecto']); ?>" minlength="3" maxlength="120"<?php echo $editable ? '' : ' disabled'; ?><?php echo $valores['defecto'] === 'Otros' ? ' required' : ''; ?>>
                     </div>
                     <div class="form-grupo">
                         <label for="prioridad">Prioridad</label>

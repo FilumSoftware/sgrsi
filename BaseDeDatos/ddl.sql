@@ -68,6 +68,7 @@ CREATE TABLE ticket (
     tipo_de_defecto   ENUM('No enciende', 'Sin imagen', 'Sin red',
                            'Sin audio', 'Periférico dañado', 'Software',
                            'Otros') NOT NULL,
+    detalle_defecto   VARCHAR(120) NULL,
     descripcion       VARCHAR(500) NULL,
     prioridad         ENUM('Urgente', 'Prioritario', 'Normal')
                       NOT NULL DEFAULT 'Normal',

@@ -101,6 +101,10 @@ function v($texto)
                         </select>
                         <p class="error-mensaje" id="error-defecto"></p>
                     </div>
+                    <div class="form-grupo oculta" id="grupo-detalle-defecto">
+                        <label for="detalle-defecto">Describí la falla</label>
+                        <input type="text" name="detalle-defecto" id="detalle-defecto" maxlength="120" minlength="3">
+                    </div>
                     <div class="form-grupo">
                         <label for="prioridad">Prioridad</label>
                         <select name="prioridad" id="prioridad" required>

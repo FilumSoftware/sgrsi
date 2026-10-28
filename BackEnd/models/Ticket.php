@@ -7,6 +7,7 @@ class Ticket
     private $ciSolicitante;
     private $idEquipo;
     private $tipoDeDefecto;
+    private $detalleDefecto;
     private $descripcion;
     private $prioridad;
     private $estadoTicket;
@@ -39,6 +40,7 @@ class Ticket
     public function getCiSolicitante()   { return $this->ciSolicitante; }
     public function getIdEquipo()        { return $this->idEquipo; }
     public function getTipoDeDefecto()   { return $this->tipoDeDefecto; }
+    public function getDetalleDefecto()  { return $this->detalleDefecto; }
     public function getDescripcion()     { return $this->descripcion; }
     public function getPrioridad()       { return $this->prioridad; }
     public function getEstadoTicket()    { return $this->estadoTicket; }
@@ -48,6 +50,7 @@ class Ticket
     public function getFechaHoraCierre() { return $this->fechaHoraCierre; }
 
     public function setTipoDeDefecto($tipo)     { $this->tipoDeDefecto = $tipo; }
+    public function setDetalleDefecto($detalle) { $this->detalleDefecto = trim((string) $detalle) ?: null; }
     public function setDescripcion($descripcion) { $this->descripcion = $descripcion; }
     public function setPrioridad($prioridad)     { $this->prioridad = $prioridad; }
     public function setEstadoTicket($estado)     { $this->estadoTicket = $estado; }

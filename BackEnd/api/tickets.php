@@ -50,6 +50,7 @@ try {
             Api::campo($datos, 'descripcion'),
             Api::campo($datos, 'prioridad', 'Normal')
         );
+        $ticket->setDetalleDefecto(Api::campo($datos, 'detalle_defecto'));
         $resultado = $gestor->insertar($ticket);
         if (!$resultado['ok']) Api::resultado($resultado);
         Api::responder(201, 'success', 'Ticket registrado.', ['id_ticket' => (int) $resultado['datos']]);
@@ -72,11 +73,12 @@ try {
         $cierre = $fila['fecha_hora_cierre'];
         if (!$cierre) $cierre = date('Y-m-d H:i:s', max(time(), strtotime($fila['fecha_hora_alta'])));
     }
+    $tipoDefecto = Api::campo($datos, 'tipo_de_defecto', $fila['tipo_de_defecto']);
     $ticket = new Ticket(
         $fila['fecha_hora_alta'],
         $fila['ci_solicitante'],
         Api::campo($datos, 'id_equipo', $fila['id_equipo']),
-        Api::campo($datos, 'tipo_de_defecto', $fila['tipo_de_defecto']),
+        $tipoDefecto,
         Api::campo($datos, 'descripcion', $fila['descripcion']),
         Api::campo($datos, 'prioridad', $fila['prioridad']),
         $estado,
@@ -86,6 +88,7 @@ try {
         $cierre,
         $fila['id_ticket']
     );
+    $ticket->setDetalleDefecto(Api::campo($datos, 'detalle_defecto', $tipoDefecto === 'Otros' ? $fila['detalle_defecto'] : ''));
     Api::resultado($gestor->actualizar($ticket), 'Ticket actualizado.');
 } catch (Throwable $e) {
     error_log('SGRSI API tickets: ' . $e->getMessage());

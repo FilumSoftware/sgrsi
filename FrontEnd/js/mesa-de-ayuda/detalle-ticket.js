@@ -5,6 +5,8 @@ const equipo = document.getElementById('equipo');
 const resultadoGuardado = document.getElementById('resultado-guardado');
 const idTicket = formulario.elements.namedItem('id').value;
 let formularioModificado = false;
+const defecto = document.getElementById('defecto');
+const detalleDefecto = document.getElementById('detalle-defecto');
 
 const MOTIVO_MINIMO = 10;
 
@@ -22,6 +24,16 @@ function mostrarResultadoDetalle(mensaje, exito) {
     resultadoGuardado.classList.toggle('mensaje-exito', exito);
     resultadoGuardado.style.display = 'block';
 }
+
+function actualizarDetalleDefecto() {
+    const esOtro = defecto.value === 'Otros';
+    document.getElementById('grupo-detalle-defecto').classList.toggle('oculta', !esOtro);
+    detalleDefecto.required = esOtro;
+    if (!esOtro) detalleDefecto.value = '';
+}
+
+defecto.addEventListener('change', actualizarDetalleDefecto);
+actualizarDetalleDefecto();
 
 formulario.addEventListener('input', function () { formularioModificado = true; });
 formulario.addEventListener('change', function () { formularioModificado = true; });
@@ -42,7 +54,9 @@ fetch('../../../BackEnd/api/tickets.php?id=' + encodeURIComponent(idTicket), {
             equipo.add(new Option(ticket.nombre_equipo, ticket.id_equipo));
         }
         equipo.value = ticket.id_equipo;
-        document.getElementById('defecto').value = ticket.tipo_de_defecto;
+        defecto.value = ticket.tipo_de_defecto;
+        detalleDefecto.value = ticket.detalle_defecto || '';
+        actualizarDetalleDefecto();
         document.getElementById('prioridad').value = ticket.prioridad;
         const estado = document.getElementById('estado');
         if (ticket.estado_ticket === 'Cancelado' && !Array.from(estado.options).some(function (opcion) { return opcion.value === 'Cancelado'; })) {
@@ -112,7 +126,8 @@ if (!inputMotivo.disabled) {
             },
             body: JSON.stringify({
                 id_equipo: equipo.value,
-                tipo_de_defecto: document.getElementById('defecto').value,
+                tipo_de_defecto: defecto.value,
+                detalle_defecto: detalleDefecto.value.trim(),
                 descripcion: inputMotivo.value.trim(),
                 prioridad: document.getElementById('prioridad').value,
                 estado_ticket: document.getElementById('estado').value,

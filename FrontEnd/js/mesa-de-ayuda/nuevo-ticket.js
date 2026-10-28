@@ -4,6 +4,18 @@ const equipo = document.getElementById('equipo');
 const motivo = document.getElementById('motivo');
 const resultado = document.getElementById('resultado-ticket');
 const boton = document.getElementById('btn-enviar');
+const defecto = document.getElementById('defecto');
+const detalleDefecto = document.getElementById('detalle-defecto');
+
+function actualizarDetalleDefecto() {
+    const esOtro = defecto.value === 'Otros';
+    document.getElementById('grupo-detalle-defecto').classList.toggle('oculta', !esOtro);
+    detalleDefecto.required = esOtro;
+    if (!esOtro) detalleDefecto.value = '';
+}
+
+defecto.addEventListener('change', actualizarDetalleDefecto);
+actualizarDetalleDefecto();
 
 function leerRespuesta(respuesta) {
     return respuesta.json().then(function (datos) {
@@ -77,7 +89,8 @@ formulario.addEventListener('submit', function (evento) {
         },
         body: JSON.stringify({
             id_equipo: equipo.value,
-            tipo_de_defecto: document.getElementById('defecto').value,
+            tipo_de_defecto: defecto.value,
+            detalle_defecto: detalleDefecto.value.trim(),
             descripcion: motivo.value.trim(),
             prioridad: document.getElementById('prioridad').value
         })
@@ -86,6 +99,7 @@ formulario.addEventListener('submit', function (evento) {
         .then(function (datos) {
             mostrarResultado(datos.message + ' N.º ' + datos.data.id_ticket + '.', true);
             formulario.reset();
+            actualizarDetalleDefecto();
             cargarOpciones(equipo, [], 'id_equipo', function () { return ''; }, 'Elegí primero un salón');
         })
         .catch(function (error) {

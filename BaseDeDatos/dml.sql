@@ -119,6 +119,10 @@ INSERT INTO ticket (id_ticket, fecha_hora_alta, ci_solicitante, id_equipo, tipo_
     'No abre el entorno de desarrollo, muestra un error de licencia.',
     'Prioritario', 'Pendiente', NULL, NULL, NULL, NULL);
 
+UPDATE ticket
+   SET detalle_defecto = 'Botón de encendido hundido'
+ WHERE id_ticket = 5;
+
 
 -- solicitudes ----------------------------------------------------------
 
