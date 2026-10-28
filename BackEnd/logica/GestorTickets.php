@@ -6,6 +6,7 @@ require_once __DIR__ . '/../dao/TicketDAO.php';
 require_once __DIR__ . '/../dao/SalonDAO.php';
 require_once __DIR__ . '/../dao/EquipoDAO.php';
 require_once __DIR__ . '/../dao/UsuarioDAO.php';
+require_once __DIR__ . '/../dao/TipoIncidenciaDAO.php';
 
 class GestorTickets
 {
@@ -140,7 +141,7 @@ class GestorTickets
     private function validar(Ticket $ticket)
     {
         if (!ResultadoGestion::ciValida($ticket->getCiSolicitante()) || !ResultadoGestion::idValido($ticket->getIdEquipo())) return ResultadoGestion::fallo(400, 'Solicitante o equipo inválido.');
-        if (!Dominio::esTipoDeDefecto($ticket->getTipoDeDefecto()) || !Dominio::esPrioridad($ticket->getPrioridad()) || !Dominio::esEstadoTicket($ticket->getEstadoTicket())) return ResultadoGestion::fallo(400, 'Tipo, prioridad o estado inválido.');
+        if (!Dominio::esPrioridad($ticket->getPrioridad()) || !Dominio::esEstadoTicket($ticket->getEstadoTicket())) return ResultadoGestion::fallo(400, 'Prioridad o estado inválido.');
         $detalleDefecto = $ticket->getDetalleDefecto();
         if ($ticket->getTipoDeDefecto() === 'Otros' && ($detalleDefecto === null || mb_strlen($detalleDefecto) < 3 || mb_strlen($detalleDefecto) > 120)) return ResultadoGestion::fallo(400, 'Describí la falla en Otros (3 a 120 caracteres).');
         if ($ticket->getTipoDeDefecto() !== 'Otros' && $detalleDefecto !== null) return ResultadoGestion::fallo(400, 'El detalle de la falla solo corresponde a Otros.');
@@ -149,11 +150,19 @@ class GestorTickets
         $referencias = ResultadoGestion::ejecutar('tickets validar referencias', function () use ($ticket) {
             $equipo = (new EquipoDAO())->obtenerPorId($ticket->getIdEquipo());
             $responsable = $ticket->getCiResponsable() === null ? null : (new UsuarioDAO())->obtenerPorCi($ticket->getCiResponsable());
-            return [$equipo, $responsable];
+            $tipo = (new TipoIncidenciaDAO())->obtenerPorNombre($ticket->getTipoDeDefecto());
+            $anterior = $tipo && $tipo['estado'] === 'Inactivo' && $ticket->getIdTicket()
+                ? (new TicketDAO())->obtenerPorId($ticket->getIdTicket()) : null;
+            return [$equipo, $responsable, $tipo, $anterior];
         });
         if (!$referencias['ok']) return $referencias;
         if (!$referencias['datos'][0]) return ResultadoGestion::fallo(400, 'Equipo inválido.');
         if ($ticket->getCiResponsable() !== null && (!$referencias['datos'][1] || !in_array($referencias['datos'][1]['tipo_de_usuario'], ['Asistente', 'Coordinador'], true))) return ResultadoGestion::fallo(400, 'Responsable inválido.');
+        $tipo = $referencias['datos'][2];
+        $anterior = $referencias['datos'][3];
+        if (!$tipo || ($tipo['estado'] !== 'Activo' && (!$anterior || $anterior['tipo_de_defecto'] !== $tipo['nombre']))) {
+            return ResultadoGestion::fallo(400, 'Elegí un tipo de incidencia activo.');
+        }
         return null;
     }
 }

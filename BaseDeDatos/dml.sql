@@ -84,6 +84,15 @@ INSERT INTO equipo (id_equipo, nombre_equipo, descripcion, nombre_salon, estado_
 
 -- tickets --------------------------------------------------------------
 
+INSERT INTO tipo_incidencia (nombre, estado) VALUES
+('No enciende', 'Activo'),
+('Sin imagen', 'Activo'),
+('Sin red', 'Activo'),
+('Sin audio', 'Activo'),
+('Periférico dañado', 'Activo'),
+('Software', 'Activo'),
+('Otros', 'Activo');
+
 INSERT INTO ticket (id_ticket, fecha_hora_alta, ci_solicitante, id_equipo, tipo_de_defecto, descripcion, prioridad, estado_ticket, ci_responsable, diagnostico, solucion, fecha_hora_cierre) VALUES
 (1, '2026-06-24 12:35:00', '48219073',  8, 'Sin imagen',
     'La PC no reconoce el proyector cuando se conecta el cable HDMI.',
