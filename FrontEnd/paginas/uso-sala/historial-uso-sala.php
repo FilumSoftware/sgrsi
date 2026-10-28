@@ -107,6 +107,7 @@ function v($texto)
                         <?php echo v($mensaje['texto']); ?>
                     </p>
                 <?php } ?>
+                <p id="resultado-historial" class="error-mensaje" role="status" aria-live="polite"></p>
 
                 <div class="tabla-wrapper">
                     <table>
@@ -122,7 +123,7 @@ function v($texto)
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="lista-usos" data-csrf="<?php echo v(Sesion::tokenApi()); ?>" data-coordinador="<?php echo Sesion::esCoordinador() ? '1' : '0'; ?>">
                             <?php if (empty($usos)) { ?>
                                 <tr>
                                     <td colspan="8">Todavía no hay registros de uso de sala.</td>
@@ -159,7 +160,6 @@ function v($texto)
         </main>
     </div>
     <script src="../../js/uso-sala/historial-uso-sala.js"></script>
-    <script src="../../js/fila-clickeable.js"></script>
 </body>
 
 </html>
