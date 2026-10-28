@@ -3,14 +3,10 @@
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/GestorTickets.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
-require_once __DIR__ . '/../../../BackEnd/models/Ticket.php';
 
 ControlAcceso::exigirSesion('../../../index.php');
 
 $gestor = new GestorTickets();
-
-$motivoMinimo = 10;
-
 
 $id = '';
 
@@ -67,14 +63,8 @@ $valores = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    if (!$puedeAtender) {
-        header('Location: mesa-de-ayuda.php?aviso=permiso');
-        exit;
-    }
-
     foreach ($valores as $campo => $valorActual) {
-        $valores[$campo] = trim((string) (isset($_POST[$campo]) ? $_POST[$campo] : ''));
+        $valores[$campo] = ResultadoGestion::campo($_POST, $campo);
     }
 }
 
@@ -91,103 +81,15 @@ try {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['accion']) ? $_POST['accion'] : '') === 'guardar') {
-
-    if ($fila['estado_ticket'] === 'Cancelado') {
-        $errores['estado'] = 'Un ticket cancelado no puede modificarse.';
+    $resultado = Sesion::verificarTokenApi($_POST['csrf'] ?? '')
+        ? $gestor->actualizarDesdeFormulario($id, $_POST, $puedeAtender)
+        : ResultadoGestion::fallo(403, 'La sesión de esta página venció. Volvé a abrirla.');
+    if ($resultado['ok']) {
+        header('Location: mesa-de-ayuda.php?aviso=guardado');
+        exit;
     }
-
-    $nombresSalon = [];
-
-    foreach ($salones as $unSalon) {
-        $nombresSalon[] = $unSalon['nombre_salon'];
-    }
-
-    if (!in_array($valores['salon'], $nombresSalon, true)) {
-        $errores['salon'] = 'Elegí un salón válido de la lista.';
-    }
-
-    $idsEquipo = [];
-
-    foreach ($equipos as $unEquipo) {
-        $idsEquipo[] = (int) $unEquipo['id_equipo'];
-    }
-
-    if (!in_array((int) $valores['equipo'], $idsEquipo, true)) {
-        $errores['equipo'] = 'Elegí un equipo del salón seleccionado.';
-    }
-
-    if (!Dominio::esTipoDeDefecto($valores['defecto'])) {
-        $errores['defecto'] = 'Elegí un tipo de falla de la lista.';
-    }
-
-    if (!Dominio::esPrioridad($valores['prioridad'])) {
-        $errores['prioridad'] = 'Elegí una prioridad válida de la lista.';
-    }
-
-    if (!Dominio::esEstadoTicket($valores['estado']) || $valores['estado'] === 'Cancelado') {
-        $errores['estado'] = 'Elegí un estado válido de la lista.';
-    }
-
-    $cedulasTecnico = [];
-
-    foreach ($tecnicos as $unTecnico) {
-        $cedulasTecnico[] = $unTecnico['ci'];
-    }
-
-    if ($valores['responsable'] !== '' && !in_array($valores['responsable'], $cedulasTecnico, true)) {
-        $errores['responsable'] = 'Elegí un técnico de la lista.';
-    }
-
-    if (strlen($valores['motivo']) < $motivoMinimo) {
-        $errores['motivo'] = 'Escribí al menos ' . $motivoMinimo . ' caracteres.';
-    }
-
-    if ($valores['estado'] === 'Resuelto' && $valores['responsable'] === '') {
-        $errores['responsable'] = 'Para cerrar el ticket hay que asignar un responsable.';
-    }
-
-    if (empty($errores)) {
-
-        $cierre = null;
-
-        if ($valores['estado'] === 'Resuelto') {
-            $cierre = isset($fila['fecha_hora_cierre']) ? $fila['fecha_hora_cierre'] : null;
-
-            if ($cierre === null) {
-                $ahora  = time();
-                $alta   = strtotime($fila['fecha_hora_alta']);
-                $cierre = date('Y-m-d H:i:s', $ahora >= $alta ? $ahora : $alta);
-            }
-        }
-
-        try {
-            $ticket = new Ticket(
-                $fila['fecha_hora_alta'],
-                $fila['ci_solicitante'],
-                (int) $valores['equipo'],
-                $valores['defecto'],
-                $valores['motivo'],
-                $valores['prioridad'],
-                $valores['estado'],
-                $valores['responsable'] !== '' ? $valores['responsable'] : null,
-                $valores['diagnostico'] !== '' ? $valores['diagnostico'] : null,
-                $valores['solucion'] !== '' ? $valores['solucion'] : null,
-                $cierre,
-                $fila['id_ticket']
-            );
-
-            if (ResultadoGestion::valor($gestor->actualizar($ticket))) {
-                header('Location: mesa-de-ayuda.php?aviso=guardado');
-                exit;
-            }
-            $errores['general'] = 'El ticket cambió mientras lo editabas. Volvé a abrirlo antes de guardar.';
-        } catch (Exception $e) {
-            error_log('SGRSI detalle-ticket.php actualizar: ' . $e->getMessage());
-            $errores['general'] = $e->getCode() === 409
-                ? 'El ticket cambió mientras lo editabas. Volvé a abrirlo antes de guardar.'
-                : 'No se pudieron guardar los cambios. Intentá de nuevo en unos minutos.';
-        }
-    }
+    http_response_code($resultado['codigo']);
+    $errores['general'] = $resultado['mensaje'];
 }
 
 $alta = strtotime($fila['fecha_hora_alta']);
@@ -264,6 +166,7 @@ function claseError($errores, $campo)
                 <?php } ?>
 
                 <form id="form-detalle-ticket" action="detalle-ticket.php" method="post" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
+                    <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                     <input type="hidden" name="id" value="<?php echo v($fila['id_ticket']); ?>">
 
                     <div class="form-grupo">

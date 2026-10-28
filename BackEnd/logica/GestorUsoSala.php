@@ -48,6 +48,38 @@ class GestorUsoSala
         return ResultadoGestion::ejecutar('uso de sala disponibilidad', function () use ($salon, $fecha, $inicio, $fin, $idExcluir) { return (new UsoSalaDAO())->existeSolapamiento($salon, $fecha, $inicio, $fin, $idExcluir); });
     }
 
+    public function crearDesdeFormulario($datos, $ci)
+    {
+        return ResultadoGestion::procesar('uso de sala formulario de alta', function () use ($datos, $ci) {
+            $detalles = $this->detallesFormulario($datos);
+            if (isset($detalles['ok'])) return $detalles;
+            $uso = $this->usoFormulario($datos, $ci);
+            return $this->insertar($uso, $detalles);
+        });
+    }
+
+    public function actualizarDesdeFormulario($id, $datos, $ci, $puedeAtender)
+    {
+        return ResultadoGestion::procesar('uso de sala formulario de edición', function () use ($id, $datos, $ci, $puedeAtender) {
+            $actual = $this->obtenerPorId($id);
+            if (!$actual['ok']) return $actual;
+            if (!$actual['datos']) return ResultadoGestion::fallo(404, 'No existe ese registro.');
+            $fila = $actual['datos'];
+            if (!$puedeAtender && $fila['ci_solicitante'] !== $ci) {
+                return ResultadoGestion::fallo(403, 'No tenés permiso para modificar este registro.');
+            }
+            $detalles = $this->detallesFormulario($datos);
+            if (isset($detalles['ok'])) return $detalles;
+            return $this->actualizar($this->usoFormulario($datos, $fila['ci_solicitante'], $id), $detalles);
+        });
+    }
+
+    public function eliminarDesdeFormulario($id, $esCoordinador)
+    {
+        if (!$esCoordinador) return ResultadoGestion::fallo(403, 'Solo el coordinador puede eliminar registros.');
+        return $this->eliminar($id);
+    }
+
     public function insertar(UsoSala $uso, $detalles)
     {
         $error = $this->validar($uso, $detalles);
@@ -104,6 +136,39 @@ class GestorUsoSala
             if (!in_array((int) $id, $equiposDelSalon, true)) return ResultadoGestion::fallo(400, 'Alguna PC no pertenece al salón seleccionado.');
         }
         return null;
+    }
+
+    private function usoFormulario($datos, $ci, $id = null)
+    {
+        $inicio = ResultadoGestion::campo($datos, 'entrada');
+        $fin = ResultadoGestion::campo($datos, 'salida');
+        return new UsoSala(
+            ResultadoGestion::campo($datos, 'fecha'),
+            preg_match('/^[0-9]{2}:[0-9]{2}$/', $inicio) ? $inicio . ':00' : $inicio,
+            preg_match('/^[0-9]{2}:[0-9]{2}$/', $fin) ? $fin . ':00' : $fin,
+            ResultadoGestion::campo($datos, 'salon'), $ci,
+            ResultadoGestion::campo($datos, 'asignatura'), ResultadoGestion::campo($datos, 'grupo'),
+            ResultadoGestion::campo($datos, 'turno'), $id
+        );
+    }
+
+    private function detallesFormulario($datos)
+    {
+        $pcs = $datos['pc'] ?? [];
+        $alumnos = $datos['alumno'] ?? [];
+        if (!is_array($pcs) || !is_array($alumnos)) return ResultadoGestion::fallo(400, 'Lista de PC inválida.');
+        $detalles = [];
+        foreach ($pcs as $indice => $id) {
+            if (!is_scalar($id)) return ResultadoGestion::fallo(400, 'PC inválida.');
+            $id = trim((string) $id);
+            if ($id === '') continue;
+            if (!ResultadoGestion::idValido($id)) return ResultadoGestion::fallo(400, 'PC inválida.');
+            $alumno = $alumnos[$indice] ?? '';
+            if (!is_scalar($alumno)) return ResultadoGestion::fallo(400, 'Alumno inválido.');
+            $alumno = trim((string) $alumno);
+            $detalles[] = new DetalleUso((int) $id, $alumno !== '' ? $alumno : null);
+        }
+        return $detalles;
     }
 
     private function fechaValida($fecha)

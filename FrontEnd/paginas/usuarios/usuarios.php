@@ -9,29 +9,16 @@ $gestor = new GestorUsuarios();
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $ci     = trim((string) (isset($_POST['ci']) ? $_POST['ci'] : ''));
-    $estado = trim((string) (isset($_POST['estado']) ? $_POST['estado'] : ''));
-
-    if ($ci === Sesion::ci()) {
-        header('Location: usuarios.php?aviso=propia');
-        exit;
-    }
-
-    if (!in_array($estado, ['Activa', 'Inactiva'], true)) {
-        header('Location: usuarios.php?aviso=estado');
-        exit;
-    }
-
-    try {
-        ResultadoGestion::valor($gestor->cambiarEstado($ci, $estado));
-        header('Location: usuarios.php?aviso=' . ($estado === 'Activa' ? 'activada' : 'desactivada'));
-        exit;
-    } catch (Exception $e) {
-        error_log('SGRSI usuarios.php cambiarEstado: ' . $e->getMessage());
-        header('Location: usuarios.php?aviso=error');
-        exit;
-    }
+    $ci = ResultadoGestion::campo($_POST, 'ci');
+    $estado = ResultadoGestion::campo($_POST, 'estado');
+    $resultado = Sesion::verificarTokenApi($_POST['csrf'] ?? '')
+        ? $gestor->cambiarEstadoDesdeFormulario($ci, $estado, Sesion::ci())
+        : ResultadoGestion::fallo(403, 'La sesión de esta página venció. Volvé a abrirla.');
+    $aviso = $resultado['ok']
+        ? ($estado === 'Activa' ? 'activada' : 'desactivada')
+        : ($resultado['codigo'] === 409 ? 'propia' : ($resultado['codigo'] === 400 ? 'estado' : 'error'));
+    header('Location: usuarios.php?aviso=' . $aviso);
+    exit;
 }
 
 $avisos = [
@@ -151,6 +138,7 @@ function v($texto)
                                             <span class="sin-accion">Tu cuenta</span>
                                         <?php } else { ?>
                                             <form action="usuarios.php" method="post" class="form-en-linea">
+                                                <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                                                 <input type="hidden" name="ci" value="<?php echo v($usuario['ci']); ?>">
                                                 <input type="hidden" name="estado" value="<?php echo $inactiva ? 'Activa' : 'Inactiva'; ?>">
                                                 <button type="submit" class="<?php echo $inactiva ? 'btn-editar' : 'btn-eliminar'; ?>" data-confirmar="<?php echo $inactiva ? 'habilitar' : 'inhabilitar'; ?>">

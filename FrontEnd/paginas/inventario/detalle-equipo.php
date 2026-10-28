@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/GestorInventario.php';
-require_once __DIR__ . '/../../../BackEnd/models/Equipo.php';
 
 ControlAcceso::exigirRol(['Asistente', 'Coordinador'], '../../../index.php');
 
@@ -51,52 +50,18 @@ $valores = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $valores['nombre']    = trim((string) (isset($_POST['nombre']) ? $_POST['nombre'] : ''));
-    $valores['salon']     = trim((string) (isset($_POST['salon']) ? $_POST['salon'] : ''));
-    $valores['extras']    = trim((string) (isset($_POST['extras']) ? $_POST['extras'] : ''));
-    $valores['estado']    = trim((string) (isset($_POST['estado']) ? $_POST['estado'] : ''));
-
-    if ($valores['nombre'] === '') {
-        $errores['nombre'] = 'El nombre del equipo es obligatorio.';
-    } elseif (strlen($valores['nombre']) > 100) {
-        $errores['nombre'] = 'El nombre del equipo no puede superar los 100 caracteres.';
+    foreach (array_keys($valores) as $campo) {
+        $valores[$campo] = ResultadoGestion::campo($_POST, $campo);
     }
-
-    $nombresSalon = [];
-
-    foreach ($salones as $unSalon) {
-        $nombresSalon[] = $unSalon['nombre_salon'];
+    $resultado = Sesion::verificarTokenApi($_POST['csrf'] ?? '')
+        ? $gestor->actualizarDesdeFormulario($idEquipo, $_POST)
+        : ResultadoGestion::fallo(403, 'La sesión de esta página venció. Volvé a abrirla.');
+    if ($resultado['ok']) {
+        header('Location: inventario.php?ok=2');
+        exit;
     }
-
-    if ($valores['salon'] === '' || !in_array($valores['salon'], $nombresSalon, true)) {
-        $errores['salon'] = 'Elegí un salón válido de la lista.';
-    }
-
-    if ($valores['estado'] === '' || !in_array($valores['estado'], $estadosValidos, true)) {
-        $errores['estado'] = 'Elegí un estado válido de la lista.';
-    }
-
-    if (empty($errores)) {
-        try {
-            $equipo = new Equipo(
-                $valores['nombre'],
-                $valores['extras'] !== '' ? $valores['extras'] : null,
-                $valores['salon'],
-                $valores['estado'],
-                $idEquipo
-            );
-
-            ResultadoGestion::valor($gestor->actualizar($equipo));
-
-            header('Location: inventario.php?ok=2');
-            exit;
-
-        } catch (Exception $e) {
-            error_log('SGRSI detalle-equipo.php actualizar: ' . $e->getMessage());
-            $errores['general'] = 'No se pudo guardar el equipo. Intentá de nuevo en unos minutos.';
-        }
-    }
+    http_response_code($resultado['codigo']);
+    $errores['general'] = $resultado['mensaje'];
 }
 
 ?>
@@ -155,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p id="resultado-guardado" class="error-mensaje" role="status" aria-live="polite"></p>
 
                 <form id="form-detalle-equipo" action="detalle-equipo.php?id=<?php echo (int) $idEquipo; ?>" method="post" data-csrf="<?php echo htmlspecialchars(Sesion::tokenApi(), ENT_QUOTES, 'UTF-8'); ?>">
+                    <input type="hidden" name="csrf" value="<?php echo htmlspecialchars(Sesion::tokenApi(), ENT_QUOTES, 'UTF-8'); ?>">
                     <fieldset<?php echo $modoVer ? ' disabled' : ''; ?>>
                         <div class="form-grupo">
                             <label for="id-equipo">ID Equipo (No editable):</label>
