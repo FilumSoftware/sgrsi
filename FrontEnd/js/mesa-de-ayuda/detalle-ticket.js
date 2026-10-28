@@ -167,11 +167,13 @@ if (botonCancelar) {
         botonCancelar.disabled = true;
 
         fetch('../../../BackEnd/api/tickets.php?id=' + encodeURIComponent(botonCancelar.dataset.id), {
-            method: 'DELETE',
+            method: 'PATCH',
             headers: {
+                'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'X-CSRF-Token': botonCancelar.dataset.csrf
             },
+            body: JSON.stringify({ estado_ticket: 'Cancelado' }),
             credentials: 'same-origin'
         })
             .then(function (respuesta) {

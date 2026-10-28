@@ -50,6 +50,17 @@ fetch('../../../BackEnd/api/catalogos.php?tipo=salones', { credentials: 'same-or
         mostrarResultado(error.message, false);
     });
 
+fetch('../../../BackEnd/api/tipos-incidencia.php', { credentials: 'same-origin' })
+    .then(leerRespuesta)
+    .then(function (datos) {
+        cargarOpciones(defecto, datos.data, 'nombre', function (fila) {
+            return fila.nombre;
+        }, 'Elija una opción');
+    })
+    .catch(function (error) {
+        mostrarResultado(error.message, false);
+    });
+
 salon.addEventListener('change', function () {
     cargarOpciones(equipo, [], 'id_equipo', function () { return ''; }, 'Cargando equipos...');
     if (!salon.value) {

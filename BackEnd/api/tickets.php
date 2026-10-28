@@ -4,7 +4,7 @@ require_once __DIR__ . '/Api.php';
 require_once __DIR__ . '/../logica/GestorTickets.php';
 
 Api::iniciar();
-$metodo = Api::metodo(['GET', 'POST', 'PUT', 'DELETE']);
+$metodo = Api::metodo(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
 $gestor = new GestorTickets();
 $id = Api::parametro('id');
 
@@ -28,12 +28,17 @@ try {
     Api::exigirToken();
 
     if ($metodo === 'DELETE') {
-        if (Api::parametro('accion') === 'eliminar') {
-            Api::exigirRol(['Coordinador']);
-            $actual = $gestor->obtenerPorId($id);
-            if (!$actual['ok']) Api::resultado($actual);
-            if (!$actual['datos']) Api::responder(404, 'error', 'No existe ese ticket.');
-            Api::resultado($gestor->eliminar($id), 'Ticket eliminado.');
+        Api::exigirRol(['Coordinador']);
+        $actual = $gestor->obtenerPorId($id);
+        if (!$actual['ok']) Api::resultado($actual);
+        if (!$actual['datos']) Api::responder(404, 'error', 'No existe ese ticket.');
+        Api::resultado($gestor->eliminar($id), 'Ticket eliminado.');
+    }
+
+    if ($metodo === 'PATCH') {
+        $datos = Api::cuerpo();
+        if (Api::campo($datos, 'estado_ticket') !== 'Cancelado') {
+            Api::responder(400, 'error', 'Solo se admite cancelar un ticket con este método.');
         }
         Api::resultado($gestor->cancelar($id, Sesion::ci()));
     }

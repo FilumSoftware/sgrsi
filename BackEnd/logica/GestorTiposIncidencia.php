@@ -43,13 +43,14 @@ class GestorTiposIncidencia
         if (!$this->nombreValido($actual) || !$this->nombreValido($nuevo) || !in_array($estado, ['Activo', 'Inactivo'], true)) {
             return ResultadoGestion::fallo(400, 'Nombre o estado inválido.');
         }
-        if ($actual === 'Otros' && ($nuevo !== 'Otros' || $estado !== 'Activo')) {
-            return ResultadoGestion::fallo(409, 'La opción Otros debe permanecer activa.');
-        }
         return ResultadoGestion::procesar('tipos de incidencia actualizar', function () use ($actual, $nuevo, $estado) {
             $dao = new TipoIncidenciaDAO();
             $fila = $dao->obtenerPorNombre($actual);
             if (!$fila) return ResultadoGestion::fallo(404, 'No existe ese tipo de incidencia.');
+            // La comparación usa el nombre guardado: la colación de MySQL no distingue mayúsculas.
+            if ($fila['nombre'] === 'Otros' && ($nuevo !== 'Otros' || $estado !== 'Activo')) {
+                return ResultadoGestion::fallo(409, 'La opción Otros debe permanecer activa.');
+            }
             if ($actual !== $nuevo && $dao->obtenerPorNombre($nuevo)) {
                 return ResultadoGestion::fallo(409, 'Ya existe ese tipo de incidencia.');
             }

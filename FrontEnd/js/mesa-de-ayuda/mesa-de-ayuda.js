@@ -115,7 +115,7 @@ listaTickets.addEventListener('click', function (evento) {
     if (boton) {
         if (!window.confirm('¿Eliminar este ticket? No se puede deshacer.')) return;
         boton.disabled = true;
-        fetch('../../../BackEnd/api/tickets.php?id=' + encodeURIComponent(boton.dataset.id) + '&accion=eliminar', {
+        fetch('../../../BackEnd/api/tickets.php?id=' + encodeURIComponent(boton.dataset.id), {
             method: 'DELETE',
             credentials: 'same-origin',
             headers: {
