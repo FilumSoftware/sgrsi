@@ -1,6 +1,33 @@
 const formulario = document.getElementById('form-detalle-usuario');
 const inputNombre = document.getElementById('nombre');
 const resultadoGuardado = document.getElementById('resultado-guardado');
+const ciUsuario = formulario.elements.namedItem('ci').value;
+let formularioModificado = false;
+
+formulario.addEventListener('input', function () { formularioModificado = true; });
+formulario.addEventListener('change', function () { formularioModificado = true; });
+
+fetch('../../../BackEnd/api/usuarios.php?ci=' + encodeURIComponent(ciUsuario), {
+    credentials: 'same-origin',
+    headers: { 'Accept': 'application/json' }
+})
+    .then(function (respuesta) {
+        return respuesta.json().then(function (datos) {
+            if (!respuesta.ok || datos.status !== 'success') throw new Error(datos.message || 'No se pudo cargar el usuario.');
+            return datos.data;
+        });
+    })
+    .then(function (usuario) {
+        if (formularioModificado) return;
+        inputNombre.value = usuario.nombre_usuario;
+        document.getElementById('tipo-usuario').value = usuario.tipo_de_usuario;
+        document.getElementById('estado').value = usuario.estado_cuenta;
+    })
+    .catch(function (error) {
+        resultadoGuardado.textContent = error.message || 'No se pudo cargar el usuario.';
+        resultadoGuardado.classList.remove('mensaje-exito');
+        resultadoGuardado.style.display = 'block';
+    });
 
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
@@ -15,7 +42,7 @@ formulario.addEventListener('submit', function (evento) {
     }
     const boton = document.getElementById('btn-guardar');
     boton.disabled = true;
-    fetch('../../../BackEnd/api/usuarios.php?ci=' + encodeURIComponent(formulario.elements.namedItem('ci').value), {
+    fetch('../../../BackEnd/api/usuarios.php?ci=' + encodeURIComponent(ciUsuario), {
         method: 'PUT',
         credentials: 'same-origin',
         headers: {
