@@ -11,14 +11,14 @@ const urlTipos = '../../../BackEnd/api/tipos-incidencia.php';
 function leerRespuestaTipos(respuesta) {
     return respuesta.json().then(function (datos) {
         if (!respuesta.ok || datos.status !== 'success') {
-            throw new Error(datos.message || 'No se pudo completar la operación.');
+            throw new Error(datos.message || TEXTOS.js_error_operacion);
         }
         return datos;
     });
 }
 
 function mostrarResultadoTipos(mensaje, exito) {
-    resultadoTipos.textContent = mensaje;
+    resultadoTipos.textContent = TEXTOS[mensaje] || mensaje;
     resultadoTipos.classList.toggle('mensaje-exito', exito);
     resultadoTipos.style.display = 'block';
 }
@@ -27,7 +27,7 @@ function restablecerFormularioTipo() {
     formularioTipo.reset();
     nombreOriginal.value = '';
     estadoTipo.disabled = true;
-    guardarTipo.textContent = 'Agregar tipo';
+    guardarTipo.textContent = TEXTOS.btn_agregar_tipo;
     cancelarEdicionTipo.classList.add('oculta');
 }
 
@@ -36,28 +36,28 @@ function crearFilaTipo(tipo) {
     const nombre = document.createElement('td');
     nombre.textContent = tipo.nombre;
     const estado = document.createElement('td');
-    estado.textContent = tipo.estado;
+    estado.textContent = TEXTOS['valor_' + tipo.estado];
     const acciones = document.createElement('td');
     acciones.className = 'acciones';
 
     if (tipo.nombre === 'Otros') {
         const fijo = document.createElement('span');
         fijo.className = 'sin-accion';
-        fijo.textContent = 'Siempre activo';
+        fijo.textContent = TEXTOS.js_siempre_activo;
         acciones.append(fijo);
     } else {
         const editar = document.createElement('button');
         editar.type = 'button';
         editar.className = 'btn-editar';
         editar.dataset.accion = 'editar';
-        editar.textContent = 'Editar';
+        editar.textContent = TEXTOS.btn_editar;
         acciones.append(editar);
 
         const cambiarEstado = document.createElement('button');
         cambiarEstado.type = 'button';
         cambiarEstado.className = tipo.estado === 'Activo' ? 'btn-eliminar' : 'btn-editar';
         cambiarEstado.dataset.accion = tipo.estado === 'Activo' ? 'inactivar' : 'activar';
-        cambiarEstado.textContent = tipo.estado === 'Activo' ? 'Inactivar' : 'Activar';
+        cambiarEstado.textContent = tipo.estado === 'Activo' ? TEXTOS.js_inactivar : TEXTOS.js_activar;
         acciones.append(cambiarEstado);
     }
 
@@ -78,7 +78,7 @@ function cargarTipos() {
                 const fila = document.createElement('tr');
                 const celda = document.createElement('td');
                 celda.colSpan = 3;
-                celda.textContent = 'Todavía no hay tipos de incidencia.';
+                celda.textContent = TEXTOS.js_sin_tipos;
                 fila.append(celda);
                 listaTipos.replaceChildren(fila);
             }
@@ -133,14 +133,14 @@ listaTipos.addEventListener('click', function (evento) {
         nombreTipo.value = nombre;
         estadoTipo.value = estado;
         estadoTipo.disabled = false;
-        guardarTipo.textContent = 'Guardar cambios';
+        guardarTipo.textContent = TEXTOS.btn_guardar_cambios;
         cancelarEdicionTipo.classList.remove('oculta');
         nombreTipo.focus();
         return;
     }
 
     const inactivar = boton.dataset.accion === 'inactivar';
-    if (inactivar && !window.confirm('¿Inactivar este tipo? Los tickets existentes conservarán su tipo de falla.')) return;
+    if (inactivar && !window.confirm(TEXTOS.js_confirm_inactivar_tipo)) return;
     boton.disabled = true;
     fetch(urlTipos + '?nombre=' + encodeURIComponent(nombre), {
         method: inactivar ? 'DELETE' : 'PUT',

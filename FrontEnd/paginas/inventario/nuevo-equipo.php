@@ -2,6 +2,9 @@
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/GestorInventario.php';
+require_once __DIR__ . '/../../../BackEnd/logica/Idioma.php';
+
+Idioma::iniciar();
 
 ControlAcceso::exigirRol(['Asistente', 'Coordinador'], '../../../index.php');
 
@@ -14,7 +17,7 @@ try {
 } catch (Exception $e) {
     error_log('SGRSI nuevo-equipo.php: ' . $e->getMessage());
     $salones = [];
-    $errores['general'] = 'No se pudo cargar la lista de salones. Intentá de nuevo en unos minutos.';
+    $errores['general'] = Idioma::t('err_lista_salones');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -34,14 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?php echo Idioma::t('html_lang'); ?>">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/main.css">
-    <title>SGRSI - Registro de equipos</title>
+    <title><?php echo Idioma::e('tit_nuevo_equipo'); ?></title>
 </head>
 
 <body>
@@ -50,16 +53,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <nav class="sidebar">
             <ul>
                 <?php if (Sesion::esCoordinador()) { ?>
-                    <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                    <li class="sidebar-item"><a href="../dashboard/dashboard.php"><?php echo Idioma::e('nav_dashboard'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php">Sala de informática</a></li>
-                <li class="sidebar-item activo">Inventario</li>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php"><?php echo Idioma::e('nav_sala'); ?></a></li>
+                <li class="sidebar-item activo"><?php echo Idioma::e('nav_inventario'); ?></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php"><?php echo Idioma::e('nav_mesa'); ?></a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php"><?php echo Idioma::e('nav_solicitudes'); ?></a></li>
                 <?php if (ControlAcceso::puedeGestionarUsuarios()) { ?>
-                    <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.php">Usuarios</a></li>
+                    <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.php"><?php echo Idioma::e('nav_usuarios'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir">Cerrar sesión</a></li>
+                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir"><?php echo Idioma::e('nav_cerrar_sesion'); ?></a></li>
             </ul>
         </nav>
 
@@ -68,17 +71,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item activo">Registro de equipos</li>
-                        <li class="topbar-item"><a href="inventario.php">Equipos</a></li>
+                        <li class="topbar-item activo"><?php echo Idioma::e('tab_registro_equipos'); ?></li>
+                        <li class="topbar-item"><a href="inventario.php"><?php echo Idioma::e('tab_equipos'); ?></a></li>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
-                    <img src="../../img/logo.png" alt="Logo SGRSI">
+                    <a class="btn-idioma" href="<?php echo Idioma::hrefAlternativo(); ?>" hreflang="<?php echo Idioma::alternativo(); ?>" title="<?php echo Idioma::e('idioma_titulo'); ?>"><?php echo Idioma::e('idioma_boton'); ?></a>
+                    <img src="../../img/logo.png" alt="<?php echo Idioma::e('logo_alt'); ?>">
                     <span>SGRSI</span>
                 </div>
             </header>
             <section class="form-container">
-                <p>Registrá computadoras de escritorio de los laboratorios.</p>
+                <p><?php echo Idioma::e('nota_registra_equipos'); ?></p>
 
                 <?php if (!empty($errores['general'])) { ?>
                     <p class="error-mensaje" style="display: block;"><?php echo htmlspecialchars($errores['general']); ?></p>
@@ -89,15 +93,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="hidden" name="csrf" value="<?php echo htmlspecialchars(Sesion::tokenApi(), ENT_QUOTES, 'UTF-8'); ?>">
                     <fieldset>
                         <div class="form-grupo">
-                            <label for="nombre">Nombre del equipo:</label>
+                            <label for="nombre"><?php echo Idioma::e('lbl_nombre_equipo'); ?></label>
                             <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($valores['nombre']); ?>" maxlength="100" required>
                             <p class="error-mensaje" id="error-nombre"<?php echo !empty($errores['nombre']) ? ' style="display: block;"' : ''; ?>><?php echo htmlspecialchars(isset($errores['nombre']) ? $errores['nombre'] : ''); ?></p>
                         </div>
 
                         <div class="form-grupo">
-                            <label for="salon">Salón:</label>
+                            <label for="salon"><?php echo Idioma::e('lbl_salon'); ?></label>
                             <select id="salon" name="salon" required>
-                                <option value="">— Elegí un salón —</option>
+                                <option value=""><?php echo Idioma::e('opt_elegi_un_salon'); ?></option>
                                 <?php foreach ($salones as $salon) { ?>
                                     <option value="<?php echo htmlspecialchars($salon['nombre_salon']); ?>"
                                         <?php echo $salon['nombre_salon'] === $valores['salon'] ? 'selected' : ''; ?>>
@@ -109,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
 
                         <div class="form-grupo">
-                            <label for="extras">Extras (opcional):</label><br>
+                            <label for="extras"><?php echo Idioma::e('lbl_extras_opcional'); ?></label><br>
                             <input type="text" id="extras" name="extras" value="<?php echo htmlspecialchars($valores['extras']); ?>"><br><br>
                         </div>
 
@@ -119,6 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </section>
         </main>
     </div>
+    <script>const TEXTOS = <?php echo Idioma::json(); ?>;</script>
     <script src="../../js/validacion.js"></script>
     <script src="../../js/inventario/nuevo-equipo.js"></script>
 </body>

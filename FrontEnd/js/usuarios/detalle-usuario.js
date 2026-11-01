@@ -13,7 +13,7 @@ fetch('../../../BackEnd/api/usuarios.php?ci=' + encodeURIComponent(ciUsuario), {
 })
     .then(function (respuesta) {
         return respuesta.json().then(function (datos) {
-            if (!respuesta.ok || datos.status !== 'success') throw new Error(datos.message || 'No se pudo cargar el usuario.');
+            if (!respuesta.ok || datos.status !== 'success') throw new Error(datos.message || TEXTOS.js_error_cargar_usuario);
             return datos.data;
         });
     })
@@ -24,14 +24,14 @@ fetch('../../../BackEnd/api/usuarios.php?ci=' + encodeURIComponent(ciUsuario), {
         document.getElementById('estado').value = usuario.estado_cuenta;
     })
     .catch(function (error) {
-        resultadoGuardado.textContent = error.message || 'No se pudo cargar el usuario.';
+        resultadoGuardado.textContent = TEXTOS[error.message] || error.message || TEXTOS.js_error_cargar_usuario;
         resultadoGuardado.classList.remove('mensaje-exito');
         resultadoGuardado.style.display = 'block';
     });
 
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
-    if (!validarTexto(inputNombre, 'error-nombre', 1, 'el nombre') || !formulario.reportValidity()) return;
+    if (!validarTexto(inputNombre, 'error-nombre', 1, TEXTOS.etq_nombre) || !formulario.reportValidity()) return;
 
     const datos = { nombre_usuario: inputNombre.value.trim() };
     const rol = document.getElementById('tipo-usuario');
@@ -54,17 +54,17 @@ formulario.addEventListener('submit', function (evento) {
     })
         .then(function (respuesta) {
             return respuesta.json().then(function (datosRespuesta) {
-                if (!respuesta.ok || datosRespuesta.status !== 'success') throw new Error(datosRespuesta.message || 'No se pudo guardar el usuario.');
+                if (!respuesta.ok || datosRespuesta.status !== 'success') throw new Error(datosRespuesta.message || TEXTOS.js_error_guardar_usuario);
                 return datosRespuesta;
             });
         })
         .then(function (datosRespuesta) {
-            resultadoGuardado.textContent = datosRespuesta.message;
+            resultadoGuardado.textContent = TEXTOS[datosRespuesta.message] || datosRespuesta.message;
             resultadoGuardado.classList.add('mensaje-exito');
             resultadoGuardado.style.display = 'block';
         })
         .catch(function (error) {
-            resultadoGuardado.textContent = error.message || 'No se pudo guardar el usuario.';
+            resultadoGuardado.textContent = TEXTOS[error.message] || error.message || TEXTOS.js_error_guardar_usuario;
             resultadoGuardado.classList.remove('mensaje-exito');
             resultadoGuardado.style.display = 'block';
         })

@@ -4,14 +4,14 @@ const resultadoSolicitudes = document.getElementById('resultado-solicitudes');
 function leerRespuestaSolicitudes(respuesta) {
     return respuesta.json().then(function (datos) {
         if (!respuesta.ok || datos.status !== 'success') {
-            throw new Error(datos.message || 'No se pudo completar la operación.');
+            throw new Error(datos.message || TEXTOS.js_error_operacion);
         }
         return datos;
     });
 }
 
 function mostrarResultadoSolicitudes(mensaje, exito) {
-    resultadoSolicitudes.textContent = mensaje;
+    resultadoSolicitudes.textContent = TEXTOS[mensaje] || mensaje;
     resultadoSolicitudes.classList.toggle('mensaje-exito', exito);
     resultadoSolicitudes.style.display = 'block';
 }
@@ -56,10 +56,10 @@ function crearFilaSolicitud(solicitud) {
     estado.classList.add(solicitud.estado_solicitud === 'Resuelta' ? 'bg-success' :
         solicitud.estado_solicitud === 'En proceso' ? 'bg-info' : 'bg-warning');
     if (solicitud.estado_solicitud !== 'Resuelta') estado.classList.add('text-dark');
-    estado.textContent = solicitud.estado_solicitud;
+    estado.textContent = TEXTOS['valor_' + solicitud.estado_solicitud];
     agregarCelda(fila, estado);
 
-    agregarCelda(fila, solicitud.prioridad);
+    agregarCelda(fila, TEXTOS['valor_' + solicitud.prioridad]);
     agregarCelda(fila, solicitud.nombre_solicitante);
     agregarCelda(fila, solicitud.nombre_responsable || '—');
 
@@ -68,7 +68,7 @@ function crearFilaSolicitud(solicitud) {
     const editar = document.createElement('a');
     editar.className = 'btn-editar';
     editar.href = url + (listaSolicitudes.dataset.atender === '1' ? '&modo=editar' : '');
-    editar.textContent = listaSolicitudes.dataset.atender === '1' ? 'Atender' : 'Ver';
+    editar.textContent = listaSolicitudes.dataset.atender === '1' ? TEXTOS.js_atender : TEXTOS.js_ver;
     acciones.append(editar);
 
     if (listaSolicitudes.dataset.coordinador === '1') {
@@ -76,7 +76,7 @@ function crearFilaSolicitud(solicitud) {
         eliminar.type = 'button';
         eliminar.className = 'btn-eliminar';
         eliminar.dataset.id = solicitud.id_solicitud;
-        eliminar.textContent = 'Eliminar';
+        eliminar.textContent = TEXTOS.btn_eliminar;
         acciones.append(eliminar);
     }
     return fila;
@@ -88,13 +88,13 @@ function cargarSolicitudes() {
         .then(function (datos) {
             const solicitudes = datos.data || [];
             if (solicitudes.length === 0) {
-                mostrarFilaVacia('Todavía no hay solicitudes registradas.');
+                mostrarFilaVacia(TEXTOS.js_sin_solicitudes);
                 return;
             }
             listaSolicitudes.replaceChildren(...solicitudes.map(crearFilaSolicitud));
         })
         .catch(function (error) {
-            mostrarFilaVacia('No se pudo cargar el listado de solicitudes.');
+            mostrarFilaVacia(TEXTOS.js_error_cargar_solicitudes_listado);
             mostrarResultadoSolicitudes(error.message, false);
         });
 }
@@ -102,7 +102,7 @@ function cargarSolicitudes() {
 listaSolicitudes.addEventListener('click', function (evento) {
     const boton = evento.target.closest('button[data-id]');
     if (boton) {
-        if (!window.confirm('¿Eliminar esta solicitud? No se puede deshacer.')) return;
+        if (!window.confirm(TEXTOS.js_confirm_eliminar_solicitud)) return;
         boton.disabled = true;
         fetch('../../../BackEnd/api/solicitudes.php?id=' + encodeURIComponent(boton.dataset.id), {
             method: 'DELETE',
@@ -115,7 +115,7 @@ listaSolicitudes.addEventListener('click', function (evento) {
             .then(leerRespuestaSolicitudes)
             .then(function (datos) {
                 boton.closest('tr').remove();
-                if (!listaSolicitudes.querySelector('tr')) mostrarFilaVacia('Todavía no hay solicitudes registradas.');
+                if (!listaSolicitudes.querySelector('tr')) mostrarFilaVacia(TEXTOS.js_sin_solicitudes);
                 mostrarResultadoSolicitudes(datos.message, true);
             })
             .catch(function (error) {

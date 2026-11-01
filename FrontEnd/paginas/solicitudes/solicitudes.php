@@ -1,17 +1,20 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/Idioma.php';
+
+Idioma::iniciar();
 
 ControlAcceso::exigirSesion('../../../index.php');
 
 $avisos = [
-    'creada'    => ['exito', 'La solicitud se registró correctamente.'],
-    'guardada'  => ['exito', 'Los cambios se guardaron.'],
-    'eliminada' => ['exito', 'La solicitud se eliminó.'],
-    'permiso'   => ['error', 'Solo el coordinador puede eliminar solicitudes.'],
-    'ajena'     => ['error', 'Esa solicitud no es tuya.'],
-    'noexiste'  => ['error', 'No existe una solicitud con ese número.'],
-    'error'     => ['error', 'No se pudo completar la operación. Intentá de nuevo en unos minutos.'],
+    'creada'    => ['exito', Idioma::t('aviso_solicitud_creada')],
+    'guardada'  => ['exito', Idioma::t('aviso_guardado')],
+    'eliminada' => ['exito', Idioma::t('aviso_solicitud_eliminada')],
+    'permiso'   => ['error', Idioma::t('aviso_permiso_solicitudes')],
+    'ajena'     => ['error', Idioma::t('aviso_solicitud_ajena')],
+    'noexiste'  => ['error', Idioma::t('aviso_solicitud_noexiste')],
+    'error'     => ['error', Idioma::t('aviso_error_operacion')],
 ];
 
 $mensaje = null;
@@ -28,7 +31,7 @@ function v($texto)
 
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?php echo Idioma::t('html_lang'); ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -36,7 +39,7 @@ function v($texto)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/main.css">
-    <title>SGRSI - Solicitudes</title>
+    <title><?php echo Idioma::e('tit_solicitudes'); ?></title>
 </head>
 
 <body>
@@ -45,18 +48,18 @@ function v($texto)
         <nav class="sidebar">
             <ul>
                 <?php if (Sesion::esCoordinador()) { ?>
-                    <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                    <li class="sidebar-item"><a href="../dashboard/dashboard.php"><?php echo Idioma::e('nav_dashboard'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php">Sala de informática</a></li>
+                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php"><?php echo Idioma::e('nav_sala'); ?></a></li>
                 <?php if (ControlAcceso::puedeAtender()) { ?>
-                    <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
+                    <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php"><?php echo Idioma::e('nav_inventario'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php">Mesa de Ayuda</a></li>
-                <li class="sidebar-item activo">Solicitudes</li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php"><?php echo Idioma::e('nav_mesa'); ?></a></li>
+                <li class="sidebar-item activo"><?php echo Idioma::e('nav_solicitudes'); ?></li>
                 <?php if (ControlAcceso::puedeGestionarUsuarios()) { ?>
-                    <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.php">Usuarios</a></li>
+                    <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.php"><?php echo Idioma::e('nav_usuarios'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir">Cerrar sesión</a></li>
+                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir"><?php echo Idioma::e('nav_cerrar_sesion'); ?></a></li>
             </ul>
         </nav>
 
@@ -65,12 +68,13 @@ function v($texto)
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item"><a href="nueva-solicitud.php">Nueva solicitud</a></li>
-                        <li class="topbar-item activo">Listado solicitudes</li>
+                        <li class="topbar-item"><a href="nueva-solicitud.php"><?php echo Idioma::e('tab_nueva_solicitud'); ?></a></li>
+                        <li class="topbar-item activo"><?php echo Idioma::e('tab_listado_solicitudes'); ?></li>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
-                    <img src="../../img/logo.png" alt="Logo SGRSI">
+                    <a class="btn-idioma" href="<?php echo Idioma::hrefAlternativo(); ?>" hreflang="<?php echo Idioma::alternativo(); ?>" title="<?php echo Idioma::e('idioma_titulo'); ?>"><?php echo Idioma::e('idioma_boton'); ?></a>
+                    <img src="../../img/logo.png" alt="<?php echo Idioma::e('logo_alt'); ?>">
                     <span>SGRSI</span>
                 </div>
             </header>
@@ -84,18 +88,18 @@ function v($texto)
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Salón</th>
-                                <th>Motivo</th>
-                                <th>Estado</th>
-                                <th>Prioridad</th>
-                                <th>Solicitante</th>
-                                <th>Responsable</th>
-                                <th>Acciones</th>
+                                <th><?php echo Idioma::e('th_fecha'); ?></th>
+                                <th><?php echo Idioma::e('th_salon'); ?></th>
+                                <th><?php echo Idioma::e('th_motivo'); ?></th>
+                                <th><?php echo Idioma::e('th_estado'); ?></th>
+                                <th><?php echo Idioma::e('th_prioridad'); ?></th>
+                                <th><?php echo Idioma::e('th_solicitante'); ?></th>
+                                <th><?php echo Idioma::e('th_responsable'); ?></th>
+                                <th><?php echo Idioma::e('th_acciones'); ?></th>
                             </tr>
                         </thead>
                         <tbody id="lista-solicitudes" data-csrf="<?php echo v(Sesion::tokenApi()); ?>" data-coordinador="<?php echo Sesion::esCoordinador() ? '1' : '0'; ?>" data-atender="<?php echo ControlAcceso::puedeAtender() ? '1' : '0'; ?>">
-                            <tr><td colspan="9">Cargando solicitudes...</td></tr>
+                            <tr><td colspan="9"><?php echo Idioma::e('cargando_solicitudes'); ?></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -103,6 +107,7 @@ function v($texto)
 
         </main>
     </div>
+    <script>const TEXTOS = <?php echo Idioma::json(); ?>;</script>
     <script src="../../js/solicitudes/solicitudes.js"></script>
 </body>
 

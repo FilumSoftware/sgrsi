@@ -7,14 +7,14 @@ const boton = document.getElementById('btn-enviar');
 function leerRespuesta(respuesta) {
     return respuesta.json().then(function (datos) {
         if (!respuesta.ok || datos.status !== 'success') {
-            throw new Error(datos.message || 'No se pudo completar la operación.');
+            throw new Error(datos.message || TEXTOS.js_error_operacion);
         }
         return datos;
     });
 }
 
 function mostrarResultado(mensaje, exito) {
-    resultado.textContent = mensaje;
+    resultado.textContent = TEXTOS[mensaje] || mensaje;
     resultado.classList.toggle('mensaje-exito', exito);
     resultado.style.display = 'block';
 }
@@ -22,7 +22,7 @@ function mostrarResultado(mensaje, exito) {
 fetch('../../../BackEnd/api/catalogos.php?tipo=salones', { credentials: 'same-origin' })
     .then(leerRespuesta)
     .then(function (datos) {
-        salon.replaceChildren(new Option('Elija una opción', ''));
+        salon.replaceChildren(new Option(TEXTOS.opt_elija_opcion, ''));
         datos.data.forEach(function (fila) {
             salon.add(new Option(fila.nombre_salon, fila.nombre_salon));
         });
@@ -33,7 +33,7 @@ fetch('../../../BackEnd/api/catalogos.php?tipo=salones', { credentials: 'same-or
 
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
-    if (!validarTexto(motivo, 'error-motivo', 10, 'el motivo')) return;
+    if (!validarTexto(motivo, 'error-motivo', 10, TEXTOS.etq_motivo)) return;
     if (!formulario.reportValidity()) return;
 
     boton.disabled = true;
@@ -53,7 +53,7 @@ formulario.addEventListener('submit', function (evento) {
     })
         .then(leerRespuesta)
         .then(function (datos) {
-            mostrarResultado(datos.message + ' N.º ' + datos.data.id_solicitud + '.', true);
+            mostrarResultado((TEXTOS[datos.message] || datos.message) + TEXTOS.js_num_prefijo + datos.data.id_solicitud + '.', true);
             formulario.reset();
         })
         .catch(function (error) {

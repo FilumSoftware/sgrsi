@@ -27,7 +27,7 @@ function reemplazarFilas(tbody, filas, columnas, vacio) {
 
 function cargarMetricas() {
     botonActualizarMetricas.disabled = true;
-    estadoMetricas.textContent = 'Actualizando métricas…';
+    estadoMetricas.textContent = TEXTOS.js_actualizando_metricas;
 
     fetch('../../../BackEnd/api/metricas.php', {
         method: 'GET',
@@ -37,7 +37,7 @@ function cargarMetricas() {
         .then(function (respuesta) {
             return respuesta.json().then(function (datos) {
                 if (!respuesta.ok || datos.status !== 'success') {
-                    throw new Error(datos.message || 'No se pudieron cargar las métricas.');
+                    throw new Error(datos.message || TEXTOS.js_error_metricas);
                 }
                 return datos.data;
             });
@@ -47,21 +47,21 @@ function cargarMetricas() {
                 document.getElementById('equipos-mas-fallados'),
                 datos.equipos_mas_fallados,
                 ['nombre_equipo', 'nombre_salon', 'total_fallas'],
-                'Todavía no hay fallas registradas.'
+                TEXTOS.js_sin_fallas
             );
             reemplazarFilas(
                 document.getElementById('solicitudes-por-mes'),
                 datos.solicitudes_por_mes,
                 ['periodo', 'cantidad'],
-                'Todavía no hay solicitudes registradas.'
+                TEXTOS.js_sin_solicitudes
             );
             const promedio = datos.tiempo_promedio_resolucion_horas;
             document.getElementById('promedio-resolucion').textContent =
-                promedio === null ? 'Sin tickets resueltos' : String(promedio) + ' horas';
-            estadoMetricas.textContent = 'Métricas actualizadas.';
+                promedio === null ? TEXTOS.js_sin_resueltos : String(promedio) + ' ' + TEXTOS.js_horas;
+            estadoMetricas.textContent = TEXTOS.js_metricas_actualizadas;
         })
         .catch(function (error) {
-            estadoMetricas.textContent = error.message || 'No se pudieron cargar las métricas.';
+            estadoMetricas.textContent = TEXTOS[error.message] || error.message || TEXTOS.js_error_metricas;
         })
         .finally(function () {
             botonActualizarMetricas.disabled = false;

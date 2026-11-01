@@ -15,12 +15,12 @@ function validarTexto(campo, idError, minimo, etiqueta) {
     const texto = campo.value.trim();
 
     if (texto === '') {
-        mostrarError(campo, idError, 'Completá ' + etiqueta + '.');
+        mostrarError(campo, idError, TEXTOS.js_completa_campo.replace('{campo}', etiqueta));
         return false;
     }
 
     if (texto.length < minimo) {
-        mostrarError(campo, idError, 'Escribí al menos ' + minimo + ' caracteres.');
+        mostrarError(campo, idError, TEXTOS.js_minimo_caracteres.replace('{n}', minimo));
         return false;
     }
 

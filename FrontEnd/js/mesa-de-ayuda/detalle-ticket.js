@@ -13,14 +13,14 @@ const MOTIVO_MINIMO = 10;
 function leerRespuestaDetalle(respuesta) {
     return respuesta.json().then(function (datos) {
         if (!respuesta.ok || datos.status !== 'success') {
-            throw new Error(datos.message || 'No se pudo completar la operación.');
+            throw new Error(datos.message || TEXTOS.js_error_operacion);
         }
         return datos;
     });
 }
 
 function mostrarResultadoDetalle(mensaje, exito) {
-    resultadoGuardado.textContent = mensaje;
+    resultadoGuardado.textContent = TEXTOS[mensaje] || mensaje;
     resultadoGuardado.classList.toggle('mensaje-exito', exito);
     resultadoGuardado.style.display = 'block';
 }
@@ -60,7 +60,7 @@ fetch('../../../BackEnd/api/tickets.php?id=' + encodeURIComponent(idTicket), {
         document.getElementById('prioridad').value = ticket.prioridad;
         const estado = document.getElementById('estado');
         if (ticket.estado_ticket === 'Cancelado' && !Array.from(estado.options).some(function (opcion) { return opcion.value === 'Cancelado'; })) {
-            estado.add(new Option('Cancelado', 'Cancelado'));
+            estado.add(new Option(TEXTOS['valor_Cancelado'], 'Cancelado'));
         }
         estado.value = ticket.estado_ticket;
         document.getElementById('responsable').value = ticket.ci_responsable || '';
@@ -83,10 +83,10 @@ fetch('../../../BackEnd/api/tickets.php?id=' + encodeURIComponent(idTicket), {
 
 if (!inputMotivo.disabled) {
     salon.addEventListener('change', function () {
-        equipo.replaceChildren(new Option('Cargando equipos...', ''));
+        equipo.replaceChildren(new Option(TEXTOS.cargando_equipos, ''));
         const seleccionado = salon.value;
         if (!seleccionado) {
-            equipo.replaceChildren(new Option('Elegí primero un salón', ''));
+            equipo.replaceChildren(new Option(TEXTOS.opt_elegi_salon_primero, ''));
             return;
         }
         fetch('../../../BackEnd/api/catalogos.php?tipo=equipos&salon=' + encodeURIComponent(seleccionado), {
@@ -95,21 +95,21 @@ if (!inputMotivo.disabled) {
             .then(leerRespuestaDetalle)
             .then(function (datos) {
                 if (salon.value !== seleccionado) return;
-                equipo.replaceChildren(new Option('Elija una opción', ''));
+                equipo.replaceChildren(new Option(TEXTOS.opt_elija_opcion, ''));
                 datos.data.forEach(function (fila) {
                     equipo.add(new Option(fila.nombre_equipo, fila.id_equipo));
                 });
             })
             .catch(function (error) {
                 if (salon.value !== seleccionado) return;
-                equipo.replaceChildren(new Option('No se pudieron cargar equipos', ''));
+                equipo.replaceChildren(new Option(TEXTOS.js_error_cargar_equipos, ''));
                 mostrarResultadoDetalle(error.message, false);
             });
     });
 
     formulario.addEventListener('submit', function (evento) {
         evento.preventDefault();
-        if (!validarTexto(inputMotivo, 'error-motivo', MOTIVO_MINIMO, 'el motivo')) {
+        if (!validarTexto(inputMotivo, 'error-motivo', MOTIVO_MINIMO, TEXTOS.etq_motivo)) {
             return;
         }
         if (!formulario.reportValidity()) return;
@@ -159,7 +159,7 @@ const botonCancelar = document.getElementById('btn-cancelar-ticket');
 
 if (botonCancelar) {
     botonCancelar.addEventListener('click', function () {
-        if (!window.confirm('¿Querés cancelar este ticket? Esta acción no se puede deshacer.')) {
+        if (!window.confirm(TEXTOS.js_confirm_cancelar_ticket)) {
             return;
         }
 
@@ -179,24 +179,24 @@ if (botonCancelar) {
             .then(function (respuesta) {
                 return respuesta.json().then(function (datos) {
                     if (!respuesta.ok || datos.status !== 'success') {
-                        throw new Error(datos.message || 'No se pudo cancelar el ticket.');
+                        throw new Error(datos.message || TEXTOS.js_error_cancelar_ticket);
                     }
                     return datos;
                 });
             })
             .then(function (datos) {
                 const estado = document.getElementById('estado');
-                estado.add(new Option('Cancelado', 'Cancelado'));
+                estado.add(new Option(TEXTOS['valor_Cancelado'], 'Cancelado'));
                 estado.value = datos.data.estado_ticket;
                 document.querySelectorAll('#form-detalle-ticket input, #form-detalle-ticket select, #form-detalle-ticket textarea, #form-detalle-ticket button')
                     .forEach(function (control) { control.disabled = true; });
                 botonCancelar.remove();
-                resultado.textContent = datos.message;
+                resultado.textContent = TEXTOS[datos.message] || datos.message;
                 resultado.classList.add('mensaje-exito');
                 resultado.style.display = 'block';
             })
             .catch(function (error) {
-                resultado.textContent = error.message || 'No se pudo cancelar el ticket.';
+                resultado.textContent = TEXTOS[error.message] || error.message || TEXTOS.js_error_cancelar_ticket;
                 resultado.style.display = 'block';
                 botonCancelar.disabled = false;
             });

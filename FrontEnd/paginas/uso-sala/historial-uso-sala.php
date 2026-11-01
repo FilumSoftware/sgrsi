@@ -2,6 +2,9 @@
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/GestorUsoSala.php';
+require_once __DIR__ . '/../../../BackEnd/logica/Idioma.php';
+
+Idioma::iniciar();
 
 ControlAcceso::exigirSesion('../../../index.php');
 
@@ -18,13 +21,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $avisos = [
-    'creado'    => ['exito', 'El uso de la sala se registró correctamente.'],
-    'guardado'  => ['exito', 'Los cambios se guardaron.'],
-    'eliminado' => ['exito', 'El registro se eliminó.'],
-    'permiso'   => ['error', 'Solo el coordinador puede eliminar registros.'],
-    'ajeno'     => ['error', 'Ese registro no es tuyo.'],
-    'noexiste'  => ['error', 'No existe un registro con ese número.'],
-    'error'     => ['error', 'No se pudo completar la operación. Intentá de nuevo en unos minutos.'],
+    'creado'    => ['exito', Idioma::t('aviso_uso_creado')],
+    'guardado'  => ['exito', Idioma::t('aviso_guardado')],
+    'eliminado' => ['exito', Idioma::t('aviso_registro_eliminado')],
+    'permiso'   => ['error', Idioma::t('aviso_permiso_registros')],
+    'ajeno'     => ['error', Idioma::t('aviso_registro_ajeno')],
+    'noexiste'  => ['error', Idioma::t('aviso_registro_noexiste')],
+    'error'     => ['error', Idioma::t('aviso_error_operacion')],
 ];
 
 $mensaje = null;
@@ -53,7 +56,7 @@ function v($texto)
 
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?php echo Idioma::t('html_lang'); ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -61,7 +64,7 @@ function v($texto)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/main.css">
     <link rel="stylesheet" href="../../css/sala.css">
-    <title>SGRSI - Historial de uso de sala</title>
+    <title><?php echo Idioma::e('tit_historial_uso'); ?></title>
 </head>
 
 <body>
@@ -70,18 +73,18 @@ function v($texto)
         <nav class="sidebar">
             <ul>
                 <?php if (Sesion::esCoordinador()) { ?>
-                    <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                    <li class="sidebar-item"><a href="../dashboard/dashboard.php"><?php echo Idioma::e('nav_dashboard'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item activo">Sala de informática</li>
+                <li class="sidebar-item activo"><?php echo Idioma::e('nav_sala'); ?></li>
                 <?php if (ControlAcceso::puedeAtender()) { ?>
-                    <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
+                    <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php"><?php echo Idioma::e('nav_inventario'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php"><?php echo Idioma::e('nav_mesa'); ?></a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php"><?php echo Idioma::e('nav_solicitudes'); ?></a></li>
                 <?php if (ControlAcceso::puedeGestionarUsuarios()) { ?>
-                    <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.php">Usuarios</a></li>
+                    <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.php"><?php echo Idioma::e('nav_usuarios'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir">Cerrar sesión</a></li>
+                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir"><?php echo Idioma::e('nav_cerrar_sesion'); ?></a></li>
             </ul>
         </nav>
 
@@ -90,12 +93,13 @@ function v($texto)
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item"><a href="planilla-uso-sala.php">Planilla de uso</a></li>
-                        <li class="topbar-item activo">Historial de uso</li>
+                        <li class="topbar-item"><a href="planilla-uso-sala.php"><?php echo Idioma::e('tab_planilla_uso'); ?></a></li>
+                        <li class="topbar-item activo"><?php echo Idioma::e('tab_historial_uso'); ?></li>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
-                    <img src="../../img/logo.png" alt="Logo SGRSI">
+                    <a class="btn-idioma" href="<?php echo Idioma::hrefAlternativo(); ?>" hreflang="<?php echo Idioma::alternativo(); ?>" title="<?php echo Idioma::e('idioma_titulo'); ?>"><?php echo Idioma::e('idioma_boton'); ?></a>
+                    <img src="../../img/logo.png" alt="<?php echo Idioma::e('logo_alt'); ?>">
                     <span>SGRSI</span>
                 </div>
             </header>
@@ -113,20 +117,20 @@ function v($texto)
                     <table>
                         <thead>
                             <tr>
-                                <th>Fecha</th>
-                                <th>Horario</th>
-                                <th>Docente</th>
-                                <th>Asignatura</th>
-                                <th>Grupo</th>
-                                <th>Turno</th>
-                                <th>Salón</th>
-                                <th>Acciones</th>
+                                <th><?php echo Idioma::e('th_fecha'); ?></th>
+                                <th><?php echo Idioma::e('th_horario'); ?></th>
+                                <th><?php echo Idioma::e('th_docente'); ?></th>
+                                <th><?php echo Idioma::e('th_asignatura'); ?></th>
+                                <th><?php echo Idioma::e('th_grupo'); ?></th>
+                                <th><?php echo Idioma::e('th_turno'); ?></th>
+                                <th><?php echo Idioma::e('th_salon'); ?></th>
+                                <th><?php echo Idioma::e('th_acciones'); ?></th>
                             </tr>
                         </thead>
                         <tbody id="lista-usos" data-csrf="<?php echo v(Sesion::tokenApi()); ?>" data-coordinador="<?php echo Sesion::esCoordinador() ? '1' : '0'; ?>">
                             <?php if (empty($usos)) { ?>
                                 <tr>
-                                    <td colspan="8">Todavía no hay registros de uso de sala.</td>
+                                    <td colspan="8"><?php echo Idioma::e('vacio_uso_sala'); ?></td>
                                 </tr>
                             <?php } ?>
 
@@ -140,13 +144,13 @@ function v($texto)
                                     <td><?php echo v($uso['turno']); ?></td>
                                     <td><?php echo v($uso['nombre_salon']); ?></td>
                                     <td class="acciones">
-                                        <a class="btn-editar" href="detalle-uso-sala.php?id=<?php echo urlencode($uso['id_uso']); ?>&amp;modo=editar">Editar</a>
+                                        <a class="btn-editar" href="detalle-uso-sala.php?id=<?php echo urlencode($uso['id_uso']); ?>&amp;modo=editar"><?php echo Idioma::e('btn_editar'); ?></a>
 
                                         <?php if (Sesion::esCoordinador()) { ?>
                                             <form action="historial-uso-sala.php" method="post" class="form-en-linea">
                                                 <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                                                 <input type="hidden" name="id" value="<?php echo v($uso['id_uso']); ?>">
-                                                <button type="submit" class="btn-eliminar" data-confirmar="1">Eliminar</button>
+                                                <button type="submit" class="btn-eliminar" data-confirmar="1"><?php echo Idioma::e('btn_eliminar'); ?></button>
                                             </form>
                                         <?php } ?>
                                     </td>
@@ -159,6 +163,7 @@ function v($texto)
 
         </main>
     </div>
+    <script>const TEXTOS = <?php echo Idioma::json(); ?>;</script>
     <script src="../../js/uso-sala/historial-uso-sala.js"></script>
 </body>
 

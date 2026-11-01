@@ -4,14 +4,14 @@ const resultadoTickets = document.getElementById('resultado-tickets');
 function leerRespuestaTickets(respuesta) {
     return respuesta.json().then(function (datos) {
         if (!respuesta.ok || datos.status !== 'success') {
-            throw new Error(datos.message || 'No se pudo completar la operación.');
+            throw new Error(datos.message || TEXTOS.js_error_operacion);
         }
         return datos;
     });
 }
 
 function mostrarResultadoTickets(mensaje, exito) {
-    resultadoTickets.textContent = mensaje;
+    resultadoTickets.textContent = TEXTOS[mensaje] || mensaje;
     resultadoTickets.classList.toggle('mensaje-exito', exito);
     resultadoTickets.style.display = 'block';
 }
@@ -54,7 +54,7 @@ function crearFilaTicket(ticket) {
     agregarCelda(fila, ticket.nombre_salon);
     agregarCelda(fila, ticket.nombre_equipo);
     agregarCelda(fila, ticket.tipo_de_defecto === 'Otros' && ticket.detalle_defecto
-        ? 'Otros: ' + ticket.detalle_defecto : ticket.tipo_de_defecto);
+        ? TEXTOS.js_otros_prefijo + ticket.detalle_defecto : ticket.tipo_de_defecto);
 
     const estado = document.createElement('span');
     estado.className = 'badge';
@@ -64,12 +64,12 @@ function crearFilaTicket(ticket) {
     if (ticket.estado_ticket === 'Pendiente' || ticket.estado_ticket === 'En proceso') {
         estado.classList.add('text-dark');
     }
-    estado.textContent = ticket.estado_ticket;
+    estado.textContent = TEXTOS['valor_' + ticket.estado_ticket];
     const celdaEstado = agregarCelda(fila, estado);
     if (ticket.fuera_de_plazo) {
         const avisoPlazo = document.createElement('span');
         avisoPlazo.className = 'aviso-plazo-vencido';
-        avisoPlazo.textContent = 'Fuera de plazo';
+        avisoPlazo.textContent = TEXTOS.js_fuera_de_plazo;
         celdaEstado.append(avisoPlazo);
     }
 
@@ -79,7 +79,7 @@ function crearFilaTicket(ticket) {
     const editar = document.createElement('a');
     editar.className = 'btn-editar';
     editar.href = url + (atender ? '&modo=editar' : '');
-    editar.textContent = atender ? 'Atender' : 'Ver';
+    editar.textContent = atender ? TEXTOS.js_atender : TEXTOS.js_ver;
     acciones.append(editar);
 
     if (listaTickets.dataset.coordinador === '1') {
@@ -87,7 +87,7 @@ function crearFilaTicket(ticket) {
         eliminar.type = 'button';
         eliminar.className = 'btn-eliminar';
         eliminar.dataset.id = ticket.id_ticket;
-        eliminar.textContent = 'Eliminar';
+        eliminar.textContent = TEXTOS.btn_eliminar;
         acciones.append(eliminar);
     }
     return fila;
@@ -99,13 +99,13 @@ function cargarTickets() {
         .then(function (datos) {
             const tickets = datos.data || [];
             if (tickets.length === 0) {
-                mostrarFilaVacia('Todavía no hay tickets registrados.');
+                mostrarFilaVacia(TEXTOS.dash_sin_tickets);
                 return;
             }
             listaTickets.replaceChildren(...tickets.map(crearFilaTicket));
         })
         .catch(function (error) {
-            mostrarFilaVacia('No se pudo cargar el historial de tickets.');
+            mostrarFilaVacia(TEXTOS.js_error_cargar_historial_tickets);
             mostrarResultadoTickets(error.message, false);
         });
 }
@@ -113,7 +113,7 @@ function cargarTickets() {
 listaTickets.addEventListener('click', function (evento) {
     const boton = evento.target.closest('button[data-id]');
     if (boton) {
-        if (!window.confirm('¿Eliminar este ticket? No se puede deshacer.')) return;
+        if (!window.confirm(TEXTOS.js_confirm_eliminar_ticket)) return;
         boton.disabled = true;
         fetch('../../../BackEnd/api/tickets.php?id=' + encodeURIComponent(boton.dataset.id), {
             method: 'DELETE',
@@ -126,7 +126,7 @@ listaTickets.addEventListener('click', function (evento) {
             .then(leerRespuestaTickets)
             .then(function (datos) {
                 boton.closest('tr').remove();
-                if (!listaTickets.querySelector('tr')) mostrarFilaVacia('Todavía no hay tickets registrados.');
+                if (!listaTickets.querySelector('tr')) mostrarFilaVacia(TEXTOS.dash_sin_tickets);
                 mostrarResultadoTickets(datos.message, true);
             })
             .catch(function (error) {

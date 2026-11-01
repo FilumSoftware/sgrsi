@@ -13,14 +13,14 @@ let formularioModificado = false;
 function leerRespuestaUsoSala(respuesta) {
     return respuesta.json().then(function (datos) {
         if (!respuesta.ok || datos.status !== 'success') {
-            throw new Error(datos.message || 'No se pudo completar la operación.');
+            throw new Error(datos.message || TEXTOS.js_error_operacion);
         }
         return datos;
     });
 }
 
 function mostrarResultadoUsoSala(mensaje, exito) {
-    resultadoUsoSala.textContent = mensaje;
+    resultadoUsoSala.textContent = TEXTOS[mensaje] || mensaje;
     resultadoUsoSala.classList.toggle('mensaje-exito', exito);
     resultadoUsoSala.style.display = 'block';
 }
@@ -39,11 +39,11 @@ function crearFilaPc(equipos, numero) {
     campoPc.className = 'campo';
     const etiquetaPc = document.createElement('label');
     etiquetaPc.htmlFor = 'pc-' + numero;
-    etiquetaPc.textContent = 'PC';
+    etiquetaPc.textContent = TEXTOS.js_pc;
     const selector = document.createElement('select');
     selector.id = 'pc-' + numero;
     selector.name = 'pc[' + numero + ']';
-    selector.add(new Option('-- Seleccioná una PC --', ''));
+    selector.add(new Option(TEXTOS.opt_selecciona_pc, ''));
     equipos.forEach(function (equipo) {
         selector.add(new Option(equipo.nombre_equipo, equipo.id_equipo));
     });
@@ -53,12 +53,12 @@ function crearFilaPc(equipos, numero) {
     campoAlumno.className = 'campo';
     const etiquetaAlumno = document.createElement('label');
     etiquetaAlumno.htmlFor = 'alumno-' + numero;
-    etiquetaAlumno.textContent = 'Alumno';
+    etiquetaAlumno.textContent = TEXTOS.th_alumno;
     const alumno = document.createElement('input');
     alumno.type = 'text';
     alumno.id = 'alumno-' + numero;
     alumno.name = 'alumno[' + numero + ']';
-    alumno.placeholder = 'Nombre del alumno';
+    alumno.placeholder = TEXTOS.ph_nombre_alumno;
     campoAlumno.append(etiquetaAlumno, alumno);
     fila.append(campoPc, campoAlumno);
     return fila;
@@ -69,7 +69,7 @@ function mostrarEquipos(equipos) {
     if (!equipos.length) {
         const aviso = document.createElement('p');
         aviso.className = 'sin-accion';
-        aviso.textContent = 'Elegí un salón para asignar las PC.';
+        aviso.textContent = TEXTOS.nota_elegi_salon_pcs;
         listaPcs.insertBefore(aviso, botonAgregarPc || document.getElementById('error-pcs'));
     } else {
         const referencia = botonAgregarPc || document.getElementById('error-pcs');
@@ -80,7 +80,7 @@ function mostrarEquipos(equipos) {
             botonAgregarPc = document.createElement('button');
             botonAgregarPc.type = 'button';
             botonAgregarPc.id = 'agregar-pc';
-            botonAgregarPc.textContent = '+ Agregar PC';
+            botonAgregarPc.textContent = TEXTOS.btn_agregar_pc;
             listaPcs.insertBefore(botonAgregarPc, document.getElementById('error-pcs'));
         }
     }
@@ -170,7 +170,7 @@ if (idRegistro) {
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
     if (horaEntrada.value !== '' && horaSalida.value !== '' && horaSalida.value <= horaEntrada.value) {
-        errorSalida.textContent = 'La hora de salida debe ser posterior a la de entrada.';
+        errorSalida.textContent = TEXTOS.js_hora_salida_posterior;
         errorSalida.style.display = 'block';
         horaSalida.classList.add('input-error');
         return;
@@ -189,7 +189,7 @@ formulario.addEventListener('submit', function (evento) {
         .filter(function (equipo) { return equipo.id_equipo !== ''; });
     if (!equipos.length) {
         const errorPcs = document.getElementById('error-pcs');
-        errorPcs.textContent = 'Asigná al menos una PC.';
+        errorPcs.textContent = TEXTOS.js_asigna_pc;
         errorPcs.style.display = 'block';
         return;
     }

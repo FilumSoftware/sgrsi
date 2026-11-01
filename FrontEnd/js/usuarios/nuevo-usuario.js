@@ -10,7 +10,7 @@ const LARGO_MINIMO_CLAVE = 8;
 
 function validarCi() {
     if (!CI_VALIDA.test(inputCi.value.trim())) {
-        mostrarError(inputCi, 'error-ci', 'La cédula son ocho dígitos, sin puntos ni guiones.');
+        mostrarError(inputCi, 'error-ci', TEXTOS.js_ci_invalida);
         return false;
     }
 
@@ -20,7 +20,7 @@ function validarCi() {
 
 function validarPassword() {
     if (password.value.length < LARGO_MINIMO_CLAVE) {
-        mostrarError(password, 'error-password', 'La contraseña debe tener al menos ' + LARGO_MINIMO_CLAVE + ' caracteres.');
+        mostrarError(password, 'error-password', TEXTOS.js_clave_corta.replace('{n}', LARGO_MINIMO_CLAVE));
         return false;
     }
 
@@ -30,7 +30,7 @@ function validarPassword() {
 
 function validarConfirmacion() {
     if (confirmarPassword.value !== password.value) {
-        mostrarError(confirmarPassword, 'error-confirmar-password', 'Las contraseñas no coinciden.');
+        mostrarError(confirmarPassword, 'error-confirmar-password', TEXTOS.js_claves_no_coinciden);
         return false;
     }
 
@@ -41,7 +41,7 @@ function validarConfirmacion() {
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
     const ciOk = validarCi();
-    const nombreOk = validarTexto(inputNombre, 'error-nombre', 1, 'el nombre');
+    const nombreOk = validarTexto(inputNombre, 'error-nombre', 1, TEXTOS.etq_nombre);
     const claveOk = validarPassword();
     const confirmacionOk = validarConfirmacion();
 
@@ -66,18 +66,18 @@ formulario.addEventListener('submit', function (evento) {
     })
         .then(function (respuesta) {
             return respuesta.json().then(function (datos) {
-                if (!respuesta.ok || datos.status !== 'success') throw new Error(datos.message || 'No se pudo crear el usuario.');
+                if (!respuesta.ok || datos.status !== 'success') throw new Error(datos.message || TEXTOS.js_error_crear_usuario);
                 return datos;
             });
         })
         .then(function (datos) {
-            resultadoUsuario.textContent = datos.message;
+            resultadoUsuario.textContent = TEXTOS[datos.message] || datos.message;
             resultadoUsuario.classList.add('mensaje-exito');
             resultadoUsuario.style.display = 'block';
             formulario.reset();
         })
         .catch(function (error) {
-            resultadoUsuario.textContent = error.message || 'No se pudo crear el usuario.';
+            resultadoUsuario.textContent = TEXTOS[error.message] || error.message || TEXTOS.js_error_crear_usuario;
             resultadoUsuario.classList.remove('mensaje-exito');
             resultadoUsuario.style.display = 'block';
         })

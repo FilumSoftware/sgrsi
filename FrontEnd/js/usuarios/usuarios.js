@@ -4,14 +4,14 @@ const resultadoUsuarios = document.getElementById('resultado-usuarios');
 function leerRespuestaUsuarios(respuesta) {
     return respuesta.json().then(function (datos) {
         if (!respuesta.ok || datos.status !== 'success') {
-            throw new Error(datos.message || 'No se pudo completar la operación.');
+            throw new Error(datos.message || TEXTOS.js_error_operacion);
         }
         return datos;
     });
 }
 
 function mostrarResultadoUsuarios(mensaje, exito) {
-    resultadoUsuarios.textContent = mensaje;
+    resultadoUsuarios.textContent = TEXTOS[mensaje] || mensaje;
     resultadoUsuarios.classList.toggle('mensaje-exito', exito);
     resultadoUsuarios.style.display = 'block';
 }
@@ -33,8 +33,8 @@ function crearFilaUsuario(usuario) {
     enlace.textContent = usuario.ci;
     celda(fila, enlace);
     celda(fila, usuario.nombre_usuario);
-    celda(fila, usuario.tipo_de_usuario);
-    const estado = celda(fila, usuario.estado_cuenta);
+    celda(fila, TEXTOS['valor_' + usuario.tipo_de_usuario]);
+    const estado = celda(fila, TEXTOS['valor_' + usuario.estado_cuenta]);
     estado.dataset.estado = '1';
     fila.classList.toggle('fila-desactivada', usuario.estado_cuenta === 'Inactiva');
     fila.classList.add('fila-clickeable');
@@ -44,13 +44,13 @@ function crearFilaUsuario(usuario) {
     const editar = document.createElement('a');
     editar.className = 'btn-editar';
     editar.href = url + '&modo=editar';
-    editar.textContent = 'Editar';
+    editar.textContent = TEXTOS.btn_editar;
     acciones.append(editar);
 
     if (usuario.ci === listaUsuarios.dataset.ci) {
         const propia = document.createElement('span');
         propia.className = 'sin-accion';
-        propia.textContent = 'Tu cuenta';
+        propia.textContent = TEXTOS.txt_tu_cuenta;
         acciones.append(propia);
     } else {
         const boton = document.createElement('button');
@@ -58,7 +58,7 @@ function crearFilaUsuario(usuario) {
         boton.dataset.ci = usuario.ci;
         boton.dataset.estado = usuario.estado_cuenta;
         boton.className = usuario.estado_cuenta === 'Inactiva' ? 'btn-editar' : 'btn-eliminar';
-        boton.textContent = usuario.estado_cuenta === 'Inactiva' ? 'Habilitar' : 'Inhabilitar';
+        boton.textContent = usuario.estado_cuenta === 'Inactiva' ? TEXTOS.js_habilitar : TEXTOS.js_inhabilitar;
         acciones.append(boton);
     }
     return fila;
@@ -72,7 +72,7 @@ function cargarUsuarios() {
             if (usuarios.length) listaUsuarios.replaceChildren(...usuarios.map(crearFilaUsuario));
             else {
                 const fila = document.createElement('tr');
-                const vacio = celda(fila, 'No hay usuarios registrados.');
+                const vacio = celda(fila, TEXTOS.vacio_usuarios);
                 vacio.colSpan = 5;
                 listaUsuarios.replaceChildren(fila);
             }
@@ -85,7 +85,7 @@ function cargarUsuarios() {
 listaUsuarios.addEventListener('click', function (evento) {
     const boton = evento.target.closest('button[data-ci]');
     if (boton) {
-        if (!window.confirm('¿Seguro que querés cambiar el estado de esta cuenta?')) return;
+        if (!window.confirm(TEXTOS.js_confirm_estado_cuenta)) return;
         const inactiva = boton.dataset.estado === 'Inactiva';
         const nuevoEstado = inactiva ? 'Activa' : 'Inactiva';
         const url = '../../../BackEnd/api/usuarios.php?ci=' + encodeURIComponent(boton.dataset.ci);
@@ -103,11 +103,11 @@ listaUsuarios.addEventListener('click', function (evento) {
             .then(leerRespuestaUsuarios)
             .then(function (datos) {
                 const fila = boton.closest('tr');
-                fila.querySelector('[data-estado]').textContent = nuevoEstado;
+                fila.querySelector('[data-estado]').textContent = TEXTOS['valor_' + nuevoEstado];
                 fila.classList.toggle('fila-desactivada', nuevoEstado === 'Inactiva');
                 boton.dataset.estado = nuevoEstado;
                 boton.className = nuevoEstado === 'Inactiva' ? 'btn-editar' : 'btn-eliminar';
-                boton.textContent = nuevoEstado === 'Inactiva' ? 'Habilitar' : 'Inhabilitar';
+                boton.textContent = nuevoEstado === 'Inactiva' ? TEXTOS.js_habilitar : TEXTOS.js_inhabilitar;
                 mostrarResultadoUsuarios(datos.message, true);
             })
             .catch(function (error) {

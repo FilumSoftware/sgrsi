@@ -315,6 +315,25 @@ tbody tr:focus-within {
     background-color: var(--color-primario);
 }
 
+.btn-idioma {
+    display: inline-block;
+    padding: 5px 10px;
+    border: 1px solid var(--color-secundario);
+    border-radius: var(--borde-radius);
+    background-color: transparent;
+    color: var(--color-secundario);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-idioma:hover,
+.btn-idioma:focus {
+    background-color: var(--color-secundario);
+    color: var(--color-fondo);
+}
+
 .form-container {
     width: 100%;
     max-width: 600px;

@@ -13,7 +13,7 @@ fetch('../../../BackEnd/api/inventario.php?id=' + encodeURIComponent(idEquipo), 
 })
     .then(function (respuesta) {
         return respuesta.json().then(function (datos) {
-            if (!respuesta.ok || datos.status !== 'success') throw new Error(datos.message || 'No se pudo cargar el equipo.');
+            if (!respuesta.ok || datos.status !== 'success') throw new Error(datos.message || TEXTOS.js_error_cargar_equipo);
             return datos.data;
         });
     })
@@ -25,7 +25,7 @@ fetch('../../../BackEnd/api/inventario.php?id=' + encodeURIComponent(idEquipo), 
         document.getElementById('estado').value = equipo.estado_equipo;
     })
     .catch(function (error) {
-        resultado.textContent = error.message || 'No se pudo cargar el equipo.';
+        resultado.textContent = TEXTOS[error.message] || error.message || TEXTOS.js_error_cargar_equipo;
         resultado.classList.remove('mensaje-exito');
         resultado.style.display = 'block';
     });
@@ -33,7 +33,7 @@ fetch('../../../BackEnd/api/inventario.php?id=' + encodeURIComponent(idEquipo), 
 if (!inputNombre.disabled) {
     formulario.addEventListener('submit', function (evento) {
         evento.preventDefault();
-        if (!validarTexto(inputNombre, 'error-nombre', 1, 'el nombre del equipo')) return;
+        if (!validarTexto(inputNombre, 'error-nombre', 1, TEXTOS.etq_nombre_equipo)) return;
         if (!formulario.reportValidity()) return;
 
         const boton = document.getElementById('btn-guardar');
@@ -56,18 +56,18 @@ if (!inputNombre.disabled) {
             .then(function (respuesta) {
                 return respuesta.json().then(function (datos) {
                     if (!respuesta.ok || datos.status !== 'success') {
-                        throw new Error(datos.message || 'No se pudo guardar el equipo.');
+                        throw new Error(datos.message || TEXTOS.js_error_guardar_equipo);
                     }
                     return datos;
                 });
             })
             .then(function (datos) {
-                resultado.textContent = datos.message;
+                resultado.textContent = TEXTOS[datos.message] || datos.message;
                 resultado.classList.add('mensaje-exito');
                 resultado.style.display = 'block';
             })
             .catch(function (error) {
-                resultado.textContent = error.message || 'No se pudo guardar el equipo.';
+                resultado.textContent = TEXTOS[error.message] || error.message || TEXTOS.js_error_guardar_equipo;
                 resultado.classList.remove('mensaje-exito');
                 resultado.style.display = 'block';
             })

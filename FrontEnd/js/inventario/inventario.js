@@ -4,14 +4,14 @@ const resultadoInventario = document.getElementById('resultado-inventario');
 function leerRespuestaInventario(respuesta) {
     return respuesta.json().then(function (datos) {
         if (!respuesta.ok || datos.status !== 'success') {
-            throw new Error(datos.message || 'No se pudo completar la operación.');
+            throw new Error(datos.message || TEXTOS.js_error_operacion);
         }
         return datos;
     });
 }
 
 function mostrarResultadoInventario(mensaje, exito) {
-    resultadoInventario.textContent = mensaje;
+    resultadoInventario.textContent = TEXTOS[mensaje] || mensaje;
     resultadoInventario.classList.toggle('mensaje-exito', exito);
     resultadoInventario.style.display = 'block';
 }
@@ -48,7 +48,7 @@ function crearFilaEquipo(equipo) {
     agregarCelda(fila, equipo.nombre_equipo);
     agregarCelda(fila, equipo.descripcion);
     agregarCelda(fila, equipo.nombre_salon);
-    const estado = agregarCelda(fila, equipo.estado_equipo);
+    const estado = agregarCelda(fila, TEXTOS['valor_' + equipo.estado_equipo]);
     estado.dataset.estado = '1';
 
     const acciones = agregarCelda(fila, '');
@@ -56,7 +56,7 @@ function crearFilaEquipo(equipo) {
     const editar = document.createElement('a');
     editar.className = 'btn-editar';
     editar.href = url + '&modo=editar';
-    editar.textContent = 'Editar';
+    editar.textContent = TEXTOS.btn_editar;
     acciones.append(editar);
 
     if (equipo.estado_equipo !== 'De baja') {
@@ -64,7 +64,7 @@ function crearFilaEquipo(equipo) {
         baja.type = 'button';
         baja.className = 'btn-eliminar';
         baja.dataset.id = equipo.id_equipo;
-        baja.textContent = 'Registrar baja';
+        baja.textContent = TEXTOS.js_registrar_baja;
         acciones.append(baja);
     }
     return fila;
@@ -76,13 +76,13 @@ function cargarInventario() {
         .then(function (datos) {
             const equipos = datos.data || [];
             if (equipos.length === 0) {
-                mostrarFilaVacia('Todavía no hay equipos registrados.');
+                mostrarFilaVacia(TEXTOS.js_sin_equipos);
                 return;
             }
             listaEquipos.replaceChildren(...equipos.map(crearFilaEquipo));
         })
         .catch(function (error) {
-            mostrarFilaVacia('No se pudo cargar el listado de equipos.');
+            mostrarFilaVacia(TEXTOS.js_error_cargar_equipos_listado);
             mostrarResultadoInventario(error.message, false);
         });
 }
@@ -90,7 +90,7 @@ function cargarInventario() {
 listaEquipos.addEventListener('click', function (evento) {
     const boton = evento.target.closest('button[data-id]');
     if (boton) {
-        if (!window.confirm('¿La administración confirmó la baja de esta PC?')) return;
+        if (!window.confirm(TEXTOS.js_confirm_baja_pc)) return;
         boton.disabled = true;
         fetch('../../../BackEnd/api/inventario.php?id=' + encodeURIComponent(boton.dataset.id), {
             method: 'DELETE',
@@ -102,7 +102,7 @@ listaEquipos.addEventListener('click', function (evento) {
         })
             .then(leerRespuestaInventario)
             .then(function (datos) {
-                boton.closest('tr').querySelector('[data-estado]').textContent = datos.data.estado_equipo;
+                boton.closest('tr').querySelector('[data-estado]').textContent = TEXTOS['valor_' + datos.data.estado_equipo];
                 boton.remove();
                 mostrarResultadoInventario(datos.message, true);
             })

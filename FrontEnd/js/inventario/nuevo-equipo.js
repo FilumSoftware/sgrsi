@@ -5,7 +5,7 @@ const boton = document.getElementById('btn-registrar');
 
 formulario.addEventListener('submit', function (evento) {
     evento.preventDefault();
-    if (!validarTexto(inputNombre, 'error-nombre', 1, 'el nombre del equipo')) return;
+    if (!validarTexto(inputNombre, 'error-nombre', 1, TEXTOS.etq_nombre_equipo)) return;
     if (!formulario.reportValidity()) return;
 
     boton.disabled = true;
@@ -26,19 +26,19 @@ formulario.addEventListener('submit', function (evento) {
         .then(function (respuesta) {
             return respuesta.json().then(function (datos) {
                 if (!respuesta.ok || datos.status !== 'success') {
-                    throw new Error(datos.message || 'No se pudo registrar el equipo.');
+                    throw new Error(datos.message || TEXTOS.js_error_registrar_equipo);
                 }
                 return datos;
             });
         })
         .then(function (datos) {
-            resultado.textContent = datos.message + ' N.º ' + datos.data.id_equipo + '.';
+            resultado.textContent = (TEXTOS[datos.message] || datos.message) + TEXTOS.js_num_prefijo + datos.data.id_equipo + '.';
             resultado.classList.add('mensaje-exito');
             resultado.style.display = 'block';
             formulario.reset();
         })
         .catch(function (error) {
-            resultado.textContent = error.message || 'No se pudo registrar el equipo.';
+            resultado.textContent = TEXTOS[error.message] || error.message || TEXTOS.js_error_registrar_equipo;
             resultado.classList.remove('mensaje-exito');
             resultado.style.display = 'block';
         })

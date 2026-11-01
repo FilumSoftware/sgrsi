@@ -2,6 +2,9 @@
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/GestorUsuarios.php';
+require_once __DIR__ . '/../../../BackEnd/logica/Idioma.php';
+
+Idioma::iniciar();
 
 ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
 
@@ -35,14 +38,14 @@ function v($texto)
 
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?php echo Idioma::t('html_lang'); ?>">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/main.css">
-    <title>SGRSI - Nuevo usuario</title>
+    <title><?php echo Idioma::e('tit_nuevo_usuario'); ?></title>
 </head>
 
 <body>
@@ -51,16 +54,16 @@ function v($texto)
         <nav class="sidebar">
             <ul>
                 <?php if (Sesion::esCoordinador()) { ?>
-                    <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                    <li class="sidebar-item"><a href="../dashboard/dashboard.php"><?php echo Idioma::e('nav_dashboard'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php">Sala de informática</a></li>
+                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php"><?php echo Idioma::e('nav_sala'); ?></a></li>
                 <?php if (ControlAcceso::puedeAtender()) { ?>
-                    <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
+                    <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php"><?php echo Idioma::e('nav_inventario'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php">Solicitudes</a></li>
-                <li class="sidebar-item activo">Usuarios</li>
-                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir">Cerrar sesión</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php"><?php echo Idioma::e('nav_mesa'); ?></a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php"><?php echo Idioma::e('nav_solicitudes'); ?></a></li>
+                <li class="sidebar-item activo"><?php echo Idioma::e('nav_usuarios'); ?></li>
+                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir"><?php echo Idioma::e('nav_cerrar_sesion'); ?></a></li>
             </ul>
         </nav>
 
@@ -69,12 +72,13 @@ function v($texto)
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item activo">Nuevo usuario</li>
-                        <li class="topbar-item"><a href="usuarios.php">Usuarios</a></li>
+                        <li class="topbar-item activo"><?php echo Idioma::e('tab_nuevo_usuario'); ?></li>
+                        <li class="topbar-item"><a href="usuarios.php"><?php echo Idioma::e('nav_usuarios'); ?></a></li>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
-                    <img src="../../img/logo.png" alt="Logo SGRSI">
+                    <a class="btn-idioma" href="<?php echo Idioma::hrefAlternativo(); ?>" hreflang="<?php echo Idioma::alternativo(); ?>" title="<?php echo Idioma::e('idioma_titulo'); ?>"><?php echo Idioma::e('idioma_boton'); ?></a>
+                    <img src="../../img/logo.png" alt="<?php echo Idioma::e('logo_alt'); ?>">
                     <span>SGRSI</span>
                 </div>
             </header>
@@ -90,30 +94,30 @@ function v($texto)
                     <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                     <fieldset>
                         <div class="form-grupo">
-                            <label for="ci">Cédula:</label>
+                            <label for="ci"><?php echo Idioma::e('lbl_cedula'); ?></label>
                             <input type="text" id="ci" name="ci" value="<?php echo v($valores['ci']); ?>" required>
                             <p class="error-mensaje" id="error-ci"<?php echo !empty($errores['ci']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['ci']) ? $errores['ci'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
-                            <label for="nombre">Nombre:</label>
+                            <label for="nombre"><?php echo Idioma::e('lbl_nombre'); ?></label>
                             <input type="text" id="nombre" name="nombre" value="<?php echo v($valores['nombre']); ?>" required>
                             <p class="error-mensaje" id="error-nombre"<?php echo !empty($errores['nombre']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['nombre']) ? $errores['nombre'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
-                            <label for="password">Contraseña:</label>
+                            <label for="password"><?php echo Idioma::e('lbl_contrasena'); ?></label>
                             <input type="password" id="password" name="password" required>
                             <p class="error-mensaje" id="error-password"<?php echo !empty($errores['password']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['password']) ? $errores['password'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
-                            <label for="confirmar-password">Repita la contraseña:</label>
+                            <label for="confirmar-password"><?php echo Idioma::e('lbl_repita_contrasena'); ?></label>
                             <input type="password" id="confirmar-password" name="confirmar-password" required>
                             <p class="error-mensaje" id="error-confirmar-password"<?php echo !empty($errores['confirmar']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['confirmar']) ? $errores['confirmar'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
-                            <label for="tipo-usuario">Permisos:</label>
+                            <label for="tipo-usuario"><?php echo Idioma::e('lbl_permisos'); ?></label>
                             <select id="tipo-usuario" name="tipo-usuario">
                                 <?php foreach ($rolesValidos as $rol) { ?>
-                                    <option value="<?php echo v($rol); ?>"<?php echo $valores['rol'] === $rol ? ' selected' : ''; ?>><?php echo v($rol); ?></option>
+                                    <option value="<?php echo v($rol); ?>"<?php echo $valores['rol'] === $rol ? ' selected' : ''; ?>><?php echo v(Idioma::t('valor_' . $rol)); ?></option>
                                 <?php } ?>
                             </select>
                             <p class="error-mensaje" id="error-rol"<?php echo !empty($errores['rol']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['rol']) ? $errores['rol'] : ''); ?></p>
@@ -126,6 +130,7 @@ function v($texto)
             </section>
         </main>
     </div>
+    <script>const TEXTOS = <?php echo Idioma::json(); ?>;</script>
     <script src="../../js/validacion.js"></script>
     <script src="../../js/usuarios/nuevo-usuario.js"></script>
 </body>

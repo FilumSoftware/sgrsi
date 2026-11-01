@@ -2,8 +2,10 @@
 
 require_once __DIR__ . '/BackEnd/logica/Autenticador.php';
 require_once __DIR__ . '/BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/BackEnd/logica/Idioma.php';
 
 Sesion::iniciar();
+Idioma::iniciar();
 
 if (Sesion::hayUsuario()) {
     header('Location: ' . ControlAcceso::pantallaInicial());
@@ -26,22 +28,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     http_response_code($resultado['codigo']);
-    $mensaje = $resultado['mensaje'];
+    $mensaje = Idioma::t($resultado['mensaje']);
 } elseif (isset($_GET['motivo']) && $_GET['motivo'] === 'sesion') {
     http_response_code(401);
-    $mensaje = 'Iniciá sesión para entrar al sistema.';
+    $mensaje = Idioma::t('login_motivo_sesion');
 } elseif (isset($_GET['motivo']) && $_GET['motivo'] === 'salida') {
-    $mensaje = 'Cerraste sesión.';
+    $mensaje = Idioma::t('login_motivo_salida');
 }
 
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?php echo Idioma::t('html_lang'); ?>">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGRSI - Login</title>
+    <title><?php echo Idioma::e('login_titulo'); ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="FrontEnd/css/main.css">
@@ -53,10 +55,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <section class="login-box">
 
+            <p class="idioma-barra">
+                <a class="btn-idioma" href="<?php echo Idioma::hrefAlternativo(); ?>"
+                   hreflang="<?php echo Idioma::alternativo(); ?>"
+                   title="<?php echo Idioma::e('idioma_titulo'); ?>"><?php echo Idioma::e('idioma_boton'); ?></a>
+            </p>
+
             <header>
-                <img src="FrontEnd/img/logo.png" alt="Filum Software" class="logo">
+                <img src="FrontEnd/img/logo.png" alt="<?php echo Idioma::e('logo_login_alt'); ?>" class="logo">
                 <h2>SGRSI</h2>
-                <p class="subtitulo">Ingresá tus datos para acceder al sistema</p>
+                <p class="subtitulo"><?php echo Idioma::e('login_subtitulo'); ?></p>
             </header>
 
             <?php if ($mensaje !== '') { ?>
@@ -64,25 +72,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php } ?>
 
             <form id="form-login" action="index.php" method="post">
-                <label for="ci">Cédula</label>
+                <label for="ci"><?php echo Idioma::e('login_cedula'); ?></label>
                 <input type="text" id="ci" name="ci" placeholder="52618740"
                        value="<?php echo htmlspecialchars($ciEnviada, ENT_QUOTES, 'UTF-8'); ?>" required>
                 <p class="error-mensaje" id="error-ci"></p>
 
-                <label for="password">Contraseña</label>
+                <label for="password"><?php echo Idioma::e('login_contrasena'); ?></label>
                 <input type="password" id="password" name="password" placeholder="••••••••" required>
                 <p class="error-mensaje" id="error-password"></p>
 
-                <button type="submit" class="btn-ingresar">Iniciar sesión</button>
+                <button type="submit" class="btn-ingresar"><?php echo Idioma::e('login_ingresar'); ?></button>
             </form>
 
         </section>
 
         <footer>
-            <p class="pie">SGRSI v2.0 — FILUM SOFTWARE © 2026</p>
+            <p class="pie"><?php echo Idioma::e('pie'); ?></p>
         </footer>
 
     </main>
+    <script>const TEXTOS = <?php echo Idioma::json(); ?>;</script>
     <script src="FrontEnd/js/validacion.js"></script>
     <script src="FrontEnd/js/login.js"></script>
 </body>

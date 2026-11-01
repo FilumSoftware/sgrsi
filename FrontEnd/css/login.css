@@ -23,6 +23,12 @@ body {
     text-align: center;
 }
 
+.idioma-barra {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
 .login-box h2 {
     font-size: 24px;
     color: var(--color-texto);

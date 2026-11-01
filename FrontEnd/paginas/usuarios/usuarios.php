@@ -2,6 +2,9 @@
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/GestorUsuarios.php';
+require_once __DIR__ . '/../../../BackEnd/logica/Idioma.php';
+
+Idioma::iniciar();
 
 ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
 
@@ -22,14 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $avisos = [
-    'activada'     => ['exito', 'La cuenta quedó habilitada.'],
-    'desactivada'  => ['exito', 'La cuenta quedó inhabilitada.'],
-    'creada'       => ['exito', 'Usuario creado correctamente.'],
-    'guardada'     => ['exito', 'Los cambios se guardaron.'],
-    'propia'       => ['error', 'No podés cambiar el estado de tu propia cuenta.'],
-    'estado'       => ['error', 'El estado indicado no es válido.'],
-    'noencontrado' => ['error', 'No existe un usuario con esa cédula.'],
-    'error'        => ['error', 'No se pudo completar la operación. Intentá de nuevo en unos minutos.'],
+    'activada'     => ['exito', Idioma::t('aviso_cuenta_habilitada')],
+    'desactivada'  => ['exito', Idioma::t('aviso_cuenta_inhabilitada')],
+    'creada'       => ['exito', Idioma::t('aviso_usuario_creado')],
+    'guardada'     => ['exito', Idioma::t('aviso_guardado')],
+    'propia'       => ['error', Idioma::t('aviso_estado_propio')],
+    'estado'       => ['error', Idioma::t('aviso_estado_invalido')],
+    'noencontrado' => ['error', Idioma::t('aviso_usuario_noexiste')],
+    'error'        => ['error', Idioma::t('aviso_error_operacion')],
 ];
 
 $mensaje = null;
@@ -54,14 +57,14 @@ function v($texto)
 
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?php echo Idioma::t('html_lang'); ?>">
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/main.css">
-    <title>SGRSI - Usuarios</title>
+    <title><?php echo Idioma::e('tit_usuarios'); ?></title>
 </head>
 
 <body>
@@ -70,16 +73,16 @@ function v($texto)
         <nav class="sidebar">
             <ul>
                 <?php if (Sesion::esCoordinador()) { ?>
-                    <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                    <li class="sidebar-item"><a href="../dashboard/dashboard.php"><?php echo Idioma::e('nav_dashboard'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php">Sala de informática</a></li>
+                <li class="sidebar-item"><a href="../uso-sala/planilla-uso-sala.php"><?php echo Idioma::e('nav_sala'); ?></a></li>
                 <?php if (ControlAcceso::puedeAtender()) { ?>
-                    <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
+                    <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php"><?php echo Idioma::e('nav_inventario'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php">Solicitudes</a></li>
-                <li class="sidebar-item activo">Usuarios</li>
-                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir">Cerrar sesión</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php"><?php echo Idioma::e('nav_mesa'); ?></a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php"><?php echo Idioma::e('nav_solicitudes'); ?></a></li>
+                <li class="sidebar-item activo"><?php echo Idioma::e('nav_usuarios'); ?></li>
+                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir"><?php echo Idioma::e('nav_cerrar_sesion'); ?></a></li>
             </ul>
         </nav>
 
@@ -88,12 +91,13 @@ function v($texto)
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item"><a href="nuevo-usuario.php">Nuevo usuario</a></li>
-                        <li class="topbar-item activo">Usuarios</li>
+                        <li class="topbar-item"><a href="nuevo-usuario.php"><?php echo Idioma::e('tab_nuevo_usuario'); ?></a></li>
+                        <li class="topbar-item activo"><?php echo Idioma::e('nav_usuarios'); ?></li>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
-                    <img src="../../img/logo.png" alt="Logo SGRSI">
+                    <a class="btn-idioma" href="<?php echo Idioma::hrefAlternativo(); ?>" hreflang="<?php echo Idioma::alternativo(); ?>" title="<?php echo Idioma::e('idioma_titulo'); ?>"><?php echo Idioma::e('idioma_boton'); ?></a>
+                    <img src="../../img/logo.png" alt="<?php echo Idioma::e('logo_alt'); ?>">
                     <span>SGRSI</span>
                 </div>
             </header>
@@ -112,16 +116,16 @@ function v($texto)
                         <thead>
                             <tr>
                                 <th>C.I.</th>
-                                <th>Nombre</th>
-                                <th>Rol</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
+                                <th><?php echo Idioma::e('th_nombre'); ?></th>
+                                <th><?php echo Idioma::e('th_rol'); ?></th>
+                                <th><?php echo Idioma::e('th_estado'); ?></th>
+                                <th><?php echo Idioma::e('th_acciones'); ?></th>
                             </tr>
                         </thead>
                         <tbody id="lista-usuarios" data-csrf="<?php echo v(Sesion::tokenApi()); ?>" data-ci="<?php echo v(Sesion::ci()); ?>">
                             <?php if (empty($usuarios)) { ?>
                                 <tr>
-                                    <td colspan="5">No hay usuarios registrados.</td>
+                                    <td colspan="5"><?php echo Idioma::e('vacio_usuarios'); ?></td>
                                 </tr>
                             <?php } ?>
 
@@ -133,17 +137,17 @@ function v($texto)
                                     <td><?php echo v($usuario['tipo_de_usuario']); ?></td>
                                     <td><?php echo v($usuario['estado_cuenta']); ?></td>
                                     <td class="acciones">
-                                        <a class="btn-editar" href="detalle-usuario.php?ci=<?php echo urlencode($usuario['ci']); ?>&amp;modo=editar">Editar</a>
+                                        <a class="btn-editar" href="detalle-usuario.php?ci=<?php echo urlencode($usuario['ci']); ?>&amp;modo=editar"><?php echo Idioma::e('btn_editar'); ?></a>
 
                                         <?php if ($usuario['ci'] === Sesion::ci()) { ?>
-                                            <span class="sin-accion">Tu cuenta</span>
+                                            <span class="sin-accion"><?php echo Idioma::e('txt_tu_cuenta'); ?></span>
                                         <?php } else { ?>
                                             <form action="usuarios.php" method="post" class="form-en-linea">
                                                 <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                                                 <input type="hidden" name="ci" value="<?php echo v($usuario['ci']); ?>">
                                                 <input type="hidden" name="estado" value="<?php echo $inactiva ? 'Activa' : 'Inactiva'; ?>">
                                                 <button type="submit" class="<?php echo $inactiva ? 'btn-editar' : 'btn-eliminar'; ?>" data-confirmar="<?php echo $inactiva ? 'habilitar' : 'inhabilitar'; ?>">
-                                                    <?php echo $inactiva ? 'Habilitar' : 'Inhabilitar'; ?>
+                                                    <?php echo $inactiva ? Idioma::e('js_habilitar') : Idioma::e('js_inhabilitar'); ?>
                                                 </button>
                                             </form>
                                         <?php } ?>
@@ -157,6 +161,7 @@ function v($texto)
 
         </main>
     </div>
+    <script>const TEXTOS = <?php echo Idioma::json(); ?>;</script>
     <script src="../../js/usuarios/usuarios.js"></script>
 </body>
 

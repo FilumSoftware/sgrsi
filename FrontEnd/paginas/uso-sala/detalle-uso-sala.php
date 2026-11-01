@@ -3,6 +3,9 @@
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/GestorUsoSala.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
+require_once __DIR__ . '/../../../BackEnd/logica/Idioma.php';
+
+Idioma::iniciar();
 
 ControlAcceso::exigirSesion('../../../index.php');
 
@@ -97,7 +100,7 @@ try {
 } catch (Exception $e) {
     error_log('SGRSI detalle-uso-sala.php salones: ' . $e->getMessage());
     $salones = [];
-    $errores['general'] = 'No se pudo cargar la lista de salones. Intentá de nuevo en unos minutos.';
+    $errores['general'] = Idioma::t('err_lista_salones');
 }
 
 $equipos = [];
@@ -107,7 +110,7 @@ if ($valores['salon'] !== '') {
         $equipos = ResultadoGestion::valor($gestor->obtenerEquiposPorSalon($valores['salon']));
     } catch (Exception $e) {
         error_log('SGRSI detalle-uso-sala.php equipos: ' . $e->getMessage());
-        $errores['general'] = 'No se pudo cargar la lista de equipos. Intentá de nuevo en unos minutos.';
+        $errores['general'] = Idioma::t('err_lista_equipos');
     }
 }
 
@@ -135,7 +138,7 @@ function claseError($errores, $campo)
 
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?php echo Idioma::t('html_lang'); ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -143,7 +146,7 @@ function claseError($errores, $campo)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/main.css">
     <link rel="stylesheet" href="../../css/sala.css">
-    <title>SGRSI - Detalle de uso de sala</title>
+    <title><?php echo Idioma::e('tit_detalle_uso'); ?></title>
 </head>
 
 <body>
@@ -152,18 +155,18 @@ function claseError($errores, $campo)
         <nav class="sidebar">
             <ul>
                 <?php if (Sesion::esCoordinador()) { ?>
-                    <li class="sidebar-item"><a href="../dashboard/dashboard.php">Dashboard</a></li>
+                    <li class="sidebar-item"><a href="../dashboard/dashboard.php"><?php echo Idioma::e('nav_dashboard'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item activo">Sala de informática</li>
+                <li class="sidebar-item activo"><?php echo Idioma::e('nav_sala'); ?></li>
                 <?php if (ControlAcceso::puedeAtender()) { ?>
-                    <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php">Inventario</a></li>
+                    <li class="sidebar-item"><a href="../inventario/nuevo-equipo.php"><?php echo Idioma::e('nav_inventario'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php">Mesa de Ayuda</a></li>
-                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php">Solicitudes</a></li>
+                <li class="sidebar-item"><a href="../mesa-de-ayuda/nuevo-ticket.php"><?php echo Idioma::e('nav_mesa'); ?></a></li>
+                <li class="sidebar-item"><a href="../solicitudes/nueva-solicitud.php"><?php echo Idioma::e('nav_solicitudes'); ?></a></li>
                 <?php if (ControlAcceso::puedeGestionarUsuarios()) { ?>
-                    <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.php">Usuarios</a></li>
+                    <li class="sidebar-item"><a href="../usuarios/nuevo-usuario.php"><?php echo Idioma::e('nav_usuarios'); ?></a></li>
                 <?php } ?>
-                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir">Cerrar sesión</a></li>
+                <li class="sidebar-item"><a href="../../cerrar-sesion.php" class="btn-salir"><?php echo Idioma::e('nav_cerrar_sesion'); ?></a></li>
             </ul>
         </nav>
 
@@ -172,13 +175,14 @@ function claseError($errores, $campo)
             <header class="topbar-nav">
                 <nav>
                     <ul>
-                        <li class="topbar-item"><a href="planilla-uso-sala.php">Planilla de uso</a></li>
-                        <li class="topbar-item"><a href="historial-uso-sala.php">Historial de uso</a></li>
-                        <li class="topbar-item activo">Detalle de uso</li>
+                        <li class="topbar-item"><a href="planilla-uso-sala.php"><?php echo Idioma::e('tab_planilla_uso'); ?></a></li>
+                        <li class="topbar-item"><a href="historial-uso-sala.php"><?php echo Idioma::e('tab_historial_uso'); ?></a></li>
+                        <li class="topbar-item activo"><?php echo Idioma::e('tab_detalle_uso'); ?></li>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
-                    <img src="../../img/logo.png" alt="Logo SGRSI">
+                    <a class="btn-idioma" href="<?php echo Idioma::hrefAlternativo(); ?>" hreflang="<?php echo Idioma::alternativo(); ?>" title="<?php echo Idioma::e('idioma_titulo'); ?>"><?php echo Idioma::e('idioma_boton'); ?></a>
+                    <img src="../../img/logo.png" alt="<?php echo Idioma::e('logo_alt'); ?>">
                     <span>SGRSI</span>
                 </div>
             </header>
@@ -197,45 +201,45 @@ function claseError($errores, $campo)
                     <fieldset<?php echo $modoVer ? ' disabled' : ''; ?>>
 
                         <div class="form-grupo">
-                            <label for="docente">Docente</label>
+                            <label for="docente"><?php echo Idioma::e('th_docente'); ?></label>
                             <input type="text" id="docente" value="<?php echo v($fila['nombre_docente']); ?>" disabled>
                         </div>
                         <div class="form-grupo">
-                            <label for="fecha">Fecha</label>
+                            <label for="fecha"><?php echo Idioma::e('th_fecha'); ?></label>
                             <input type="date" id="fecha" name="fecha" value="<?php echo v($valores['fecha']); ?>" required>
                             <p class="error-mensaje" id="error-fecha"<?php echo claseError($errores, 'fecha'); ?>><?php echo v(isset($errores['fecha']) ? $errores['fecha'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
-                            <label for="entrada">Hora entrada</label>
+                            <label for="entrada"><?php echo Idioma::e('th_hora_entrada'); ?></label>
                             <input type="time" id="entrada" name="entrada" value="<?php echo v($valores['entrada']); ?>" required>
                             <p class="error-mensaje" id="error-entrada"<?php echo claseError($errores, 'entrada'); ?>><?php echo v(isset($errores['entrada']) ? $errores['entrada'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
-                            <label for="salida">Hora salida</label>
+                            <label for="salida"><?php echo Idioma::e('th_hora_salida'); ?></label>
                             <input type="time" id="salida" name="salida" value="<?php echo v($valores['salida']); ?>" required>
                             <p class="error-mensaje" id="error-salida"<?php echo claseError($errores, 'salida'); ?>><?php echo v(isset($errores['salida']) ? $errores['salida'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
-                            <label for="asignatura">Asignatura</label>
+                            <label for="asignatura"><?php echo Idioma::e('th_asignatura'); ?></label>
                             <input type="text" id="asignatura" name="asignatura" value="<?php echo v($valores['asignatura']); ?>" required>
                             <p class="error-mensaje" id="error-asignatura"<?php echo claseError($errores, 'asignatura'); ?>><?php echo v(isset($errores['asignatura']) ? $errores['asignatura'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
-                            <label for="grupo">Grupo</label>
+                            <label for="grupo"><?php echo Idioma::e('th_grupo'); ?></label>
                             <input type="text" id="grupo" name="grupo" value="<?php echo v($valores['grupo']); ?>" placeholder="Ej: 1MI" required>
                             <p class="error-mensaje" id="error-grupo"<?php echo claseError($errores, 'grupo'); ?>><?php echo v(isset($errores['grupo']) ? $errores['grupo'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
-                            <label for="turno">Turno</label>
+                            <label for="turno"><?php echo Idioma::e('th_turno'); ?></label>
                             <select name="turno" id="turno" required>
                                 <?php foreach (Dominio::TURNOS as $turno) { ?>
-                                    <option value="<?php echo v($turno); ?>"<?php echo $valores['turno'] === $turno ? ' selected' : ''; ?>><?php echo v($turno); ?></option>
+                                    <option value="<?php echo v($turno); ?>"<?php echo $valores['turno'] === $turno ? ' selected' : ''; ?>><?php echo v(Idioma::t('valor_' . $turno)); ?></option>
                                 <?php } ?>
                             </select>
                             <p class="error-mensaje" id="error-turno"<?php echo claseError($errores, 'turno'); ?>><?php echo v(isset($errores['turno']) ? $errores['turno'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
-                            <label for="salon">Salón</label>
+                            <label for="salon"><?php echo Idioma::e('th_salon'); ?></label>
                             <select name="salon" id="salon" required>
                                 <?php foreach ($salones as $unSalon) { ?>
                                     <option value="<?php echo v($unSalon['nombre_salon']); ?>"<?php echo $valores['salon'] === $unSalon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($unSalon['nombre_salon']); ?></option>
@@ -245,7 +249,7 @@ function claseError($errores, $campo)
                         </div>
 
                         <div id="lista-pcs">
-                            <h2>Asignación de Equipos</h2>
+                            <h2><?php echo Idioma::e('enc_asignacion_equipos'); ?></h2>
 
                             <?php foreach ($equipos as $numeroEquipo => $equipo) { ?>
                                 <?php $numeroFila = $numeroEquipo + 1; ?>
@@ -254,21 +258,21 @@ function claseError($errores, $campo)
                                     <div class="campo">
                                         <label for="pc-<?php echo $numeroFila; ?>">PC</label>
                                         <select id="pc-<?php echo $numeroFila; ?>" name="pc[<?php echo $numeroFila; ?>]">
-                                            <option value="">-- Seleccioná una PC --</option>
+                                            <option value=""><?php echo Idioma::e('opt_selecciona_pc'); ?></option>
                                             <?php foreach ($equipos as $opcion) { ?>
                                                 <option value="<?php echo v($opcion['id_equipo']); ?>"<?php echo (int) $elegida === (int) $opcion['id_equipo'] ? ' selected' : ''; ?>><?php echo v($opcion['nombre_equipo']); ?></option>
                                             <?php } ?>
                                         </select>
                                     </div>
                                     <div class="campo">
-                                        <label for="alumno-<?php echo $numeroFila; ?>">Alumno</label>
-                                        <input type="text" id="alumno-<?php echo $numeroFila; ?>" name="alumno[<?php echo $numeroFila; ?>]" value="<?php echo v(ResultadoGestion::campo($alumnosDados, $numeroFila)); ?>" placeholder="Nombre del alumno">
+                                        <label for="alumno-<?php echo $numeroFila; ?>"><?php echo Idioma::e('th_alumno'); ?></label>
+                                        <input type="text" id="alumno-<?php echo $numeroFila; ?>" name="alumno[<?php echo $numeroFila; ?>]" value="<?php echo v(ResultadoGestion::campo($alumnosDados, $numeroFila)); ?>" placeholder="<?php echo Idioma::e('ph_nombre_alumno'); ?>">
                                     </div>
                                 </div>
                             <?php } ?>
 
                             <?php if (count($equipos) > 1) { ?>
-                                <button type="button" id="agregar-pc">+ Agregar PC</button>
+                                <button type="button" id="agregar-pc"><?php echo Idioma::e('btn_agregar_pc'); ?></button>
                             <?php } ?>
 
                             <p class="error-mensaje" id="error-pcs"<?php echo claseError($errores, 'pcs'); ?>><?php echo v(isset($errores['pcs']) ? $errores['pcs'] : ''); ?></p>
@@ -277,20 +281,21 @@ function claseError($errores, $campo)
                     </fieldset>
 
                     <?php if ($modoVer) { ?>
-                        <a class="btn-editar-form" href="detalle-uso-sala.php?id=<?php echo urlencode($fila['id_uso']); ?>&amp;modo=editar">Editar</a>
+                        <a class="btn-editar-form" href="detalle-uso-sala.php?id=<?php echo urlencode($fila['id_uso']); ?>&amp;modo=editar"><?php echo Idioma::e('btn_editar'); ?></a>
                     <?php } else { ?>
-                        <button type="submit" id="btn-enviar" name="accion" value="guardar">Guardar cambios</button>
+                        <button type="submit" id="btn-enviar" name="accion" value="guardar"><?php echo Idioma::e('btn_guardar_cambios'); ?></button>
                     <?php } ?>
 
                 </form>
 
                 <div class="form-grupo">
-                    <a href="historial-uso-sala.php" class="btn-back">Volver al Historial</a>
+                    <a href="historial-uso-sala.php" class="btn-back"><?php echo Idioma::e('btn_volver_historial'); ?></a>
                 </div>
 
             </section>
         </main>
     </div>
+    <script>const TEXTOS = <?php echo Idioma::json(); ?>;</script>
     <script src="../../js/uso-sala/planilla-uso-sala.js"></script>
 </body>
 

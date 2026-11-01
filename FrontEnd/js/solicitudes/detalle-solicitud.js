@@ -9,14 +9,14 @@ const MOTIVO_MINIMO = 10;
 function leerRespuestaDetalle(respuesta) {
     return respuesta.json().then(function (datos) {
         if (!respuesta.ok || datos.status !== 'success') {
-            throw new Error(datos.message || 'No se pudo completar la operación.');
+            throw new Error(datos.message || TEXTOS.js_error_operacion);
         }
         return datos;
     });
 }
 
 function mostrarResultadoDetalle(mensaje, exito) {
-    resultadoGuardado.textContent = mensaje;
+    resultadoGuardado.textContent = TEXTOS[mensaje] || mensaje;
     resultadoGuardado.classList.toggle('mensaje-exito', exito);
     resultadoGuardado.style.display = 'block';
 }
@@ -51,7 +51,7 @@ if (!inputMotivo.disabled) {
 
     formulario.addEventListener('submit', function (evento) {
         evento.preventDefault();
-        if (!validarTexto(inputMotivo, 'error-motivo', MOTIVO_MINIMO, 'el motivo')) {
+        if (!validarTexto(inputMotivo, 'error-motivo', MOTIVO_MINIMO, TEXTOS.etq_motivo)) {
             return;
         }
         if (!formulario.reportValidity()) return;
@@ -59,7 +59,7 @@ if (!inputMotivo.disabled) {
         const estado = document.getElementById('estado');
         const responsable = document.getElementById('responsable');
         if (estado.value === 'Resuelta' && !responsable.value) {
-            mostrarError(responsable, 'error-responsable', 'Para cerrar la solicitud hay que asignar un responsable.');
+            mostrarError(responsable, 'error-responsable', TEXTOS.js_responsable_para_cerrar);
             return;
         }
 

@@ -7,7 +7,7 @@ const LARGO_MINIMO_CLAVE = 8;
 
 function validarCi() {
     if (!CI_VALIDA.test(inputCi.value.trim())) {
-        mostrarError(inputCi, 'error-ci', 'La cédula son ocho dígitos, sin puntos ni guiones.');
+        mostrarError(inputCi, 'error-ci', TEXTOS.js_ci_invalida);
         return false;
     }
 
@@ -17,7 +17,7 @@ function validarCi() {
 
 function validarPassword() {
     if (inputPassword.value.length < LARGO_MINIMO_CLAVE) {
-        mostrarError(inputPassword, 'error-password', 'La contraseña debe tener al menos ' + LARGO_MINIMO_CLAVE + ' caracteres.');
+        mostrarError(inputPassword, 'error-password', TEXTOS.js_clave_corta.replace('{n}', LARGO_MINIMO_CLAVE));
         return false;
     }
 
