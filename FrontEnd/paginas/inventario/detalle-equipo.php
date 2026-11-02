@@ -105,6 +105,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <ul>
                         <li class="topbar-item"><a href="nuevo-equipo.php"><?php echo Idioma::e('tab_registro_equipos'); ?></a></li>
                         <li class="topbar-item"><a href="inventario.php"><?php echo Idioma::e('tab_equipos'); ?></a></li>
+                        <?php if (Sesion::esCoordinador()) { ?>
+                            <li class="topbar-item"><a href="salones.php"><?php echo Idioma::e('tab_salones'); ?></a></li>
+                        <?php } ?>
                         <li class="topbar-item activo"><?php echo Idioma::e('tab_detalle_equipo'); ?></li>
                     </ul>
                 </nav>

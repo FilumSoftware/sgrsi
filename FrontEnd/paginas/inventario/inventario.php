@@ -53,6 +53,9 @@ if (isset($_GET['ok']) && $_GET['ok'] === '2') {
                     <ul>
                         <li class="topbar-item"><a href="nuevo-equipo.php"><?php echo Idioma::e('tab_registro_equipos'); ?></a></li>
                         <li class="topbar-item activo"><?php echo Idioma::e('tab_equipos'); ?></li>
+                        <?php if (Sesion::esCoordinador()) { ?>
+                            <li class="topbar-item"><a href="salones.php"><?php echo Idioma::e('tab_salones'); ?></a></li>
+                        <?php } ?>
                     </ul>
                 </nav>
                 <div class="topbar-logo">
