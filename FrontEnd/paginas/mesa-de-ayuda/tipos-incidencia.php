@@ -42,7 +42,7 @@ function v($texto)
                     <li class="topbar-item"><a href="mesa-de-ayuda.php">Historial de tickets</a></li>
                     <li class="topbar-item activo">Tipos de incidencia</li>
                 </ul></nav>
-                <div class="topbar-logo"><img src="../../img/logo.png" alt="Logo SGRSI"><span>SGRSI</span></div>
+                <div class="topbar-logo"><span class="etiqueta-rol"><?php echo v(Sesion::rol()); ?></span><img src="../../img/logo.png" alt="Logo SGRSI"><span>SGRSI</span></div>
             </header>
             <section class="content">
                 <h1>Tipos de incidencia</h1>

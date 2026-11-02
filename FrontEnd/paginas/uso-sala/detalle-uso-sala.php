@@ -178,6 +178,7 @@ function claseError($errores, $campo)
                     </ul>
                 </nav>
                 <div class="topbar-logo">
+                    <span class="etiqueta-rol"><?php echo v(Sesion::rol()); ?></span>
                     <img src="../../img/logo.png" alt="Logo SGRSI">
                     <span>SGRSI</span>
                 </div>

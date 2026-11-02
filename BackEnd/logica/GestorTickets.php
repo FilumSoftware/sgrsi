@@ -56,15 +56,23 @@ class GestorTickets
         return ResultadoGestion::ejecutar('tickets técnicos', function () { return (new UsuarioDAO())->obtenerTecnicos(); });
     }
 
-    public function actualizarDesdeFormulario($id, $datos, $puedeAtender)
+    public function validarAsignacion($rol, $ciActor, $responsableActual, $responsableNuevo)
     {
-        if (!$puedeAtender) return ResultadoGestion::fallo(403, 'No tenés permiso para modificar tickets.');
-        return ResultadoGestion::procesar('tickets formulario de edición', function () use ($id, $datos) {
+        if (Dominio::puedeAsignar($rol, $ciActor, $responsableActual, $responsableNuevo)) return null;
+        return ResultadoGestion::fallo(403, 'Solo el coordinador puede asignarle un ticket a otra persona.');
+    }
+
+    public function actualizarDesdeFormulario($id, $datos, $rol, $ciActor)
+    {
+        if ($rol !== 'Asistente' && $rol !== 'Coordinador') return ResultadoGestion::fallo(403, 'No tenés permiso para modificar tickets.');
+        return ResultadoGestion::procesar('tickets formulario de edición', function () use ($id, $datos, $rol, $ciActor) {
             $actual = $this->obtenerPorId($id);
             if (!$actual['ok']) return $actual;
             if (!$actual['datos']) return ResultadoGestion::fallo(404, 'No existe ese ticket.');
             $fila = $actual['datos'];
             if ($fila['estado_ticket'] === 'Cancelado') return ResultadoGestion::fallo(409, 'Un ticket cancelado no puede modificarse.');
+            $asignacion = $this->validarAsignacion($rol, $ciActor, $fila['ci_responsable'], ResultadoGestion::campo($datos, 'responsable'));
+            if ($asignacion) return $asignacion;
             $estado = ResultadoGestion::campo($datos, 'estado');
             if ($estado === 'Cancelado') return ResultadoGestion::fallo(400, 'Usá la cancelación para ese estado.');
             $salon = ResultadoGestion::campo($datos, 'salon');

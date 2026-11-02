@@ -45,6 +45,10 @@ $modoVer = $_SERVER['REQUEST_METHOD'] !== 'POST'
     && (!isset($_GET['modo']) || $_GET['modo'] !== 'editar');
 
 $editable = $puedeAtender && !$modoVer;
+$responsableActual = isset($fila['ci_responsable']) ? $fila['ci_responsable'] : '';
+$puedeReasignar = Sesion::esCoordinador()
+    || $responsableActual === ''
+    || $responsableActual === Sesion::ci();
 
 $errores = [];
 $valores = [
@@ -71,9 +75,19 @@ try {
     $errores['general'] = 'No se pudieron cargar las listas. Intentá de nuevo en unos minutos.';
 }
 
+if (!Sesion::esCoordinador()) {
+    $asignables = [];
+    foreach ($tecnicos as $tecnico) {
+        if ($tecnico['ci'] === Sesion::ci() || $tecnico['ci'] === $responsableActual) {
+            $asignables[] = $tecnico;
+        }
+    }
+    $tecnicos = $asignables;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $resultado = Sesion::verificarTokenApi($_POST['csrf'] ?? '')
-        ? $gestor->actualizarDesdeFormulario($id, $_POST, $puedeAtender)
+        ? $gestor->actualizarDesdeFormulario($id, $_POST, Sesion::rol(), Sesion::ci())
         : ResultadoGestion::fallo(403, 'La sesión de esta página venció. Volvé a abrirla.');
     if ($resultado['ok']) {
         header('Location: solicitudes.php?aviso=guardada');
@@ -139,6 +153,7 @@ function claseError($errores, $campo)
                     </ul>
                 </nav>
                 <div class="topbar-logo">
+                    <span class="etiqueta-rol"><?php echo v(Sesion::rol()); ?></span>
                     <img src="../../img/logo.png" alt="Logo SGRSI">
                     <span>SGRSI</span>
                 </div>
@@ -190,12 +205,15 @@ function claseError($errores, $campo)
                         </div>
                         <div class="form-grupo">
                             <label for="responsable">Responsable:</label>
-                            <select id="responsable" name="responsable"<?php echo $editable ? '' : ' disabled'; ?>>
+                            <select id="responsable" name="responsable"<?php echo $editable && $puedeReasignar ? '' : ' disabled'; ?>>
                                 <option value="">— Seleccionar técnico —</option>
                                 <?php foreach ($tecnicos as $tecnico) { ?>
                                     <option value="<?php echo v($tecnico['ci']); ?>"<?php echo $valores['responsable'] === $tecnico['ci'] ? ' selected' : ''; ?>><?php echo v($tecnico['nombre_usuario']); ?></option>
                                 <?php } ?>
                             </select>
+                            <?php if ($editable && !$puedeReasignar) { ?>
+                                <input type="hidden" name="responsable" value="<?php echo v($responsableActual); ?>">
+                            <?php } ?>
                             <p class="error-mensaje" id="error-responsable"<?php echo claseError($errores, 'responsable'); ?>><?php echo v(isset($errores['responsable']) ? $errores['responsable'] : ''); ?></p>
                         </div>
                         <div class="form-grupo">
