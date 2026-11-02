@@ -22,6 +22,12 @@ $tarjetas = [
 
 $tickets = [];
 
+$metricas = [
+    'equipos_mas_fallados'              => [],
+    'solicitudes_por_mes'               => [],
+    'tiempo_promedio_resolucion_horas'  => null,
+];
+
 try {
     $resumen = new Resumen();
 
@@ -33,6 +39,8 @@ try {
     $tickets = ControlAcceso::puedeAtender()
         ? $resumen->ultimosTickets($cuantosTickets)
         : $resumen->ultimosTickets($cuantosTickets, Sesion::ci());
+
+    $metricas = $resumen->metricasExtendidas();
 
 } catch (Exception $e) {
     error_log('SGRSI dashboard.php: ' . $e->getMessage());
@@ -157,9 +165,9 @@ function v($texto)
                 <section class="metricas-extendidas" aria-labelledby="titulo-metricas">
                     <div class="metricas-encabezado">
                         <h2 id="titulo-metricas" class="tabla-titulo"><?php echo Idioma::e('dash_metricas_titulo'); ?></h2>
-                        <button type="button" id="actualizar-metricas" class="btn-editar"><?php echo Idioma::e('dash_actualizar_metricas'); ?></button>
+                        <a id="actualizar-metricas" class="btn-editar" href="dashboard.php"><?php echo Idioma::e('dash_actualizar_metricas'); ?></a>
                     </div>
-                    <p id="estado-metricas" role="status" aria-live="polite"><?php echo Idioma::e('dash_cargando_metricas'); ?></p>
+                    <p id="estado-metricas" role="status" aria-live="polite"><?php echo Idioma::e('js_metricas_actualizadas'); ?></p>
 
                     <div class="metricas-grid">
                         <div class="tabla-contenedor">
@@ -168,7 +176,21 @@ function v($texto)
                             <div class="tabla-wrapper">
                                 <table class="tabla">
                                     <thead><tr><th><?php echo Idioma::e('th_equipo'); ?></th><th><?php echo Idioma::e('th_salon'); ?></th><th><?php echo Idioma::e('th_fallas'); ?></th></tr></thead>
-                                    <tbody id="equipos-mas-fallados"></tbody>
+                                    <tbody id="equipos-mas-fallados">
+                                        <?php if (empty($metricas['equipos_mas_fallados'])) { ?>
+                                            <tr>
+                                                <td colspan="3"><?php echo Idioma::e('js_sin_fallas'); ?></td>
+                                            </tr>
+                                        <?php } ?>
+
+                                        <?php foreach ($metricas['equipos_mas_fallados'] as $equipo) { ?>
+                                            <tr>
+                                                <td><?php echo v($equipo['nombre_equipo']); ?></td>
+                                                <td><?php echo v($equipo['nombre_salon']); ?></td>
+                                                <td><?php echo (int) $equipo['total_fallas']; ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -178,12 +200,25 @@ function v($texto)
                             <div class="tabla-wrapper">
                                 <table class="tabla">
                                     <thead><tr><th><?php echo Idioma::e('th_mes'); ?></th><th><?php echo Idioma::e('th_solicitudes'); ?></th></tr></thead>
-                                    <tbody id="solicitudes-por-mes"></tbody>
+                                    <tbody id="solicitudes-por-mes">
+                                        <?php if (empty($metricas['solicitudes_por_mes'])) { ?>
+                                            <tr>
+                                                <td colspan="2"><?php echo Idioma::e('js_sin_solicitudes'); ?></td>
+                                            </tr>
+                                        <?php } ?>
+
+                                        <?php foreach ($metricas['solicitudes_por_mes'] as $mes) { ?>
+                                            <tr>
+                                                <td><?php echo v($mes['periodo']); ?></td>
+                                                <td><?php echo (int) $mes['cantidad']; ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                    <p class="metrica-promedio"><?php echo Idioma::e('dash_promedio_resolucion'); ?> <strong id="promedio-resolucion">—</strong></p>
+                    <p class="metrica-promedio"><?php echo Idioma::e('dash_promedio_resolucion'); ?> <strong id="promedio-resolucion"><?php echo $metricas['tiempo_promedio_resolucion_horas'] === null ? Idioma::e('js_sin_resueltos') : v($metricas['tiempo_promedio_resolucion_horas']) . ' ' . Idioma::e('js_horas'); ?></strong></p>
                     <p class="metrica-nota"><?php echo Idioma::e('dash_nota_promedio'); ?></p>
                 </section>
 

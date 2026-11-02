@@ -38,14 +38,7 @@ try {
     $datos = Api::cuerpo();
     if ($metodo === 'POST') {
         if ($id !== null) Api::responder(400, 'error', 'El alta no lleva identificador.');
-        $solicitud = new Solicitud(
-            date('Y-m-d H:i:s'),
-            Sesion::ci(),
-            Api::campo($datos, 'nombre_salon'),
-            Api::campo($datos, 'descripcion'),
-            Api::campo($datos, 'prioridad', 'Normal')
-        );
-        $resultado = $gestor->insertar($solicitud);
+        $resultado = $gestor->crearDesdeFormulario($datos, Sesion::ci());
         if (!$resultado['ok']) Api::resultado($resultado);
         Api::responder(201, 'success', 'Solicitud registrada.', ['id_solicitud' => (int) $resultado['datos']]);
     }

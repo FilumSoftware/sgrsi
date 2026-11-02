@@ -60,6 +60,18 @@ class GestorSolicitudes
         });
     }
 
+    public function crearDesdeFormulario($datos, $ci)
+    {
+        $prioridad = ResultadoGestion::campo($datos, 'prioridad');
+        return $this->insertar(new Solicitud(
+            date('Y-m-d H:i:s'),
+            $ci,
+            ResultadoGestion::campo($datos, 'nombre_salon'),
+            ResultadoGestion::campo($datos, 'descripcion'),
+            $prioridad !== '' ? $prioridad : 'Normal'
+        ));
+    }
+
     public function insertar(Solicitud $solicitud)
     {
         $error = $this->validar($solicitud);

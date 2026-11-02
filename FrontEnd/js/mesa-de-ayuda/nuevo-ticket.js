@@ -122,3 +122,5 @@ formulario.addEventListener('submit', function (evento) {
 });
 
 limpiarAlEscribir(motivo, 'error-motivo', 10);
+
+cargarOpciones(equipo, [], 'id_equipo', function () { return ''; }, TEXTOS.opt_elegi_salon_primero);

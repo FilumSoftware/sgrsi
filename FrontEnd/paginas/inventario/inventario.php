@@ -1,18 +1,55 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorInventario.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Idioma.php';
 
 Idioma::iniciar();
 
 ControlAcceso::exigirRol(['Asistente', 'Coordinador'], '../../../index.php');
 
-$mensaje   = null;
+$gestor = new GestorInventario();
+$errorGeneral = '';
 
-if (isset($_GET['ok']) && $_GET['ok'] === '2') {
-    $mensaje = ['tipo' => 'exito', 'texto' => 'Equipo actualizado correctamente.'];
-} elseif (isset($_GET['ok'])) {
-    $mensaje = ['tipo' => 'exito', 'texto' => 'Equipo registrado correctamente.'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $resultado = Sesion::verificarTokenApi(isset($_POST['csrf']) ? $_POST['csrf'] : '')
+        ? $gestor->darDeBaja(ResultadoGestion::campo($_POST, 'id_equipo'))
+        : ResultadoGestion::fallo(403, 'La sesión de esta página venció. Volvé a abrirla.');
+
+    if ($resultado['ok'] && $resultado['datos']) {
+        header('Location: inventario.php?ok=3');
+        exit;
+    }
+
+    if (!$resultado['ok']) {
+        http_response_code($resultado['codigo']);
+        $errorGeneral = Idioma::t($resultado['mensaje']);
+    } else {
+        http_response_code(404);
+        $errorGeneral = Idioma::t('No existe ese equipo.');
+    }
+}
+
+$avisos = [
+    '1' => Idioma::t('aviso_equipo_creado'),
+    '2' => Idioma::t('aviso_guardado'),
+    '3' => Idioma::t('aviso_equipo_baja'),
+];
+
+$clave = isset($_GET['ok']) ? (string) $_GET['ok'] : '';
+$exito = isset($avisos[$clave]) ? $avisos[$clave] : '';
+
+try {
+    $equipos = ResultadoGestion::valor($gestor->obtenerTodos());
+} catch (Exception $e) {
+    error_log('SGRSI inventario.php obtenerTodos: ' . $e->getMessage());
+    $equipos = [];
+    $errorGeneral = Idioma::t('aviso_error_operacion');
+}
+
+function v($texto)
+{
+    return htmlspecialchars((string) $texto, ENT_QUOTES, 'UTF-8');
 }
 
 ?>
@@ -67,7 +104,10 @@ if (isset($_GET['ok']) && $_GET['ok'] === '2') {
 
             <section class="content">
 
-                <p id="resultado-inventario" class="error-mensaje <?php echo $mensaje && $mensaje['tipo'] === 'exito' ? 'mensaje-exito' : ''; ?>" role="status" aria-live="polite"<?php echo $mensaje ? ' style="display: block;"' : ''; ?>><?php echo $mensaje ? htmlspecialchars($mensaje['texto'], ENT_QUOTES, 'UTF-8') : ''; ?></p>
+                <?php if ($errorGeneral !== '') { ?>
+                    <p class="error-mensaje" style="display: block;"><?php echo v($errorGeneral); ?></p>
+                <?php } ?>
+                <p id="resultado-inventario" class="error-mensaje <?php echo $exito !== '' ? 'mensaje-exito' : ''; ?>" role="status" aria-live="polite"<?php echo $exito !== '' ? ' style="display: block;"' : ''; ?>><?php echo v($exito); ?></p>
 
                 <div class="tabla-wrapper">
                     <table>
@@ -81,8 +121,34 @@ if (isset($_GET['ok']) && $_GET['ok'] === '2') {
                                 <th><?php echo Idioma::e('th_acciones'); ?></th>
                             </tr>
                         </thead>
-                        <tbody id="lista-equipos" data-csrf="<?php echo htmlspecialchars(Sesion::tokenApi(), ENT_QUOTES, 'UTF-8'); ?>">
-                            <tr><td colspan="6"><?php echo Idioma::e('cargando_equipos'); ?></td></tr>
+                        <tbody id="lista-equipos" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
+                            <?php if (empty($equipos)) { ?>
+                                <tr>
+                                    <td colspan="6"><?php echo Idioma::e('vacio_equipos'); ?></td>
+                                </tr>
+                            <?php } ?>
+
+                            <?php foreach ($equipos as $equipo) { ?>
+                                <?php $url = 'detalle-equipo.php?id=' . (int) $equipo['id_equipo']; ?>
+                                <tr>
+                                    <td><a class="tabla-enlace" href="<?php echo v($url); ?>"><?php echo (int) $equipo['id_equipo']; ?></a></td>
+                                    <td><?php echo v($equipo['nombre_equipo']); ?></td>
+                                    <td><?php echo v($equipo['descripcion']); ?></td>
+                                    <td><?php echo v($equipo['nombre_salon']); ?></td>
+                                    <td><?php echo Idioma::e('valor_' . $equipo['estado_equipo']); ?></td>
+                                    <td class="acciones">
+                                        <a class="btn-editar" href="<?php echo v($url); ?>&amp;modo=editar"><?php echo Idioma::e('btn_editar'); ?></a>
+
+                                        <?php if ($equipo['estado_equipo'] !== 'De baja') { ?>
+                                            <form action="inventario.php" method="post" class="form-en-linea">
+                                                <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
+                                                <input type="hidden" name="id_equipo" value="<?php echo (int) $equipo['id_equipo']; ?>">
+                                                <button type="submit" class="btn-eliminar"><?php echo Idioma::e('js_registrar_baja'); ?></button>
+                                            </form>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

@@ -1,11 +1,74 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorSalones.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Idioma.php';
 
 Idioma::iniciar();
 
 ControlAcceso::exigirRol(['Coordinador'], '../../../index.php');
+
+$gestor = new GestorSalones();
+$valores = ['nombre_salon' => '', 'descripcion' => '', 'nombre_original' => ''];
+$errorGeneral = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    foreach (array_keys($valores) as $campo) {
+        $valores[$campo] = ResultadoGestion::campo($_POST, $campo);
+    }
+    $accion = ResultadoGestion::campo($_POST, 'accion');
+    $editaba = $valores['nombre_original'] !== '';
+
+    if (!Sesion::verificarTokenApi(isset($_POST['csrf']) ? $_POST['csrf'] : '')) {
+        $resultado = ResultadoGestion::fallo(403, 'La sesión de esta página venció. Volvé a abrirla.');
+    } elseif ($accion === 'eliminar') {
+        $resultado = $gestor->eliminar($valores['nombre_salon']);
+    } elseif ($editaba) {
+        $resultado = $gestor->actualizar($valores['nombre_original'], $valores['descripcion']);
+    } else {
+        $resultado = $gestor->insertar($valores['nombre_salon'], $valores['descripcion']);
+    }
+
+    if ($resultado['ok']) {
+        $aviso = $accion === 'eliminar' ? 'eliminado' : ($editaba ? 'guardado' : 'creado');
+        header('Location: salones.php?aviso=' . $aviso);
+        exit;
+    }
+
+    http_response_code($resultado['codigo']);
+    $errorGeneral = Idioma::t($resultado['mensaje']);
+}
+
+$avisos = [
+    'creado'    => Idioma::t('aviso_salon_creado'),
+    'guardado'  => Idioma::t('aviso_guardado'),
+    'eliminado' => Idioma::t('aviso_salon_eliminado'),
+];
+
+$clave = isset($_GET['aviso']) ? $_GET['aviso'] : '';
+$exito = isset($avisos[$clave]) ? $avisos[$clave] : '';
+
+try {
+    $salones = ResultadoGestion::valor($gestor->obtenerTodos());
+} catch (Exception $e) {
+    error_log('SGRSI salones.php obtenerTodos: ' . $e->getMessage());
+    $salones = [];
+    $errorGeneral = Idioma::t('aviso_error_operacion');
+}
+
+$editando = $valores['nombre_original'] !== '';
+
+if (!$editando && isset($_GET['editar'])) {
+    foreach ($salones as $salon) {
+        if ($salon['nombre_salon'] === $_GET['editar']) {
+            $valores['nombre_original'] = $salon['nombre_salon'];
+            $valores['nombre_salon'] = $salon['nombre_salon'];
+            $valores['descripcion'] = (string) $salon['descripcion'];
+            $editando = true;
+            break;
+        }
+    }
+}
 
 function v($texto)
 {
@@ -63,20 +126,24 @@ function v($texto)
 
                 <h1><?php echo Idioma::e('enc_salones'); ?></h1>
 
-                <p id="resultado-salones" class="error-mensaje" role="status" aria-live="polite"></p>
+                <?php if ($errorGeneral !== '') { ?>
+                    <p class="error-mensaje" style="display: block;"><?php echo v($errorGeneral); ?></p>
+                <?php } ?>
+                <p id="resultado-salones" class="error-mensaje <?php echo $exito !== '' ? 'mensaje-exito' : ''; ?>" role="status" aria-live="polite"<?php echo $exito !== '' ? ' style="display: block;"' : ''; ?>><?php echo v($exito); ?></p>
 
-                <form id="form-salon" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
-                    <input type="hidden" id="nombre-original">
+                <form id="form-salon" action="salones.php" method="post" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
+                    <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
+                    <input type="hidden" id="nombre-original" name="nombre_original" value="<?php echo v($valores['nombre_original']); ?>">
                     <div class="form-grupo">
                         <label for="nombre-salon"><?php echo Idioma::e('th_nombre'); ?></label>
-                        <input type="text" id="nombre-salon" minlength="2" maxlength="30" required>
+                        <input type="text" id="nombre-salon" name="nombre_salon" value="<?php echo v($valores['nombre_salon']); ?>" minlength="2" maxlength="30" required<?php echo $editando ? ' readonly' : ''; ?>>
                     </div>
                     <div class="form-grupo">
                         <label for="descripcion-salon"><?php echo Idioma::e('th_descripcion'); ?></label>
-                        <textarea id="descripcion-salon" rows="3" maxlength="500"></textarea>
+                        <textarea id="descripcion-salon" name="descripcion" rows="3" maxlength="500"><?php echo v($valores['descripcion']); ?></textarea>
                     </div>
-                    <button type="submit" id="guardar-salon"><?php echo Idioma::e('btn_agregar_salon'); ?></button>
-                    <button type="button" id="cancelar-edicion-salon" class="oculta"><?php echo Idioma::e('btn_cancelar_edicion'); ?></button>
+                    <button type="submit" id="guardar-salon" name="accion" value="guardar"><?php echo $editando ? Idioma::e('btn_guardar_cambios') : Idioma::e('btn_agregar_salon'); ?></button>
+                    <a id="cancelar-edicion-salon" class="btn-editar<?php echo $editando ? '' : ' oculta'; ?>" href="salones.php"><?php echo Idioma::e('btn_cancelar_edicion'); ?></a>
                 </form>
 
                 <div class="tabla-wrapper">
@@ -89,7 +156,26 @@ function v($texto)
                             </tr>
                         </thead>
                         <tbody id="lista-salones">
-                            <tr><td colspan="3"><?php echo Idioma::e('cargando_salones'); ?></td></tr>
+                            <?php if (empty($salones)) { ?>
+                                <tr>
+                                    <td colspan="3"><?php echo Idioma::e('vacio_salones'); ?></td>
+                                </tr>
+                            <?php } ?>
+
+                            <?php foreach ($salones as $salon) { ?>
+                                <tr>
+                                    <td><?php echo v($salon['nombre_salon']); ?></td>
+                                    <td><?php echo v($salon['descripcion']); ?></td>
+                                    <td class="acciones">
+                                        <a class="btn-editar" href="salones.php?editar=<?php echo urlencode($salon['nombre_salon']); ?>"><?php echo Idioma::e('btn_editar'); ?></a>
+                                        <form action="salones.php" method="post" class="form-en-linea">
+                                            <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
+                                            <input type="hidden" name="nombre_salon" value="<?php echo v($salon['nombre_salon']); ?>">
+                                            <button type="submit" name="accion" value="eliminar" class="btn-eliminar"><?php echo Idioma::e('btn_eliminar'); ?></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

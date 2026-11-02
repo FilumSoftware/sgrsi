@@ -25,6 +25,8 @@ function mostrarResultadoSalones(mensaje, exito) {
 
 function restablecerFormularioSalon() {
     formularioSalon.reset();
+    nombreSalon.value = '';
+    descripcionSalon.value = '';
     nombreSalonOriginal.value = '';
     nombreSalon.readOnly = false;
     guardarSalon.textContent = TEXTOS.btn_agregar_salon;
@@ -116,7 +118,10 @@ formularioSalon.addEventListener('submit', function (evento) {
         });
 });
 
-cancelarEdicionSalon.addEventListener('click', restablecerFormularioSalon);
+cancelarEdicionSalon.addEventListener('click', function (evento) {
+    evento.preventDefault();
+    restablecerFormularioSalon();
+});
 
 listaSalones.addEventListener('click', function (evento) {
     const boton = evento.target.closest('button[data-accion]');

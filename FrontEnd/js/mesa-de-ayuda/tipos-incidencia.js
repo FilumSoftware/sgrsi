@@ -25,6 +25,7 @@ function mostrarResultadoTipos(mensaje, exito) {
 
 function restablecerFormularioTipo() {
     formularioTipo.reset();
+    nombreTipo.value = '';
     nombreOriginal.value = '';
     estadoTipo.disabled = true;
     guardarTipo.textContent = TEXTOS.btn_agregar_tipo;
@@ -119,7 +120,10 @@ formularioTipo.addEventListener('submit', function (evento) {
         });
 });
 
-cancelarEdicionTipo.addEventListener('click', restablecerFormularioTipo);
+cancelarEdicionTipo.addEventListener('click', function (evento) {
+    evento.preventDefault();
+    restablecerFormularioTipo();
+});
 
 listaTipos.addEventListener('click', function (evento) {
     const boton = evento.target.closest('button[data-accion]');

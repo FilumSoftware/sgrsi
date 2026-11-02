@@ -2,11 +2,60 @@
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorInventario.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorTickets.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorTiposIncidencia.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Idioma.php';
 
 Idioma::iniciar();
 
 ControlAcceso::exigirSesion('../../../index.php');
+
+$gestor = new GestorTickets();
+$valores = [
+    'salon'           => '',
+    'id_equipo'       => '',
+    'tipo_de_defecto' => '',
+    'detalle_defecto' => '',
+    'descripcion'     => '',
+    'prioridad'       => 'Normal',
+];
+$errorGeneral = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    foreach (array_keys($valores) as $campo) {
+        $valores[$campo] = ResultadoGestion::campo($_POST, $campo);
+    }
+
+    $resultado = Sesion::verificarTokenApi(isset($_POST['csrf']) ? $_POST['csrf'] : '')
+        ? $gestor->crearDesdeFormulario($_POST, Sesion::ci())
+        : ResultadoGestion::fallo(403, 'La sesión de esta página venció. Volvé a abrirla.');
+
+    if ($resultado['ok']) {
+        header('Location: nuevo-ticket.php?numero=' . (int) $resultado['datos']);
+        exit;
+    }
+
+    http_response_code($resultado['codigo']);
+    $errorGeneral = Idioma::t($resultado['mensaje']);
+}
+
+$numero = isset($_GET['numero']) ? (int) $_GET['numero'] : 0;
+$exito = $numero > 0
+    ? Idioma::t('aviso_ticket_creado') . Idioma::t('js_num_prefijo') . $numero . '.'
+    : '';
+
+try {
+    $salones = ResultadoGestion::valor($gestor->obtenerSalones());
+    $equipos = ResultadoGestion::valor((new GestorInventario())->obtenerTodos());
+    $tipos   = ResultadoGestion::valor((new GestorTiposIncidencia())->obtenerActivos());
+} catch (Exception $e) {
+    error_log('SGRSI nuevo-ticket.php catalogos: ' . $e->getMessage());
+    $salones = [];
+    $equipos = [];
+    $tipos   = [];
+    $errorGeneral = Idioma::t('aviso_error_operacion');
+}
 
 function v($texto)
 {
@@ -67,9 +116,13 @@ function v($texto)
 
             <section class="form-container">
 
-                <p id="resultado-ticket" class="error-mensaje" role="status" aria-live="polite"></p>
+                <?php if ($errorGeneral !== '') { ?>
+                    <p class="error-mensaje" style="display: block;"><?php echo v($errorGeneral); ?></p>
+                <?php } ?>
+                <p id="resultado-ticket" class="error-mensaje <?php echo $exito !== '' ? 'mensaje-exito' : ''; ?>" role="status" aria-live="polite"<?php echo $exito !== '' ? ' style="display: block;"' : ''; ?>><?php echo v($exito); ?></p>
 
-                <form id="form-ticket" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
+                <form id="form-ticket" action="nuevo-ticket.php" method="post" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
+                    <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                     <div class="form-grupo">
                         <label for="solicitante"><?php echo Idioma::e('th_solicitante'); ?></label>
                         <input type="text" id="solicitante" value="<?php echo v(Sesion::nombre()); ?>" disabled>
@@ -86,41 +139,55 @@ function v($texto)
                         <label for="salon"><?php echo Idioma::e('th_salon'); ?></label>
                         <select name="salon" id="salon" required>
                             <option value=""><?php echo Idioma::e('opt_elija_opcion'); ?></option>
+                            <?php foreach ($salones as $salon) { ?>
+                                <option value="<?php echo v($salon['nombre_salon']); ?>"<?php echo $valores['salon'] === $salon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($salon['nombre_salon']); ?></option>
+                            <?php } ?>
                         </select>
                         <p class="error-mensaje" id="error-salon"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="equipo"><?php echo Idioma::e('th_equipo'); ?></label>
-                        <select name="equipo" id="equipo" required>
-                            <option value="">
-                                <?php echo Idioma::e('opt_elegi_salon_primero'); ?>
-                            </option>
+                        <select name="id_equipo" id="equipo" required>
+                            <option value=""><?php echo Idioma::e('opt_elegi_salon_primero'); ?></option>
+                            <?php $salonActual = null; ?>
+                            <?php foreach ($equipos as $equipo) { ?>
+                                <?php if ($equipo['nombre_salon'] !== $salonActual) { ?>
+                                    <?php if ($salonActual !== null) { ?></optgroup><?php } ?>
+                                    <optgroup label="<?php echo v($equipo['nombre_salon']); ?>">
+                                    <?php $salonActual = $equipo['nombre_salon']; ?>
+                                <?php } ?>
+                                <option value="<?php echo (int) $equipo['id_equipo']; ?>"<?php echo $valores['id_equipo'] === (string) $equipo['id_equipo'] ? ' selected' : ''; ?>><?php echo v($equipo['nombre_equipo']); ?> (<?php echo Idioma::e('valor_' . $equipo['estado_equipo']); ?>)</option>
+                            <?php } ?>
+                            <?php if ($salonActual !== null) { ?></optgroup><?php } ?>
                         </select>
                         <p class="error-mensaje" id="error-equipo"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="defecto"><?php echo Idioma::e('th_tipo_falla'); ?></label>
-                        <select name="defecto" id="defecto" required>
+                        <select name="tipo_de_defecto" id="defecto" required>
                             <option value=""><?php echo Idioma::e('opt_elija_opcion'); ?></option>
+                            <?php foreach ($tipos as $tipo) { ?>
+                                <option value="<?php echo v($tipo['nombre']); ?>"<?php echo $valores['tipo_de_defecto'] === $tipo['nombre'] ? ' selected' : ''; ?>><?php echo v($tipo['nombre']); ?></option>
+                            <?php } ?>
                         </select>
                         <p class="error-mensaje" id="error-defecto"></p>
                     </div>
-                    <div class="form-grupo oculta" id="grupo-detalle-defecto">
+                    <div class="form-grupo" id="grupo-detalle-defecto">
                         <label for="detalle-defecto"><?php echo Idioma::e('th_describi_falla'); ?></label>
-                        <input type="text" name="detalle-defecto" id="detalle-defecto" maxlength="120" minlength="3">
+                        <input type="text" name="detalle_defecto" id="detalle-defecto" value="<?php echo v($valores['detalle_defecto']); ?>" maxlength="120" minlength="3">
                     </div>
                     <div class="form-grupo">
                         <label for="prioridad"><?php echo Idioma::e('th_prioridad'); ?></label>
                         <select name="prioridad" id="prioridad" required>
                             <?php foreach (Dominio::PRIORIDADES as $prioridad) { ?>
-                                <option value="<?php echo v($prioridad); ?>"><?php echo v(Idioma::t('valor_' . $prioridad)); ?></option>
+                                <option value="<?php echo v($prioridad); ?>"<?php echo $valores['prioridad'] === $prioridad ? ' selected' : ''; ?>><?php echo v(Idioma::t('valor_' . $prioridad)); ?></option>
                             <?php } ?>
                         </select>
                         <p class="error-mensaje" id="error-prioridad"></p>
                     </div>
                     <div class="form-grupo">
                         <label for="motivo"><?php echo Idioma::e('th_motivo'); ?></label>
-                        <textarea name="motivo" id="motivo" rows="5" placeholder="<?php echo Idioma::e('ph_escriba_motivo'); ?>" required></textarea>
+                        <textarea name="descripcion" id="motivo" rows="5" placeholder="<?php echo Idioma::e('ph_escriba_motivo'); ?>" required><?php echo v($valores['descripcion']); ?></textarea>
                         <p class="error-mensaje" id="error-motivo"></p>
                     </div>
 

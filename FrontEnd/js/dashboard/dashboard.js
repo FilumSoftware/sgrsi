@@ -68,5 +68,7 @@ function cargarMetricas() {
         });
 }
 
-botonActualizarMetricas.addEventListener('click', cargarMetricas);
-cargarMetricas();
+botonActualizarMetricas.addEventListener('click', function (evento) {
+    evento.preventDefault();
+    cargarMetricas();
+});

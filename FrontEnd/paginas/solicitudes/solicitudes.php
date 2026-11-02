@@ -1,11 +1,31 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorSolicitudes.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Idioma.php';
 
 Idioma::iniciar();
 
 ControlAcceso::exigirSesion('../../../index.php');
+
+$gestor = new GestorSolicitudes();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!Sesion::verificarTokenApi(isset($_POST['csrf']) ? $_POST['csrf'] : '')) {
+        $destino = 'error';
+    } elseif (!Sesion::esCoordinador()) {
+        $destino = 'permiso';
+    } else {
+        $resultado = $gestor->eliminar(ResultadoGestion::campo($_POST, 'id_solicitud'));
+        if (!$resultado['ok']) {
+            $destino = 'error';
+        } else {
+            $destino = $resultado['datos'] ? 'eliminada' : 'noexiste';
+        }
+    }
+    header('Location: solicitudes.php?aviso=' . $destino);
+    exit;
+}
 
 $avisos = [
     'creada'    => ['exito', Idioma::t('aviso_solicitud_creada')],
@@ -22,6 +42,22 @@ $aviso   = isset($_GET['aviso']) ? $_GET['aviso'] : '';
 
 if (isset($avisos[$aviso])) {
     $mensaje = ['tipo' => $avisos[$aviso][0], 'texto' => $avisos[$aviso][1]];
+}
+
+$clasesEstado = [
+    'Resuelta'   => 'bg-success',
+    'En proceso' => 'bg-info text-dark',
+    'Pendiente'  => 'bg-warning text-dark',
+];
+
+try {
+    $solicitudes = ResultadoGestion::valor(Sesion::esTecnico()
+        ? $gestor->obtenerTodos()
+        : $gestor->obtenerPorSolicitante(Sesion::ci()));
+} catch (Exception $e) {
+    error_log('SGRSI solicitudes.php listado: ' . $e->getMessage());
+    $solicitudes = [];
+    $mensaje = ['tipo' => 'error', 'texto' => Idioma::t('aviso_error_operacion')];
 }
 
 function v($texto)
@@ -99,7 +135,41 @@ function v($texto)
                             </tr>
                         </thead>
                         <tbody id="lista-solicitudes" data-csrf="<?php echo v(Sesion::tokenApi()); ?>" data-coordinador="<?php echo Sesion::esCoordinador() ? '1' : '0'; ?>" data-atender="<?php echo ControlAcceso::puedeAtender() ? '1' : '0'; ?>">
-                            <tr><td colspan="9"><?php echo Idioma::e('cargando_solicitudes'); ?></td></tr>
+                            <?php if (empty($solicitudes)) { ?>
+                                <tr>
+                                    <td colspan="9"><?php echo Idioma::e('js_sin_solicitudes'); ?></td>
+                                </tr>
+                            <?php } ?>
+
+                            <?php foreach ($solicitudes as $solicitud) { ?>
+                                <?php
+                                $url = 'detalle-solicitud.php?id=' . (int) $solicitud['id_solicitud'];
+                                $marca = strtotime($solicitud['fecha_hora_alta']);
+                                $atender = ControlAcceso::puedeAtender();
+                                $clase = isset($clasesEstado[$solicitud['estado_solicitud']]) ? $clasesEstado[$solicitud['estado_solicitud']] : 'bg-warning text-dark';
+                                ?>
+                                <tr>
+                                    <td><a class="tabla-enlace" href="<?php echo v($url); ?>"><?php echo (int) $solicitud['id_solicitud']; ?></a></td>
+                                    <td><?php echo $marca ? date('d/m/y', $marca) : ''; ?></td>
+                                    <td><?php echo v($solicitud['nombre_salon']); ?></td>
+                                    <td><?php echo v($solicitud['descripcion']); ?></td>
+                                    <td><span class="badge <?php echo $clase; ?>"><?php echo Idioma::e('valor_' . $solicitud['estado_solicitud']); ?></span></td>
+                                    <td><?php echo Idioma::e('valor_' . $solicitud['prioridad']); ?></td>
+                                    <td><?php echo v($solicitud['nombre_solicitante']); ?></td>
+                                    <td><?php echo $solicitud['nombre_responsable'] !== null && $solicitud['nombre_responsable'] !== '' ? v($solicitud['nombre_responsable']) : '—'; ?></td>
+                                    <td class="acciones">
+                                        <a class="btn-editar" href="<?php echo v($url); ?><?php echo $atender ? '&amp;modo=editar' : ''; ?>"><?php echo $atender ? Idioma::e('js_atender') : Idioma::e('js_ver'); ?></a>
+
+                                        <?php if (Sesion::esCoordinador()) { ?>
+                                            <form action="solicitudes.php" method="post" class="form-en-linea">
+                                                <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
+                                                <input type="hidden" name="id_solicitud" value="<?php echo (int) $solicitud['id_solicitud']; ?>">
+                                                <button type="submit" class="btn-eliminar"><?php echo Idioma::e('btn_eliminar'); ?></button>
+                                            </form>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

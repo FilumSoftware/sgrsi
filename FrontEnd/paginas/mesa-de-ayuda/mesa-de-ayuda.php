@@ -1,11 +1,31 @@
 <?php
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorTickets.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Idioma.php';
 
 Idioma::iniciar();
 
 ControlAcceso::exigirSesion('../../../index.php');
+
+$gestor = new GestorTickets();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!Sesion::verificarTokenApi(isset($_POST['csrf']) ? $_POST['csrf'] : '')) {
+        $destino = 'error';
+    } elseif (!Sesion::esCoordinador()) {
+        $destino = 'permiso';
+    } else {
+        $resultado = $gestor->eliminar(ResultadoGestion::campo($_POST, 'id_ticket'));
+        if (!$resultado['ok']) {
+            $destino = 'error';
+        } else {
+            $destino = $resultado['datos'] ? 'eliminado' : 'noexiste';
+        }
+    }
+    header('Location: mesa-de-ayuda.php?aviso=' . $destino);
+    exit;
+}
 
 $avisos = [
     'creado'    => ['exito', Idioma::t('aviso_ticket_creado')],
@@ -22,6 +42,23 @@ $aviso   = isset($_GET['aviso']) ? $_GET['aviso'] : '';
 
 if (isset($avisos[$aviso])) {
     $mensaje = ['tipo' => $avisos[$aviso][0], 'texto' => $avisos[$aviso][1]];
+}
+
+$clasesEstado = [
+    'Cancelado'  => 'bg-secondary',
+    'Resuelto'   => 'bg-success',
+    'En proceso' => 'bg-info text-dark',
+    'Pendiente'  => 'bg-warning text-dark',
+];
+
+try {
+    $tickets = ResultadoGestion::valor(Sesion::esTecnico()
+        ? $gestor->obtenerTodos()
+        : $gestor->obtenerPorSolicitante(Sesion::ci()));
+} catch (Exception $e) {
+    error_log('SGRSI mesa-de-ayuda.php listado: ' . $e->getMessage());
+    $tickets = [];
+    $mensaje = ['tipo' => 'error', 'texto' => Idioma::t('aviso_error_operacion')];
 }
 
 function v($texto)
@@ -101,7 +138,52 @@ function v($texto)
                             </tr>
                         </thead>
                         <tbody id="lista-tickets" data-csrf="<?php echo v(Sesion::tokenApi()); ?>" data-coordinador="<?php echo Sesion::esCoordinador() ? '1' : '0'; ?>" data-atender="<?php echo ControlAcceso::puedeAtender() ? '1' : '0'; ?>">
-                            <tr><td colspan="8"><?php echo Idioma::e('cargando_tickets'); ?></td></tr>
+                            <?php if (empty($tickets)) { ?>
+                                <tr>
+                                    <td colspan="8"><?php echo Idioma::e('dash_sin_tickets'); ?></td>
+                                </tr>
+                            <?php } ?>
+
+                            <?php foreach ($tickets as $ticket) { ?>
+                                <?php
+                                $url = 'detalle-ticket.php?id=' . (int) $ticket['id_ticket'];
+                                $marca = strtotime($ticket['fecha_hora_alta']);
+                                $atender = ControlAcceso::puedeAtender() && $ticket['estado_ticket'] !== 'Cancelado';
+                                $clase = isset($clasesEstado[$ticket['estado_ticket']]) ? $clasesEstado[$ticket['estado_ticket']] : 'bg-warning text-dark';
+                                $vencido = !empty($ticket['fuera_de_plazo']);
+                                ?>
+                                <tr<?php echo $vencido ? ' class="fila-ticket-vencido"' : ''; ?>>
+                                    <td><a class="tabla-enlace" href="<?php echo v($url); ?>"><?php echo (int) $ticket['id_ticket']; ?></a></td>
+                                    <td><?php echo $marca ? date('d/m/y', $marca) : ''; ?></td>
+                                    <td><?php echo $marca ? date('H:i', $marca) : ''; ?></td>
+                                    <td><?php echo v($ticket['nombre_salon']); ?></td>
+                                    <td><?php echo v($ticket['nombre_equipo']); ?></td>
+                                    <td>
+                                        <?php if ($ticket['tipo_de_defecto'] === 'Otros' && !empty($ticket['detalle_defecto'])) { ?>
+                                            <?php echo Idioma::e('js_otros_prefijo') . v($ticket['detalle_defecto']); ?>
+                                        <?php } else { ?>
+                                            <?php echo v($ticket['tipo_de_defecto']); ?>
+                                        <?php } ?>
+                                    </td>
+                                    <td>
+                                        <span class="badge <?php echo $clase; ?>"><?php echo Idioma::e('valor_' . $ticket['estado_ticket']); ?></span>
+                                        <?php if ($vencido) { ?>
+                                            <span class="aviso-plazo-vencido"><?php echo Idioma::e('js_fuera_de_plazo'); ?></span>
+                                        <?php } ?>
+                                    </td>
+                                    <td class="acciones">
+                                        <a class="btn-editar" href="<?php echo v($url); ?><?php echo $atender ? '&amp;modo=editar' : ''; ?>"><?php echo $atender ? Idioma::e('js_atender') : Idioma::e('js_ver'); ?></a>
+
+                                        <?php if (Sesion::esCoordinador()) { ?>
+                                            <form action="mesa-de-ayuda.php" method="post" class="form-en-linea">
+                                                <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
+                                                <input type="hidden" name="id_ticket" value="<?php echo (int) $ticket['id_ticket']; ?>">
+                                                <button type="submit" class="btn-eliminar"><?php echo Idioma::e('btn_eliminar'); ?></button>
+                                            </form>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

@@ -47,16 +47,7 @@ try {
 
     if ($metodo === 'POST') {
         if ($id !== null) Api::responder(400, 'error', 'El alta no lleva identificador.');
-        $ticket = new Ticket(
-            date('Y-m-d H:i:s'),
-            Sesion::ci(),
-            Api::campo($datos, 'id_equipo'),
-            Api::campo($datos, 'tipo_de_defecto'),
-            Api::campo($datos, 'descripcion'),
-            Api::campo($datos, 'prioridad', 'Normal')
-        );
-        $ticket->setDetalleDefecto(Api::campo($datos, 'detalle_defecto'));
-        $resultado = $gestor->insertar($ticket);
+        $resultado = $gestor->crearDesdeFormulario($datos, Sesion::ci());
         if (!$resultado['ok']) Api::resultado($resultado);
         Api::responder(201, 'success', 'Ticket registrado.', ['id_ticket' => (int) $resultado['datos']]);
     }

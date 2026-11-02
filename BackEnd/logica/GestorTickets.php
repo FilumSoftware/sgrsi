@@ -94,6 +94,21 @@ class GestorTickets
         });
     }
 
+    public function crearDesdeFormulario($datos, $ci)
+    {
+        $prioridad = ResultadoGestion::campo($datos, 'prioridad');
+        $ticket = new Ticket(
+            date('Y-m-d H:i:s'),
+            $ci,
+            ResultadoGestion::campo($datos, 'id_equipo'),
+            ResultadoGestion::campo($datos, 'tipo_de_defecto'),
+            ResultadoGestion::campo($datos, 'descripcion'),
+            $prioridad !== '' ? $prioridad : 'Normal'
+        );
+        $ticket->setDetalleDefecto(ResultadoGestion::campo($datos, 'detalle_defecto'));
+        return $this->insertar($ticket);
+    }
+
     public function insertar(Ticket $ticket)
     {
         $error = $this->validar($ticket);

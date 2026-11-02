@@ -2,11 +2,47 @@
 
 require_once __DIR__ . '/../../../BackEnd/logica/ControlAcceso.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Dominio.php';
+require_once __DIR__ . '/../../../BackEnd/logica/GestorSolicitudes.php';
 require_once __DIR__ . '/../../../BackEnd/logica/Idioma.php';
 
 Idioma::iniciar();
 
 ControlAcceso::exigirSesion('../../../index.php');
+
+$gestor = new GestorSolicitudes();
+$valores = ['nombre_salon' => '', 'prioridad' => 'Normal', 'descripcion' => ''];
+$errorGeneral = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    foreach (array_keys($valores) as $campo) {
+        $valores[$campo] = ResultadoGestion::campo($_POST, $campo);
+    }
+
+    $resultado = Sesion::verificarTokenApi(isset($_POST['csrf']) ? $_POST['csrf'] : '')
+        ? $gestor->crearDesdeFormulario($_POST, Sesion::ci())
+        : ResultadoGestion::fallo(403, 'La sesión de esta página venció. Volvé a abrirla.');
+
+    if ($resultado['ok']) {
+        header('Location: nueva-solicitud.php?numero=' . (int) $resultado['datos']);
+        exit;
+    }
+
+    http_response_code($resultado['codigo']);
+    $errorGeneral = Idioma::t($resultado['mensaje']);
+}
+
+$numero = isset($_GET['numero']) ? (int) $_GET['numero'] : 0;
+$exito = $numero > 0
+    ? Idioma::t('aviso_solicitud_creada') . Idioma::t('js_num_prefijo') . $numero . '.'
+    : '';
+
+try {
+    $salones = ResultadoGestion::valor($gestor->obtenerSalones());
+} catch (Exception $e) {
+    error_log('SGRSI nueva-solicitud.php obtenerSalones: ' . $e->getMessage());
+    $salones = [];
+    $errorGeneral = Idioma::t('aviso_error_operacion');
+}
 
 function v($texto)
 {
@@ -64,9 +100,13 @@ function v($texto)
 
             <section class="form-container">
 
-                <p id="resultado-solicitud" class="error-mensaje" role="status" aria-live="polite"></p>
+                <?php if ($errorGeneral !== '') { ?>
+                    <p class="error-mensaje" style="display: block;"><?php echo v($errorGeneral); ?></p>
+                <?php } ?>
+                <p id="resultado-solicitud" class="error-mensaje <?php echo $exito !== '' ? 'mensaje-exito' : ''; ?>" role="status" aria-live="polite"<?php echo $exito !== '' ? ' style="display: block;"' : ''; ?>><?php echo v($exito); ?></p>
 
-                <form id="form-solicitud" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
+                <form id="form-solicitud" action="nueva-solicitud.php" method="post" data-csrf="<?php echo v(Sesion::tokenApi()); ?>">
+                    <input type="hidden" name="csrf" value="<?php echo v(Sesion::tokenApi()); ?>">
                     <fieldset>
                         <div class="form-grupo">
                             <label for="solicitante"><?php echo Idioma::e('lbl_solicitante'); ?></label>
@@ -78,8 +118,11 @@ function v($texto)
                         </div>
                         <div class="form-grupo">
                             <label for="salon"><?php echo Idioma::e('lbl_salon'); ?></label>
-                            <select id="salon" name="salon" required>
+                            <select id="salon" name="nombre_salon" required>
                                 <option value=""><?php echo Idioma::e('opt_elija_opcion'); ?></option>
+                                <?php foreach ($salones as $salon) { ?>
+                                    <option value="<?php echo v($salon['nombre_salon']); ?>"<?php echo $valores['nombre_salon'] === $salon['nombre_salon'] ? ' selected' : ''; ?>><?php echo v($salon['nombre_salon']); ?></option>
+                                <?php } ?>
                             </select>
                             <p class="error-mensaje" id="error-salon"></p>
                         </div>
@@ -87,14 +130,14 @@ function v($texto)
                             <label for="prioridad"><?php echo Idioma::e('lbl_prioridad'); ?></label>
                             <select id="prioridad" name="prioridad" required>
                                 <?php foreach (Dominio::PRIORIDADES as $prioridad) { ?>
-                                    <option value="<?php echo v($prioridad); ?>"><?php echo v(Idioma::t('valor_' . $prioridad)); ?></option>
+                                    <option value="<?php echo v($prioridad); ?>"<?php echo $valores['prioridad'] === $prioridad ? ' selected' : ''; ?>><?php echo v(Idioma::t('valor_' . $prioridad)); ?></option>
                                 <?php } ?>
                             </select>
                             <p class="error-mensaje" id="error-prioridad"></p>
                         </div>
                         <div class="form-grupo">
                             <label for="motivo"><?php echo Idioma::e('lbl_motivo'); ?></label>
-                            <textarea id="motivo" name="motivo" rows="4" required></textarea>
+                            <textarea id="motivo" name="descripcion" rows="4" required><?php echo v($valores['descripcion']); ?></textarea>
                             <p class="error-mensaje" id="error-motivo"></p>
                         </div>
 
