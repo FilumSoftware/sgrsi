@@ -165,7 +165,7 @@ function claseError($errores, $campo)
             </header>
 
             <section class="form-container">
-                <h1>Ticket n.º <?php echo v($fila['id_ticket']); ?></h1>
+                <h1><?php echo Idioma::e('enc_ticket_numero'); ?> <?php echo v($fila['id_ticket']); ?></h1>
 
                 <?php if (!empty($errores['general'])) { ?>
                     <p class="error-mensaje" style="display: block;"><?php echo v($errores['general']); ?></p>

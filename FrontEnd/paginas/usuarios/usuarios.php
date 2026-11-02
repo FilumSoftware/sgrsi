@@ -115,7 +115,7 @@ function v($texto)
                     <table>
                         <thead>
                             <tr>
-                                <th>C.I.</th>
+                                <th><?php echo Idioma::e('th_ci'); ?></th>
                                 <th><?php echo Idioma::e('th_nombre'); ?></th>
                                 <th><?php echo Idioma::e('th_rol'); ?></th>
                                 <th><?php echo Idioma::e('th_estado'); ?></th>
