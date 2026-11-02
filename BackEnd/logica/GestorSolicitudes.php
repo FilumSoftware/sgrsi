@@ -35,14 +35,22 @@ class GestorSolicitudes
         return ResultadoGestion::ejecutar('solicitudes técnicos', function () { return (new UsuarioDAO())->obtenerTecnicos(); });
     }
 
-    public function actualizarDesdeFormulario($id, $datos, $puedeAtender)
+    public function validarAsignacion($rol, $ciActor, $responsableActual, $responsableNuevo)
     {
-        if (!$puedeAtender) return ResultadoGestion::fallo(403, 'No tenés permiso para modificar solicitudes.');
-        return ResultadoGestion::procesar('solicitudes formulario de edición', function () use ($id, $datos) {
+        if (Dominio::puedeAsignar($rol, $ciActor, $responsableActual, $responsableNuevo)) return null;
+        return ResultadoGestion::fallo(403, 'Solo el coordinador puede asignarle una solicitud a otra persona.');
+    }
+
+    public function actualizarDesdeFormulario($id, $datos, $rol, $ciActor)
+    {
+        if ($rol !== 'Asistente' && $rol !== 'Coordinador') return ResultadoGestion::fallo(403, 'No tenés permiso para modificar solicitudes.');
+        return ResultadoGestion::procesar('solicitudes formulario de edición', function () use ($id, $datos, $rol, $ciActor) {
             $actual = $this->obtenerPorId($id);
             if (!$actual['ok']) return $actual;
             if (!$actual['datos']) return ResultadoGestion::fallo(404, 'No existe esa solicitud.');
             $fila = $actual['datos'];
+            $asignacion = $this->validarAsignacion($rol, $ciActor, $fila['ci_responsable'], ResultadoGestion::campo($datos, 'responsable'));
+            if ($asignacion) return $asignacion;
             $estado = ResultadoGestion::campo($datos, 'estado');
             $cierre = null;
             if ($estado === 'Resuelta') {

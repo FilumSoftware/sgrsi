@@ -106,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </ul>
                 </nav>
                 <div class="topbar-logo">
+                    <span class="etiqueta-rol"><?php echo htmlspecialchars(Sesion::rol(), ENT_QUOTES, 'UTF-8'); ?></span>
                     <img src="../../img/logo.png" alt="Logo SGRSI">
                     <span>SGRSI</span>
                 </div>

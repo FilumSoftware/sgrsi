@@ -105,6 +105,15 @@ h3 {
     color: var(--color-secundario);
 }
 
+.topbar-logo .etiqueta-rol {
+    padding: 3px 10px;
+    border-radius: 999px;
+    background-color: var(--color-primario);
+    color: var(--color-secundario);
+    font-size: 12px;
+    font-weight: 600;
+}
+
 .topbar-nav ul {
     display: flex;
     flex-direction: row;

@@ -73,6 +73,8 @@ try {
     $estado = Api::campo($datos, 'estado_ticket', $fila['estado_ticket']);
     if ($estado === 'Cancelado') Api::responder(400, 'error', 'Usá la cancelación para ese estado.');
     $responsable = Api::campo($datos, 'ci_responsable', $fila['ci_responsable']);
+    $asignacion = $gestor->validarAsignacion(Sesion::rol(), Sesion::ci(), $fila['ci_responsable'], $responsable);
+    if ($asignacion) Api::resultado($asignacion);
     $cierre = null;
     if ($estado === 'Resuelto') {
         $cierre = $fila['fecha_hora_cierre'];

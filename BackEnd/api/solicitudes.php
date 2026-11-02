@@ -57,6 +57,8 @@ try {
     $fila = $actual['datos'];
     $estado = Api::campo($datos, 'estado_solicitud', $fila['estado_solicitud']);
     $responsable = Api::campo($datos, 'ci_responsable', $fila['ci_responsable']);
+    $asignacion = $gestor->validarAsignacion(Sesion::rol(), Sesion::ci(), $fila['ci_responsable'], $responsable);
+    if ($asignacion) Api::resultado($asignacion);
     $cierre = null;
     if ($estado === 'Resuelta') {
         $cierre = $fila['fecha_hora_cierre'];

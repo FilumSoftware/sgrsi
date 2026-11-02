@@ -8,6 +8,17 @@ class Dominio
     const TURNOS            = ['Matutino', 'Vespertino', 'Nocturno'];
     const PLAZOS_TICKET_HORAS = ['Urgente' => 4, 'Prioritario' => 24, 'Normal' => 72];
 
+    public static function puedeAsignar($rol, $ciActor, $responsableActual, $responsableNuevo)
+    {
+        $actual = $responsableActual === null ? '' : (string) $responsableActual;
+        $nuevo = $responsableNuevo === null ? '' : (string) $responsableNuevo;
+        if ($nuevo === $actual) return true;
+        if ($rol === 'Coordinador') return true;
+        if ($rol !== 'Asistente') return false;
+        if ($actual !== '' && $actual !== $ciActor) return false;
+        return $nuevo === '' || $nuevo === $ciActor;
+    }
+
     public static function ticketFueraDePlazo($ticket)
     {
         if (in_array($ticket['estado_ticket'], ['Resuelto', 'Cancelado'], true)) return false;
