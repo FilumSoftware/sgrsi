@@ -141,7 +141,7 @@ function v($texto)
                             <p class="error-mensaje" id="error-motivo"></p>
                         </div>
 
-                        <input type="submit" id="btn-enviar" value="Enviar solicitud">
+                        <input type="submit" id="btn-enviar" value="<?php echo Idioma::e('btn_enviar_solicitud'); ?>">
                     </fieldset>
                 </form>
             </section>

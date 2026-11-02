@@ -218,7 +218,7 @@ function claseError($errores, $campo)
                         </div>
 
                         <?php if ($editable) { ?>
-                            <input type="submit" id="btn-guardar" value="Guardar solicitud">
+                            <input type="submit" id="btn-guardar" value="<?php echo Idioma::e('btn_guardar_solicitud'); ?>">
                         <?php } elseif ($puedeAtender) { ?>
                             <a class="btn-editar-form" href="detalle-solicitud.php?id=<?php echo urlencode($id); ?>&amp;modo=editar"><?php echo Idioma::e('btn_editar'); ?></a>
                         <?php } ?>

@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="text" id="extras" name="extras" value="<?php echo htmlspecialchars($valores['extras']); ?>"><br><br>
                         </div>
 
-                        <input type="submit" id="btn-registrar" value="Registrar equipo">
+                        <input type="submit" id="btn-registrar" value="<?php echo Idioma::e('btn_registrar_equipo'); ?>">
                     </fieldset>
                 </form>
             </section>

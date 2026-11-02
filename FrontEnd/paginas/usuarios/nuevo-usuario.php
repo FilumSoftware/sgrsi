@@ -123,7 +123,7 @@ function v($texto)
                             <p class="error-mensaje" id="error-rol"<?php echo !empty($errores['rol']) ? ' style="display: block;"' : ''; ?>><?php echo v(isset($errores['rol']) ? $errores['rol'] : ''); ?></p>
                         </div>
 
-                        <input type="submit" value="Crear Cuenta">
+                        <input type="submit" value="<?php echo Idioma::e('btn_crear_cuenta'); ?>">
 
                     </fieldset>
                 </form>
